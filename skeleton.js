@@ -3,12 +3,7 @@
 // KEY PLAYER VARIABLES
 
 var reply, reply2, input, userid, msg;
-var user = {
-    user_id: "userid",
-    username: "something",
-    email: "user.email",
-    knownPlayer: false
-}
+var user = {};
 
 //////////////////////////////////////
 
@@ -81,57 +76,28 @@ controller.hears(
     ['hello','hi','howdy'], 
     ['direct_message','mention'], function (bot, message) {
     userid = message.user;
+    console.log("message.team: " + message.team);
     team = message.team;
-    console.log("message.team: " + team);
     bot.startConversation(message, welcome);
-    // get user collection; check knownPlayer flag; if none, set basic info
-    controller.storage.users.get(userid, function(err,user_data){
-        var temp = user_data;
-        if (temp===undefined){
-            user.knownPlayer = false
-            console.log("this is not a known player");
-        } else {
-            console.log("this IS a known player!");
-            console.log("temp.user.knownPlayer: " + temp.user.knownPlayer);
-            user = temp.user
-        };
-    });
+    // grab some deets real quick
+    bot.api.users.info({'user':userid},function(err,res){
+        user.name = res.user.name;
+        user.email = res.user.profile.email;
+        controller.storage.teams.save({id: team, user:{
+            user_id: userid,
+            username: user.name,
+            email: user.email
+            }
+        });
+    })
 });
 
-// grab some deets real quick
-// bot.api.users.info({'user':userid},function(err,res){
-// user.name = res.user.name;
-// user.email = res.user.profile.email;
-// controller.storage.users.save({id: userid, user});
 
 welcome = function(res,convo){
     convo.ask("Welcome! Would you like to play a game?", function(res,convo){
         enter(res,convo);
         convo.next();
-    }),
-
-        // [
-        // { 
-        //     pattern: bot.utterances.yes,
-        //     callback: function(res,convo){
-        //         enter(res,convo);
-        //         convo.next();
-        //    }
-        // },
-        // { 
-        //     pattern: bot.utterances.no,
-        //         callback: function(res,convo){
-        //         convo.say("Okay then!");
-        //    }
-        // },
-        // { 
-        //     default: true,
-        //     callback: function(res,convo){
-        //         convo.repeat();
-        //         convo.next();
-        //    }
-        // }
-        // ]);
+    });
     convo.on('end', function(convo){
         if (convo.status==='completed'){
             console.log("Looks like we're done here. Cheers! 🍺");
@@ -142,17 +108,20 @@ welcome = function(res,convo){
 }
 
 enter = function(res, convo){
-    convo.say("Great! Let's go! 🐲");
-    convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. You open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
-    convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
-    convo.say("Greetings, " + user.name + "!");
-    convo.ask("Say 'save' to save your input, or 'bazooka' to grab your data.", function(response,convo){
-        enter2(response,convo);
-        convo.next();
-    });
+    if (res.text==="yes" || res.text==="yep"){
+        convo.say("Good times. 😜");
+        convo.ask("Say 'save' to save your input, or 'bazooka' to grab your data.", function(response,convo){
+            enter2(response,convo);
+            convo.next();
+        });
+    } else {
+        convo.say("Okay then!");
+    }
 }
 
 enter2 = function(res,convo){
+    console.log("enter2 test: " + res.text);
+    console.log("convo: " + Object.getOwnPropertyNames(convo));
     var temp = res.text;
     if (temp==='save'){
         // saves something
@@ -164,8 +133,8 @@ enter2 = function(res,convo){
     } else if (temp==='bazooka'){
         // gets something
         convo.say("Cool - let's see what you had in your account.");
-        controller.storage.users.get(userid,function(err,user_data){
-            var temp = user_data.data.res1;
+        controller.storage.teams.get(team,function(err,team_data){
+            var temp = team_data.user.res1;
             console.log("retrieved: " + temp);
             convo.say("Looks like you had this: " + temp);
             welcome(res,convo);
@@ -180,11 +149,10 @@ enter2 = function(res,convo){
 
 saving = function(res,convo){
     console.log("response1: " + res.text);
-    controller.storage.users.save({id: userid, res1: res.text });
-    // controller.storage.teams.save({id: team, userid:{
-    //     res1: res.text
-    //     }
-    // });
+    controller.storage.teams.save({id: team, user:{
+        res1: res.text
+        }
+    });
     convo.say("Okay, I think I got it.");
     welcome(res,convo);
     convo.next();
