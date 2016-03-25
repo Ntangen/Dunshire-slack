@@ -82,7 +82,6 @@ controller.hears(
     ['direct_message','mention'], function (bot, message) {
     userid = message.user;
     team = message.team;
-    console.log("message.team: " + team);
     bot.startConversation(message, welcome);
     // get user collection; check knownPlayer flag; if none, set basic info
     controller.storage.users.get(userid, function(err,user_data){
@@ -90,11 +89,17 @@ controller.hears(
         if (temp===undefined){
             user.knownPlayer = false
             console.log("this is not a known player");
+            // grab some deets real quick, saves to user var
+            bot.api.users.info({'user':userid},function(err,res){
+                user.username = res.user.name;
+                user.email = res.user.profile.email;
+                controller.storage.users.save({id: userid, user:user});
+            });
         } else {
             console.log("this IS a known player!");
-            console.log("temp.user.knownPlayer: " + temp.user.knownPlayer);
             user = temp.user
-        };
+            console.log("the user's name is: " + user.username);
+        }
     });
 });
 
@@ -106,32 +111,37 @@ controller.hears(
 
 welcome = function(res,convo){
     convo.ask("Welcome! Would you like to play a game?", function(res,convo){
-        enter(res,convo);
-        convo.next();
+        if (res.text==="yes" || res.text==="y" || res.text==="sure") {
+            enter(res,convo);
+            convo.next();
+        } else {
+            convo.say ("Okay then!")
+        }
     }),
 
-        // [
-        // { 
-        //     pattern: bot.utterances.yes,
-        //     callback: function(res,convo){
-        //         enter(res,convo);
-        //         convo.next();
-        //    }
-        // },
-        // { 
-        //     pattern: bot.utterances.no,
-        //         callback: function(res,convo){
-        //         convo.say("Okay then!");
-        //    }
-        // },
-        // { 
-        //     default: true,
-        //     callback: function(res,convo){
-        //         convo.repeat();
-        //         convo.next();
-        //    }
-        // }
-        // ]);
+// [
+//     { 
+//         pattern: bot.utterances.yes,
+//         callback: function(res,convo){
+//             enter(res,convo);
+//             convo.next();
+//        }
+//     },
+//     { 
+//         pattern: bot.utterances.no,
+//             callback: function(res,convo){
+//             convo.say("Okay then!");
+//        }
+//     },
+//     { 
+//         default: true,
+//         callback: function(res,convo){
+//             convo.repeat();
+//             convo.next();
+//        }
+//     }
+// ]); 
+
     convo.on('end', function(convo){
         if (convo.status==='completed'){
             console.log("Looks like we're done here. Cheers! 🍺");
@@ -145,48 +155,61 @@ enter = function(res, convo){
     convo.say("Great! Let's go! 🐲");
     convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. You open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
     convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
-    convo.say("Greetings, " + user.name + "!");
-    convo.ask("Say 'save' to save your input, or 'bazooka' to grab your data.", function(response,convo){
+    console.log("user.knownPlayer is set to " + user.knownPlayer);
+    if (!user.knownPlayer){
+        convo.ask("The Innkeeper grunts. \"Well met, " + user.username + ". Haven't seen you around here before. You mean to introduce yourself, and begin your adventure in Coneshire?\"", function(response,convo){
+        newplayer(response,convo);
+        convo.next();
+        });
+    } else {
+        // known user continuing their quest
+        convo.ask("Would you care to hear some `instructions`? Or just continue on to `town`?", function(response,convo){
         enter2(response,convo);
         convo.next();
-    });
+        });
+    }
 }
 
-enter2 = function(res,convo){
+newplayer = function(res,convo){
     var temp = res.text;
-    if (temp==='save'){
-        // saves something
-        convo.say("Cool - let's save your input.");
+    if (temp==="yes" || temp==="y" || temp==="sure") {
+        // starts a new player
+        convo.say("The Innkeeper smacks the long bench with his palm. \"Excellent!\"");
+        // set up the new player with charms and shit
+
         convo.ask("Say anything here.", function(res, convo){
             saving(res,convo);
             convo.next();
         });
-    } else if (temp==='bazooka'){
-        // gets something
-        convo.say("Cool - let's see what you had in your account.");
-        controller.storage.users.get(userid,function(err,user_data){
-            var temp = user_data.data.res1;
-            console.log("retrieved: " + temp);
-            convo.say("Looks like you had this: " + temp);
-            welcome(res,convo);
-            convo.next();
-        });
     } else {
         // default
-        convo.say("Say what?");
+        convo.say("The Innkeeper's face falls. \"Sorry to hear that, stranger. Maybe another time.\"");
+        console.log("END");
+    }
+}
+
+enter2 = function(res,convo){
+    // instructions or town
+    var temp = res.text;
+    if (temp==="instructions"){
+        convo.say("The Innkeeper nods his head. \"Okay then. You may have many questions. What topic would you like explained? Let me pour you some ale, and I'll explain concepts like `Fighting`, Buying/using `merchandise`, `Interacting` with villagers, Interacting with other `wanderers`, `Magick` or General `Concepts`. Or you can just `continue` on to the Village of Coneshire.\"", function(res, convo){
+        instructions(res,convo);
+        convo.next();
+    });
+    } else if (temp==="town"){
+        // go on to town
+        convo.say("\"Good luck, wanderer. You'll need it.\"");
+        convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Coneshire.");
+        townsquare(res, convo);
+    } else {
         convo.repeat();
     }
 }
 
-saving = function(res,convo){
-    console.log("response1: " + res.text);
-    controller.storage.users.save({id: userid, res1: res.text });
-    // controller.storage.teams.save({id: team, userid:{
-    //     res1: res.text
-    //     }
-    // });
-    convo.say("Okay, I think I got it.");
-    welcome(res,convo);
-    convo.next();
+townsquare = function(res,convo){
+    convo.say("You're in the town square!");
 }
 
+// this is how you save shit:
+// controller.storage.users.save({id: userid, res1: res.text });
+    
