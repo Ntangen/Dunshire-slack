@@ -18,15 +18,6 @@ tavern: function(res,convo){
 	}
 }
 
-// generalrouter = function(res, convo){
-// 	convo.say("The heavy oaken tavern door swings open with a low squeal. The crowded tavern's patrons nurse their drinks and carry on while a Minstrel plays in the back. A man with a large, scratchy beard stands behind the bar with a towel.");
-// 	convo.say(">Well met, " + user.username + "!");
-// 	convo.ask("What to do? You can `talk` with Dean the barkeep, order a `drink`, sit and `listen` to the bar's goings-on, ask the minstrel to play a `song`, look `around` at the wanderers in the Tavern, `inquire` casually about someone's whereabouts, `send` a drink to another player, or return to the `street`.", function(res,convo){
-//             tavernrouter(res,convo);
-//             convo.next();
-// 	});
-// }
-
 ///////////////
 
 tavernrouter = function(res,convo){
@@ -154,7 +145,6 @@ listen = function(res,convo){
 }
 
 minstrel = function(res,convo){
-	console.log("minst var: " + minst);
 	convo.say("A jolly, bearded Minstrel strums his gittern near the tavern's corner fireplace. He bows deeply to you as you approach. \n>Sit, friend, and hear a song of adventure and woe...");
 	convo.ask("You can `request` a song, give him a `tip` of precious stones, or `return` to the bar.", function(res,convo){
 	        minstrelrouter(res,convo);
@@ -167,7 +157,6 @@ minstrelrouter = function(res,convo){
 	if (temp.includes("request")){
 		if (!minst){
 			var rando = Math.random();
-			console.log("rando set to: " + rando);
 			if (rando <=0.33){
 				convo.say("The Minstrel pauses for a moment, gazes wistfully into the distance, and strums his rendition of \"The Mummer's Lament.\"");
 			} else if (rando >0.33 && rando <=0.66){
@@ -200,12 +189,10 @@ minstrelrouter = function(res,convo){
 				convo.say("Your spirit feels refreshed.");
 			} 
 			minst = true;
-			console.log("convo repeat fires");
 			convo.repeat();
 		} else {
 			// minst is true
 			convo.say("The Minstrel has already played for you today, and now entertains other tavern patrons.");
-			console.log("convo repeat fires");
 			convo.repeat();
 		}
 	} else if (temp.includes("tip")){
@@ -221,7 +208,7 @@ minstrelrouter = function(res,convo){
 			} else if (temp2===3){
 				user.attributes.myst += 1;
 			}
-			user.items.other.splice(temp,1);
+			user.items.rubies --;
 			convo.say("You discreetly hand the Minstrel your small pouch of rubies. He bows deeply in receipt. \n>Why, dear Patron, you honor me. Allow me to sing this ballad in your honor! \nThe Minstrel sings a great, stirring tale of your bravery and courage!");
 			convo.say("You are a patron of the arts. *1 point* has been added to one of your attributes!");
 			convo.repeat();
@@ -243,17 +230,23 @@ minstrelrouter = function(res,convo){
 }
 
 findgems = function(){
-	if (user.items.other.length === 0){
+	if (user.items.rubies<=0){
 		return false
 	} else {
-		for (i=0; i<user.items.other.length;i++){
-			if (user.items.other[i].name === "Precious rubies"){
-				temp = i;
-				return true;
-			}
-		}
+		return true
 	}
 }
 
+around = function(res,convo){
+	var temp;
+    controller.storage.users.all(function(err, all_user_data) {
+        // console.log("all user data props: " + all_user_data['0'].user.email);
+        for (i=0;i<all_user_data.length;i++){
+        	temp += all_user_data[i].user.username + ", ";
+        }
+    });
+    convo.say("You see " + temp + " and others lurking about the bar.");
+    convo.repeat();
+}
 
 

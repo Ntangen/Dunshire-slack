@@ -191,15 +191,49 @@ enter = function(res, convo){
 }
 
 newplayer = function(res,convo){
-    convo.say("The Innkeeper smacks the long bench with his palm. \"Excellent!\"");
-    // set up the new player with charms and shit
-    // convo.ask("TBA.", function(res, convo){
-    //     saving(res,convo);
-    //     convo.next();
-    // });
     user.knownPlayer = true;
-    controller.storage.users.save({id: userid, user:user});
-    convo.next();
+    convo.say("The Innkeeper smacks the long bench with his palm and grins. \n>Excellent! I wish you luck and good fortune on your journies to come in the village of Coneshire - and the lands beyond... \n>As a last step before you go, you may choose to add 1 point to any of your four key character attributes. Which do you choose?");
+    convo.ask("`Charisma`: this will help you get along with other characters. \n`Luck`: this will grant you good fortune. \n`Mysticism`: this will build your mental fortitude. \n`Strength`: this will make you more powerful in combat.", function(res,convo){
+            controller.storage.users.save({id: userid, user:user});
+            newplayer2(res,convo);
+            convo.next();
+    });
+}
+
+newplayer2 = function(res,convo){
+    var temp = res.text;
+    if (temp.includes("charisma")){
+        user.attributes.charisma += 1;
+        convo.say(">Outstanding! You are now wittier, funnier and more fun to be around!");
+        convo.ask(">Would you care to hear some `instructions`? Or just continue on to `town`?", function(response,convo){
+            enter2(response,convo);
+            convo.next();
+        });
+    } else if (temp.includes('luck')){
+        user.attributes.luck += 1;
+        convo.say(">Outstanding! The fates shine upon you!");
+        convo.ask(">Would you care to hear some `instructions`? Or just continue on to `town`?", function(response,convo){
+            enter2(response,convo);
+            convo.next();
+        });        
+    } else if (temp.includes('mysticism')){
+        user.attributes.myst += 1;
+        convo.say(">Outstanding! You can now hear the music of the spheres!");
+        convo.ask(">Would you care to hear some `instructions`? Or just continue on to `town`?", function(response,convo){
+            enter2(response,convo);
+            convo.next();
+        });        
+    } else if (temp.includes('strength')){
+        user.attributes.strength += 1;
+        convo.say(">Outstanding! You are now more powerful than before!");
+        convo.ask(">Would you care to hear some `instructions`? Or just continue on to `town`?", function(response,convo){
+            enter2(response,convo);
+            convo.next();
+        });
+    } else {
+        convo.say("Come again?");
+        convo.repeat();
+    }
 }
 
 enter2 = function(res,convo){
@@ -212,7 +246,7 @@ enter2 = function(res,convo){
     });
     } else if (temp==="town"){
         // go on to town
-        convo.say(">Good luck, wanderer. You'll need it.\"");
+        convo.say(">Good luck then, wanderer. You'll need it.\"");
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Coneshire.");
         town.townsquare(res, convo);
     } else {
@@ -285,9 +319,10 @@ instructions = function(res,convo){
     }
 }
 
-// townsquare = function(res,convo){
-//     convo.say("You're in the town square!");
-// }
+
+// known bugs:
+// - tavern minstrel true/false var is not persistent; restarting game resets the var
+// 
 
 
 
