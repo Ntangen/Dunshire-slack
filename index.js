@@ -3,6 +3,8 @@
 // get those modules
 var Store = require('jfs');
 user = require('./lib/user');
+allNames = "";
+stew = false;
 var town = require('./town');
 var tavern = require('./tavern');
 var arms = require('./lib/armaments');
@@ -84,7 +86,7 @@ controller.hears(
     ['hello','hi','howdy'], 
     ['direct_message','mention'], function (bot, message) {
 
-    userid = message.user;
+    user.userid = message.user;
     team = message.team;
 
     // welcome function
@@ -122,14 +124,14 @@ controller.hears(
     };
 
     // get user collection; check knownPlayer flag; if none, set basic info
-    controller.storage.users.get(userid, function(err,user_data){
+    controller.storage.users.get(user.userid, function(err,user_data){
         var temp = user_data;
         if (temp===undefined){
             // no record for this user, so we'll set one up
             user.knownPlayer = false
             console.log("this is not a known player");
             // grab some deets real quick, saves to user var
-            bot.api.users.info({'user':userid},function(err,res){
+            bot.api.users.info({'user':user.userid},function(err,res){
                 user.username = res.user.name;
                 user.email = res.user.profile.email;
                 controller.storage.users.save({id: userid, user:user});
@@ -144,12 +146,6 @@ controller.hears(
     bot.startConversation(message, welcome);
 
 });
-
-// grab some deets real quick
-// bot.api.users.info({'user':userid},function(err,res){
-// user.name = res.user.name;
-// user.email = res.user.profile.email;
-// controller.storage.users.save({id: userid, user});
 
 enter = function(res, convo){
     convo.say("Great! Let's go! 🐲");
@@ -319,10 +315,24 @@ instructions = function(res,convo){
     }
 }
 
+grabAllNames = function(x){
+    controller.storage.users.all(function(err, all_user_data) {
+    for (i=0;i<all_user_data.length;i++){
+        allNames += "*" + all_user_data[i].user.username + "*, ";
+        }
+    }); 
+}
+
 
 // known bugs:
 // - tavern minstrel true/false var is not persistent; restarting game resets the var
+// - there's gotta be a better way of collecting all usernames for display, but asynch wasn't my friend
+// - gotta add stalking for lev 2s at bar
 // 
 
 
-
+// grab some deets real quick
+// bot.api.users.info({'user':userid},function(err,res){
+// user.name = res.user.name;
+// user.email = res.user.profile.email;
+// controller.storage.users.save({id: userid, user});
