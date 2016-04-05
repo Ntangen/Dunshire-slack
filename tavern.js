@@ -10,6 +10,7 @@ module.exports = {
 
 tavern: function(res,convo){
 	grabAllNames();
+	console.log("user: " + user.username);
  	convo.say("*-------------------------------------T H E  T A V E R N-------------------------------------*");
 	convo.say("The heavy oaken tavern door swings open with a low squeal. The crowded tavern's patrons nurse their drinks and carry on while a Minstrel plays in the back. A man with a large, scratchy beard stands behind the bar with a towel.");
 	convo.say(">Well met, " + user.username + "!");
@@ -23,6 +24,7 @@ tavern: function(res,convo){
 ///////////////
 
 tavernrouter = function(res,convo){
+	quicksave();
 	var temp = res.text;
     if (temp.includes('talk')){
         talk(res,convo);
@@ -313,14 +315,14 @@ send = function(res,convo){
 sendrouter = function(res,convo){
 	var temp = res.text;
 	if (temp.includes("none") || temp===user.username ) {
-		convo.say("Dean looks at you, confused. \nSuit yourself...");
+		convo.say("Dean looks at you, confused. \nStrange one, I see...");
 		convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){
 	        tavernrouter(res,convo);
 	        convo.next();
 		});
 	} else if (allNames.includes(temp)){
-		tempdrinkobject.target = "*" + temp + "*";
-		convo.ask("Dean sniffs. \nSend a drink to " + temp + ". Got it. What do you want to send? Here's what we've got... \n`1` - " + drinks.grog.name + " (" + drinks.grog.gold + " Gold)\n`2` - " + drinks.ale.name + " (" + drinks.ale.gold + " Gold)\n`3` - " + drinks.beer.name + " (" + drinks.beer.gold + " Gold)\n`4` - " + drinks.whiskey.name + " (" + drinks.whiskey.gold + " Gold)\n`5` - `None` of these?", function(res,convo){
+		tempdrinkobject.to = temp;
+		convo.ask("Dean sniffs. \nSend a drink to *" + temp + "*. Got it. What do you want to send? Here's what we've got... \n`1` - " + drinks.grog.name + " (" + drinks.grog.gold + " Gold)\n`2` - " + drinks.ale.name + " (" + drinks.ale.gold + " Gold)\n`3` - " + drinks.beer.name + " (" + drinks.beer.gold + " Gold)\n`4` - " + drinks.whiskey.name + " (" + drinks.whiskey.gold + " Gold)\n`5` - `None` of these?", function(res,convo){
 			sendrouter2(res,convo)
 			convo.next();
 		});
@@ -333,11 +335,11 @@ sendrouter = function(res,convo){
 sendrouter2 = function(res,convo){
 	console.log("tempdrinkobject: " + tempdrinkobject);
 	var temp = res.text;
-	if (temp==="1"){ tempdrinkobject.drink = drinks.grog;
-			console.log("tempdrinkobject name: " + tempdrinkobject.drink.name) }
-	else if (temp===2) { tempdrinkobject.drink = drinks.ale }
-	else if (temp===3) { tempdrinkobject.drink = drinks.beer }
-	else if (temp===4) { tempdrinkobject.drink = drinks.whiskey }
+	if (temp==="1"){ tempdrinkobject.type = drinks.grog;
+			console.log("tempdrinkobject name: " + tempdrinkobject.type.name) }
+	else if (temp===2) { tempdrinkobject.type = drinks.ale }
+	else if (temp===3) { tempdrinkobject.type = drinks.beer }
+	else if (temp===4) { tempdrinkobject.type = drinks.whiskey }
 	else { 
 		convo.say("Dean looks at you, confused. \nSuit yourself...");
 		convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){
@@ -345,11 +347,11 @@ sendrouter2 = function(res,convo){
 	        convo.next();
 		});
 	}
-	if (tempdrinkobject.drink.gold > user.gold) {
+	if (tempdrinkobject.type.gold > user.gold) {
 		convo.say("Dean looks at you askance. \n>Afraid this is a cash-only establishment, friend. And you don't seem to have it.");
 		convo.repeat();
 	} else {
-		convo.ask(">Okay. You can also leave a short message to " + tempdrinkobject.target + " - no longer than this napkin here, though. What would you like to say?", function (res,convo) {
+		convo.ask(">Okay. You can also leave a short message to " + tempdrinkobject.to + " - no longer than this napkin here, though. What would you like to say?", function (res,convo) {
 			sendrouter3(res,convo)
 			convo.next();
 		});
@@ -363,7 +365,7 @@ sendrouter3 = function(res,convo){
 		convo.repeat();
 	} else {
 		tempdrinkobject.msg = temp;
-		convo.say("Okay... we've got a glass of " + tempdrinkobject.drink.name + " going to " + tempdrinkobject.target + " with the message: \"" + tempdrinkobject.msg + "\"\n>This sound good to you?");
+		convo.say("Okay... we've got a glass of " + tempdrinkobject.type.name + " going to " + tempdrinkobject.to + " with the message: \"" + tempdrinkobject.msg + "\"\n>This sound good to you?");
 		convo.ask("You can `confirm` with Dean, or `change` your mind.", function(res,convo){
 			sendrouter4(res,convo);
 			convo.next();
@@ -375,6 +377,14 @@ sendrouter4 = function(res,convo) {
 	var temp = res.text;
 	if (temp.includes("confirm")){
 		convo.say("Dean takes the napkin and sets it behind the counter. \n>I'll pass on your message - and the drink!");
+		console.log("tempdrinkobject type name: " + tempdrinkobject.type.name);
+		console.log("tempdrinkobject type gold: " + tempdrinkobject.type.gold);
+		console.log("tempdrinkobject to: " + tempdrinkobject.to);
+		console.log("tempdrinkobject msg: " + tempdrinkobject.msg);
+		console.log("drinks rec length: " + user.drinks.recd.length);
+		
+		user.drinks.recd.push(tempdrinkobject);
+		console.log("drinks rec length: " + user.drinks.recd.length);
 		convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){
 	        tavernrouter(res,convo);
 	        convo.next();

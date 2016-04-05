@@ -87,6 +87,7 @@ controller.hears(
     ['direct_message','mention'], function (bot, message) {
 
     user.userid = message.user;
+    console.log("message.user: " + message.user);
     team = message.team;
 
     // welcome function
@@ -125,6 +126,7 @@ controller.hears(
 
     // get user collection; check knownPlayer flag; if none, set basic info
     controller.storage.users.get(user.userid, function(err,user_data){
+        console.log("user.userid: " + user.userid);
         var temp = user_data;
         if (temp===undefined){
             // no record for this user, so we'll set one up
@@ -134,10 +136,11 @@ controller.hears(
             bot.api.users.info({'user':user.userid},function(err,res){
                 user.username = res.user.name;
                 user.email = res.user.profile.email;
-                controller.storage.users.save({id: userid, user:user});
+                controller.storage.users.save({id: user.userid, user:user});
             });
         } else {
             // found a record for user
+            console.log("found a record!");
             user = temp.user
             console.log("user.username: " + user.username);
         }
@@ -153,7 +156,7 @@ enter = function(res, convo){
     convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
     console.log("user.knownPlayer is set to " + user.knownPlayer);
     if (!user.knownPlayer){
-        convo.ask("The Innkeeper grunts. \n>Well met, " + user.username + ". Haven't seen you around here before. You mean to introduce yourself, and begin your adventure in Coneshire?", [
+        convo.ask("The Innkeeper grunts. \n>Well met, *" + user.username + "*. Haven't seen you around here before. You mean to introduce yourself, and begin your adventure in Coneshire?", [
         {
             pattern: convo.task.bot.utterances.yes,
             callback: function(res,convo){
@@ -187,7 +190,6 @@ enter = function(res, convo){
 }
 
 newplayer = function(res,convo){
-    user.knownPlayer = true;
     convo.say("The Innkeeper smacks the long bench with his palm and grins. \n>Excellent! I wish you luck and good fortune on your journies to come in the village of Coneshire - and the lands beyond... \n>As a last step before you go, you may choose to add 1 point to any of your four key character attributes. Which do you choose?");
     convo.ask("`Charisma`: this will help you get along with other characters. \n`Luck`: this will grant you good fortune. \n`Mysticism`: this will build your mental fortitude. \n`Strength`: this will make you more powerful in combat.", function(res,convo){
             controller.storage.users.save({id: userid, user:user});
@@ -242,8 +244,10 @@ enter2 = function(res,convo){
     });
     } else if (temp==="town"){
         // go on to town
+        user.knownPlayer = true;
         convo.say(">Good luck then, wanderer. You'll need it.\"");
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Coneshire.");
+        quicksave();
         town.townsquare(res, convo);
     } else {
         convo.repeat();
@@ -316,13 +320,39 @@ instructions = function(res,convo){
 }
 
 grabAllNames = function(x){
-    controller.storage.users.all(function(err, all_user_data) {
-    for (i=0;i<all_user_data.length;i++){
-        allNames += "*" + all_user_data[i].user.username + "*, ";
-        }
-    }); 
+    if (x==="drink"){
+        controller.storage.users.all(function(err, all_user_data) {
+        for (i=0;i<all_user_data.length;i++){
+            if (all_user_data[i].user.username===drinkobject.target) {
+                return all_user_data[i].user.user_id;
+                }
+            }
+        }); 
+    } else {
+        controller.storage.users.all(function(err, all_user_data) {
+        for (i=0;i<all_user_data.length;i++){
+            allNames += "*" + all_user_data[i].user.username + "*, ";
+            }
+        }); 
+    }
 }
 
+quicksave = function(){
+    controller.storage.users.save({id: user.userid, user:user});
+    console.log("user info saved");
+}
+
+savedrink = function(drinkobject){
+    var temp = grabAllNames("drink");
+    controller.storage.users.get(temp, function(err,user_data){
+        var targetData = user_data;
+        targetData.drinks.recd.push(drinkobject);
+        controller.storage.users.save({id: temp, user:targetData});
+        console.log("target data saved");
+    });
+    user.drinks.sent.push(drinkobject);
+    quicksave();
+}
 
 // known bugs:
 // - tavern minstrel true/false var is not persistent; restarting game resets the var
