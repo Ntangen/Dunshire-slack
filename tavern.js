@@ -1,9 +1,8 @@
 // tavern
 
-var home = require('./index');
 var drinks = require('./lib/drinks');
 var barlines = require('./lib/barlines');
-var drink=false, stew = false, minst = false, list="";
+stew = false, minst = false, list="";
 tempdrinkobject = {};
 
 module.exports = {
@@ -14,6 +13,9 @@ tavern: function(res,convo){
  	convo.say("*-------------------------------------T H E  T A V E R N-------------------------------------*");
 	convo.say("The heavy oaken tavern door swings open with a low squeal. The crowded tavern's patrons nurse their drinks and carry on while a Minstrel plays in the back. A man with a large, scratchy beard stands behind the bar with a towel.");
 	convo.say(">Well met, " + user.username + "!");
+	if (drink){
+		convo.say(">*A drink awaits you at the bar! You may `retrieve` it at your pleasure.*");
+	}
 	convo.ask("What to do? You can `talk` with Dean the barkeep, order a `drink`, sit and `listen` to the bar's goings-on, ask the minstrel to play a `song`, look `around` at the wanderers in the Tavern, `inquire` casually about someone's whereabouts, `send` a drink to another player, or return to the `street`.", function(res,convo){
             tavernrouter(res,convo);
             convo.next();
@@ -43,6 +45,12 @@ tavernrouter = function(res,convo){
         send(res,convo);
     } else if (temp.includes('brunswick')){
         stew(res,convo);
+    } else if (temp.includes('retrieve')){
+    	if (drink) { pickupdrink(res,convo) }
+    	else { 
+    		convo.say ("Dean is confused. No drinks await you!");
+    		convo.repeat();
+    	}
     } else if (temp.includes('reminder')){
         convo.ask("You can `talk` with Dean the barkeep, order a `drink`, sit and `listen` to the bar's goings-on, ask the minstrel to play a `song`, look `around` at the wanderers in the Tavern, `inquire` casually about someone's whereabouts, `send` a drink to another player, or return to the `street`.", function(res,convo){
             tavernrouter(res,convo);
@@ -322,6 +330,7 @@ sendrouter = function(res,convo){
 		});
 	} else if (allNames.includes(temp)){
 		tempdrinkobject.to = temp;
+		tempdrinkobject.from = user.username;
 		convo.ask("Dean sniffs. \nSend a drink to *" + temp + "*. Got it. What do you want to send? Here's what we've got... \n`1` - " + drinks.grog.name + " (" + drinks.grog.gold + " Gold)\n`2` - " + drinks.ale.name + " (" + drinks.ale.gold + " Gold)\n`3` - " + drinks.beer.name + " (" + drinks.beer.gold + " Gold)\n`4` - " + drinks.whiskey.name + " (" + drinks.whiskey.gold + " Gold)\n`5` - `None` of these?", function(res,convo){
 			sendrouter2(res,convo)
 			convo.next();
@@ -351,7 +360,7 @@ sendrouter2 = function(res,convo){
 		convo.say("Dean looks at you askance. \n>Afraid this is a cash-only establishment, friend. And you don't seem to have it.");
 		convo.repeat();
 	} else {
-		convo.ask(">Okay. You can also leave a short message to " + tempdrinkobject.to + " - no longer than this napkin here, though. What would you like to say?", function (res,convo) {
+		convo.ask(">Okay. You can also leave a short message to *" + tempdrinkobject.to + "* - no longer than this napkin here, though. What would you like to say?", function (res,convo) {
 			sendrouter3(res,convo)
 			convo.next();
 		});
@@ -365,7 +374,7 @@ sendrouter3 = function(res,convo){
 		convo.repeat();
 	} else {
 		tempdrinkobject.msg = temp;
-		convo.say("Okay... we've got a glass of " + tempdrinkobject.type.name + " going to " + tempdrinkobject.to + " with the message: \"" + tempdrinkobject.msg + "\"\n>This sound good to you?");
+		convo.say("Okay... we've got a glass of " + tempdrinkobject.type.name + " going to *" + tempdrinkobject.to + "* with the message: \"" + tempdrinkobject.msg + "\"\n>This sound good to you?");
 		convo.ask("You can `confirm` with Dean, or `change` your mind.", function(res,convo){
 			sendrouter4(res,convo);
 			convo.next();
@@ -377,14 +386,7 @@ sendrouter4 = function(res,convo) {
 	var temp = res.text;
 	if (temp.includes("confirm")){
 		convo.say("Dean takes the napkin and sets it behind the counter. \n>I'll pass on your message - and the drink!");
-		console.log("tempdrinkobject type name: " + tempdrinkobject.type.name);
-		console.log("tempdrinkobject type gold: " + tempdrinkobject.type.gold);
-		console.log("tempdrinkobject to: " + tempdrinkobject.to);
-		console.log("tempdrinkobject msg: " + tempdrinkobject.msg);
-		console.log("drinks rec length: " + user.drinks.recd.length);
-		
-		user.drinks.recd.push(tempdrinkobject);
-		console.log("drinks rec length: " + user.drinks.recd.length);
+		savedrink(tempdrinkobject);
 		convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){
 	        tavernrouter(res,convo);
 	        convo.next();
@@ -401,4 +403,52 @@ sendrouter4 = function(res,convo) {
 	}
 }
 
+pickupdrink = function(res,convo){
+	var temp="", temp2="";
+	if (user.drinks.recd.length>1){
+		for(i=0;i<user.drinks.recd.length;i++){
+			temp += user.drinks.recd[i].type.name + " from *`" + user.drinks.recd[i].from + "`*, ";
+		}
+		convo.say("You have " + user.drinks.recd.length + " drinks awaiting you: " + temp + " and a pint of sad, warm leftover beer.");
+	} else {
+		temp += user.drinks.recd[0].type.name + " from *`" + user.drinks.recd[0].from + "`*";
+		convo.say("You have one drink awaiting you: a " + temp + ".");
+	}
+	convo.ask("Whose drink shall you quaff first? (Or `none` of them?)", function(res,convo){
+		pickup2(res,convo);
+		convo.next();
+	});
+}
+
+pickup2 = function(res,convo){
+	var temp = res.text;
+	if (temp.includes("none")){
+		convo.say("Dean looks at you, confused. \nSuit yourself...");
+		convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){
+	        tavernrouter(res,convo);
+	        convo.next();
+		});
+	} else {
+		for(i=0;i<user.drinks.recd.length;i++){
+			if (user.drinks.recd[i].from===temp){
+				var temp2 = user.drinks.recd[i]
+				convo.say("You happily take the " + temp2.type.name + " and tip it back as you read *" + temp2.from + "'s* message: \n>" + temp2.msg);
+				var oldmsg = user.drinks.recd.splice(i,1);
+				if (user.drinks.recd.length===0){
+					user.drinkflag=false;
+					drink=false;
+				}
+				quicksave();
+				convo.say("You ponder *" + oldmsg[0].from + "'s* message and enjoy your tasty beverage.");
+				convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){
+			        tavernrouter(res,convo);
+			        convo.next();
+				});
+			} else {
+				convo.ask("Whose drink was that? Try the name again, or `none` to change your mind.");
+				convo.repeat();
+			}
+		}
+	}
+}
 

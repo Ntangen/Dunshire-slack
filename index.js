@@ -5,6 +5,7 @@ var Store = require('jfs');
 user = require('./lib/user');
 allNames = "";
 stew = false;
+drink=false;
 var town = require('./town');
 var tavern = require('./tavern');
 var arms = require('./lib/armaments');
@@ -142,6 +143,9 @@ controller.hears(
             // found a record for user
             console.log("found a record!");
             user = temp.user
+            if (user.drinkflag===true){
+                drink=true;
+            }
             console.log("user.username: " + user.username);
         }
     });
@@ -319,11 +323,12 @@ instructions = function(res,convo){
     }
 }
 
-grabAllNames = function(x){
+grabAllNames = function(x,y){
     if (x==="drink"){
         controller.storage.users.all(function(err, all_user_data) {
         for (i=0;i<all_user_data.length;i++){
-            if (all_user_data[i].user.username===drinkobject.target) {
+            if (all_user_data[i].user.username===y.to) {
+                console.log("graballnames id: " + all_user_data[i].user.user_id);
                 return all_user_data[i].user.user_id;
                 }
             }
@@ -343,15 +348,22 @@ quicksave = function(){
 }
 
 savedrink = function(drinkobject){
-    var temp = grabAllNames("drink");
-    controller.storage.users.get(temp, function(err,user_data){
-        var targetData = user_data;
-        targetData.drinks.recd.push(drinkobject);
-        controller.storage.users.save({id: temp, user:targetData});
-        console.log("target data saved");
+    controller.storage.users.all(function(err, all_user_data) {
+        for (i=0;i<all_user_data.length;i++){
+            if (all_user_data[i].user.username===drinkobject.to) {
+                var temp = all_user_data[i].user.user_id;
+                console.log("target userid: " + temp);
+                controller.storage.users.get(temp, function(err,user_data){
+                    var targetData = user_data.user;
+                    targetData.drinks.recd.push(drinkobject);
+                    controller.storage.users.save({id: temp, user:targetData});
+                    console.log("target data saved");
+                });
+                user.drinks.sent.push(drinkobject);
+                quicksave();
+            }
+        }
     });
-    user.drinks.sent.push(drinkobject);
-    quicksave();
 }
 
 // known bugs:
