@@ -1,6 +1,7 @@
 // tavern
 
 var drinks = require('./lib/drinks');
+var town = require('./town');
 var barlines = require('./lib/barlines');
 stew = false, minst = false, list="";
 tempdrinkobject = {};
@@ -13,7 +14,7 @@ tavern: function(res,convo){
  	convo.say("*-------------------------------------T H E  T A V E R N-------------------------------------*");
 	convo.say("The heavy oaken tavern door swings open with a low squeal. The crowded tavern's patrons nurse their drinks and carry on while a Minstrel plays in the back. A man with a large, scratchy beard stands behind the bar with a towel.");
 	convo.say(">Well met, " + user.username + "!");
-	if (drink){
+	if (drinkvar){
 		convo.say(">*A drink awaits you at the bar! You may `retrieve` it at your pleasure.*");
 	}
 	convo.ask("What to do? You can `talk` with Dean the barkeep, order a `drink`, sit and `listen` to the bar's goings-on, ask the minstrel to play a `song`, look `around` at the wanderers in the Tavern, `inquire` casually about someone's whereabouts, `send` a drink to another player, or return to the `street`.", function(res,convo){
@@ -43,6 +44,9 @@ tavernrouter = function(res,convo){
         tavstalk(res,convo);
     } else if (temp.includes('send')){
         send(res,convo);
+    } else if (temp.includes('street')){
+    	convo.say("Tipping your head to Dean as you rise, you quit the Tavern for the street.");
+        town.townsquare(res,convo);
     } else if (temp.includes('brunswick')){
         stew(res,convo);
     } else if (temp.includes('retrieve')){

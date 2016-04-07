@@ -39,7 +39,8 @@ townrouter = function(res,convo){
     } else if (temp.includes('farm')){
         farm(res.convo);
     } else if (temp.includes('woods')){
-        woods(res.convo);
+    	// convo.say("You follow the dirt track that leads out of town and into the dark forest that surrounds the town.");
+        woods.woodsstart(res,convo);
     } else if (temp.includes('status')){
         status(res.convo);
     } else if (temp.includes('supplies')){

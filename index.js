@@ -5,11 +5,12 @@ var Store = require('jfs');
 user = require('./lib/user');
 allNames = "";
 stew = false;
-drink=false;
-var town = require('./town');
-var tavern = require('./tavern');
-var arms = require('./lib/armaments');
-var levs = require('./lib/levels');
+drinkvar=false;
+town = require('./town');
+tavern = require('./tavern');
+woods = require('./woods');
+arms = require('./lib/armaments');
+levs = require('./lib/levels');
 
 // KEY PLAYER VARIABLES
 
@@ -144,7 +145,7 @@ controller.hears(
             console.log("found a record!");
             user = temp.user
             if (user.drinkflag===true){
-                drink=true;
+                drinkvar=true;
             }
             console.log("user.username: " + user.username);
         }
@@ -324,22 +325,11 @@ instructions = function(res,convo){
 }
 
 grabAllNames = function(x,y){
-    if (x==="drink"){
-        controller.storage.users.all(function(err, all_user_data) {
-        for (i=0;i<all_user_data.length;i++){
-            if (all_user_data[i].user.username===y.to) {
-                console.log("graballnames id: " + all_user_data[i].user.user_id);
-                return all_user_data[i].user.user_id;
-                }
-            }
-        }); 
-    } else {
-        controller.storage.users.all(function(err, all_user_data) {
-        for (i=0;i<all_user_data.length;i++){
-            allNames += "*" + all_user_data[i].user.username + "*, ";
-            }
-        }); 
-    }
+    controller.storage.users.all(function(err, all_user_data) {
+    for (i=0;i<all_user_data.length;i++){
+        allNames += "*" + all_user_data[i].user.username + "*, ";
+        }
+    }); 
 }
 
 quicksave = function(){
