@@ -44,7 +44,7 @@ woodsrouter = function(res, convo){
     if (temp.includes('hunt')){
         hunt(res,convo);
     } else if (temp.includes('status')){
-        status(res,convo);
+        woodsstatus(res,convo);
     } else if (temp.includes('supplies')){
         supplies(res,convo);
     } else if (temp.includes('mage') && user.level.level>=3 || user.mission==="grannon"){
@@ -64,26 +64,20 @@ hunt = function(res,convo){
 
 }
 
-status = function(res,convo){
-	convo.say("Your current status:");
-	convo.say("```Hitpoints: " + user.hp + "   Level: " + user.level.name + "\n" +
-		"Gold: " + user.gold + "   Experience: " + user.xp + "\n" +
-		"Weapon: " + user.items.weapon.name + "   Armor: " + user.items.armor.name + "\n" +
-		"Magicks: " + ifmagic() + "\n" +
-		"Attributes: Charisma (" + user.attributes.luck + ") Mysticism (" + user.attributes.myst + ") Luck (" + user.attributes.luck + ") Strength (" + user.attributes.strength + ")\n" + 
-		"Battle turns remaining today: " + user.turnsToday + "```");
+woodsstatus = function(res,convo){
+	convo.say(status());
 	convo.ask("What next? (Want a `reminder`?)", function(res,convo){
-            woodsrouter(res,convo);
-            convo.next();
-        });
+	    woodsrouter(res,convo);
+	    convo.next();
+	});
 }
 
-ifmagic = function(){
-
-}
-
-supplies = function(res,convo){
-	
+woodssupplies = function(res,convo){
+	convo.say(showgear());
+	convo.ask("Enter the name of any item you wish to use, or `none` if you have changed your mind.", function(res,convo){
+		woodssuppliesrouter(res,convo)
+		convo.next();
+	});
 }
 
 mage = function(res,convo){

@@ -1,7 +1,6 @@
 // tavern
 
 var drinks = require('./lib/drinks');
-var town = require('./town');
 var barlines = require('./lib/barlines');
 stew = false, minst = false, list="";
 tempdrinkobject = {};

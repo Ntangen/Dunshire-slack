@@ -9,8 +9,9 @@ drinkvar=false;
 town = require('./town');
 tavern = require('./tavern');
 woods = require('./woods');
-arms = require('./lib/armaments');
+items = require('./lib/items');
 levs = require('./lib/levels');
+utility = require('./utility');
 
 // KEY PLAYER VARIABLES
 
@@ -324,6 +325,8 @@ instructions = function(res,convo){
     }
 }
 
+// handy game-wide functions
+
 grabAllNames = function(x,y){
     controller.storage.users.all(function(err, all_user_data) {
     for (i=0;i<all_user_data.length;i++){
@@ -354,6 +357,45 @@ savedrink = function(drinkobject){
             }
         }
     });
+}
+
+status = function(){
+    return ("Your current status: \n```Hitpoints: " + user.hp + "   Level: " + user.level.name + "\n" +
+        "Gold: " + user.gold + "   Experience: " + user.xp + "\n" +
+        "Weapon: " + user.items.weapon.name + "   Armor: " + user.items.armor.name + "\n" +
+        "Magicks: " + ifmagic() + "\n" +
+        "Attributes: Charisma (" + user.attributes.luck + ") Mysticism (" + user.attributes.myst + ") Luck (" + user.attributes.luck + ") Strength (" + user.attributes.strength + ")\n" + 
+        "Battle turns remaining today: " + user.turnsToday + "```");
+}
+
+ifmagic = function(){
+    if (user.items.magic != []){
+        var temp = "";
+        console.log("magic length: " + user.items.magic.length);
+        for (i=0;i<user.items.magic.length;i++){
+            if (i===0){
+                temp += user.items.magic[i].name;
+            } else if (i!=0){
+                temp += ", " + user.items.magic[i].name;
+            }
+        }
+        return temp;
+    } else {
+        return "None";
+    }
+}
+
+showgear = function(x){
+    if (user.items.other.length===0){
+        return 0;
+    } else {
+        var returnvar = "Your current supplies:\n";
+        for (i=0;i<user.items.other.length;i++){
+            returnvar += user.items.other[i].name + ", ";
+        }
+        returnvar += "\n";
+        return returnvar;
+    }
 }
 
 // known bugs:
