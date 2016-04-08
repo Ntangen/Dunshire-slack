@@ -28,7 +28,7 @@ woodsmenu = function(res,convo){
 	convo.ask("`Hunt` for beasts, check your `status`, review your `supplies`, or `return` to town.", function(res,convo){
 		woodsrouter(res,convo);
 		convo.next();
-	});
+		});
 	} else {
 		// user level is >=3
 		convo.ask("`Hunt` for beasts, check your `status`, review your `supplies`, seek out the `Mage`'s Cave, or `return` to town.", function (res, convo){
@@ -46,7 +46,7 @@ woodsrouter = function(res, convo){
     } else if (temp.includes('status')){
         woodsstatus(res,convo);
     } else if (temp.includes('supplies')){
-        supplies(res,convo);
+        woodssupplies(res,convo);
     } else if (temp.includes('mage') && user.level.level>=3 || user.mission==="grannon"){
     	// you only have access to the mage's cave in the grannon level 2 mission or at level 3 or above
         mage(res,convo);
@@ -54,13 +54,118 @@ woodsrouter = function(res, convo){
     	convo.say("Tiring of these forbidden woods, you head back towards the distant lights of town.");
         town.townsquare(res,convo);
     } else if (temp.includes('reminder')){
-    	woodsmenu();
+    	woodsmenu(res,convo);
     } else {
         convo.repeat();
     }
 }
 
 hunt = function(res,convo){
+	if (user.mission==="grannon" && Math.random()>0.9){
+		granfight();
+	} else {
+		monster = beasts.chooseBeastLevel();
+		mhp = monster.hp;
+		console.log("monster choice: " + monster.name);
+		convo.say("You hear a rustling nearby. Something draws near. You make ready as you turn your head and see...\n" +
+			"*A " + monster.name + " approaches!* _What do you do?_\n" +
+			"```Your hitpoints: " + user.hp + "\n" +
+			monster.name +"'s hitpoints: " + mhp + "```"
+			);
+		convo.ask("Do you attempt to `run` away, invoke `magick`, or `attack`?", function(res,convo){
+			woodsfightrouter(res,convo);
+			convo.next();
+		});
+	}
+}
+
+woodsfightrouter = function(res,convo,x){
+	var temp = res.text;
+	if (temp.includes("run")){
+		woodsrun(res,convo)
+	} else if (temp.includes("magick")){
+		// TBA
+	} else if (temp.includes("attack")){
+		woodsfight(res,convo,1)
+	} else if (x===3){
+		// lancing magic you have from middle of a fight
+	}
+	else {
+		convo.repeat();
+	}
+}
+
+woodsfight = function(res,convo,turn){
+	var temp = res.text;
+	if (turn===1){
+		// player fight turn - haven't done this yet
+		var result = userfight(monster);
+		// kill the monster
+		if (result === "k") {
+			if (turns === 0) {
+				console.log("kill single blow");
+				convo.say("You vanquished the " + monster.name + " in a single blow!");
+			}
+			else { 
+				console.log("kill");
+				convo.say("You vanquished the " + monster.name + "!");
+			}	
+		} else if (result==="zip"){
+		// strike, 0 damage
+			convo.say("You uselessly strike at " + monster.name + " with your " + user.items.weapon.name + " but hilariously inflict no damage!");
+		}
+		// strike don't kill
+		else { 
+			convo.say("You strike at " + monster.name + " with your " + user.items.weapon.name + " and inflict " + result + " damage!");
+			setTimeout(function(){ woodsfight(res,convo,2) }, 1000)
+			}
+	} else if (turn===2){
+		// monster turn
+		var result = monsterfight(monster)
+		if (result === "dead"){
+			console.log("dead");
+			convo.say("Oh no! The " + monster.name + " " + monster.strike1 + ", and it kills you!");
+			// TBD
+		}
+		else if (result==="zip"){
+			convo.say("The " + monster.name + " " + monster.strike1 + ", but your armor protects you! You sustain 0 damage! \n" +
+				"```Your hitpoints: " + user.hp + "\n" +
+				monster.name +"'s hitpoints: " + mhp + "```");
+			convo.ask("Do you attempt to `run` away, invoke `magick`, or `attack`?", function(res,convo){
+				woodsfightrouter(res,convo);
+				convo.next()
+			});
+		} else {
+			// monster strikes with damage, no kill
+			if (shieldflag){
+				convo.say("The " + monster.name + " " + monster.strike1 + ", inflicting " + result + " damage! Your Egregious Shield absorbs part of the blow.");
+			} else {
+				convo.say("The " + monster.name + " " + monster.strike1 + ", inflicting " + result + " damage!");
+			}
+			convo.say("```Your hitpoints: " + user.hp + "\n" +
+				monster.name +"'s hitpoints: " + mhp + "```");
+			convo.ask("Do you attempt to `run` away, invoke `magick`, or `attack`?", function(res,convo){
+				woodsfightrouter(res,convo);
+				convo.next();
+			});
+		}
+	} else if (turn==="m"){
+		// invoke magick
+		if (user.items.magic.length===0){
+			convo.say("You have no knowledge of magicks yet!");
+			convo.repeat();
+		} else {
+			var temp = showmagic();
+			convo.say(temp);
+			convo.ask("Enter the name of the magick you wish to lance, or use no magick at all and `attack` the old fashioned way.", function(res,convo){
+				woodsfightrouter(res,convo,3);
+				convo.next();
+			});
+		}
+	}
+}
+
+woodsrun = function(res,convo){
 
 }
 
@@ -73,11 +178,47 @@ woodsstatus = function(res,convo){
 }
 
 woodssupplies = function(res,convo){
-	convo.say(showgear());
-	convo.ask("Enter the name of any item you wish to use, or `none` if you have changed your mind.", function(res,convo){
-		woodssuppliesrouter(res,convo)
-		convo.next();
-	});
+	var temp = showgear();
+	if (temp === 0){
+		convo.say("You have no items!");
+		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+		    woodsrouter(res,convo);
+		    convo.next();
+		});
+	} else {
+		convo.say(temp)
+		convo.ask("Enter the name of any item you want to use, or `none`.", function(res,convo){
+		    woodsusegear(res,convo);
+		    convo.next();
+		});
+	}
+}
+
+woodsusegear = function(res,convo){
+	var temp = res.text;
+	if (temp.includes('none')){
+		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+		    woodsrouter(res,convo);
+		    convo.next();
+		});
+	} else {
+		for (i=0;i<user.items.other.length;i++){
+			if (user.items.other[i].name.includes(temp)){
+				var temp = user.items.other.splice(i,1);
+				var temp2 = utility.items(temp[0].name); 
+				console.log("temp2: " + temp2);
+				convo.say(temp2);
+				// quicksave();
+				convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+				    woodsrouter(res,convo);
+				    convo.next();
+				});
+			} else {
+				convo.say("Come again?");
+				convo.repeat();
+			}
+		}
+	}
 }
 
 mage = function(res,convo){

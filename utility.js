@@ -12,6 +12,7 @@ module.exports = {
 			} else {
 				user.hp += items.heals.basic.potency;
 			}
+			var temp = user.items.other.splice(i,1);
 			return "You uncork Morgan's " + items.heals.basic.name + " and swill it all. You feel stronger already!";
 		} else if (x === "Extra potent healing elixir"){
 			if (user.hp + items.heals.potent.potency > user.level.maxhp){
@@ -25,7 +26,9 @@ module.exports = {
 			flag = undefined;
 			return "You uncork Morgan's " + items.heals.antibiotic.name + " and swill it all. Your battle wounds regain a healthy pink color!";
 		} else if (x === "Precious rubies"){
+			user.items.other.push(items.stuff.gems.rubies)
 			return "You can't use that here.";
+			// var temp = user.items.other.splice(i,1);
 		} else if (x === "Innoculated kola nuts"){
 			user.turnsToday += 5;
 			user.drugs += 1;

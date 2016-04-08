@@ -12,6 +12,7 @@ woods = require('./woods');
 items = require('./lib/items');
 levs = require('./lib/levels');
 utility = require('./utility');
+beasts = require('./lib/beasts');
 
 // KEY PLAYER VARIABLES
 
@@ -361,7 +362,7 @@ savedrink = function(drinkobject){
 
 status = function(){
     return ("Your current status: \n```Hitpoints: " + user.hp + "   Level: " + user.level.name + "\n" +
-        "Gold: " + user.gold + "   Experience: " + user.xp + "\n" +
+        "Gold: " + user.gold + "         Experience: " + user.xp + "\n" +
         "Weapon: " + user.items.weapon.name + "   Armor: " + user.items.armor.name + "\n" +
         "Magicks: " + ifmagic() + "\n" +
         "Attributes: Charisma (" + user.attributes.luck + ") Mysticism (" + user.attributes.myst + ") Luck (" + user.attributes.luck + ") Strength (" + user.attributes.strength + ")\n" + 
@@ -371,7 +372,6 @@ status = function(){
 ifmagic = function(){
     if (user.items.magic != []){
         var temp = "";
-        console.log("magic length: " + user.items.magic.length);
         for (i=0;i<user.items.magic.length;i++){
             if (i===0){
                 temp += user.items.magic[i].name;
@@ -393,10 +393,20 @@ showgear = function(x){
         for (i=0;i<user.items.other.length;i++){
             returnvar += user.items.other[i].name + ", ";
         }
-        returnvar += "\n";
-        return returnvar;
+    returnvar += "and a bit of dust.\n";
+    return returnvar;
     }
 }
+
+showmagic = function(x){
+    var returnvar = "You have knowledge of the following magicks:\n";
+        for (i=0;i<user.items.magic.length;i++){
+            returnvar += "   " + user.items.magic[i].name + ": " + user.items.magic[i].desc + "\n";
+        }
+    returnvar += "\n";
+    return returnvar
+}
+
 
 // known bugs:
 // - tavern minstrel true/false var is not persistent; restarting game resets the var
@@ -410,3 +420,5 @@ showgear = function(x){
 // user.name = res.user.name;
 // user.email = res.user.profile.email;
 // controller.storage.users.save({id: userid, user});
+
+
