@@ -18,7 +18,7 @@ townsquare: function(res, convo){
 
 
 townrouter = function(res,convo){
-	var temp = res.text;
+	var temp = res.text.toLowerCase();
     if (temp.includes('hear')){
     	convo.say("This will do things.");
         // hear(res.convo);
@@ -90,7 +90,7 @@ towngear = function(res,convo){
 }
 
 townusegear = function(res,convo){
-	var temp = res.text;
+	var temp = res.text.toLowerCase();
 	if (temp.includes('none')){
 		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
 		    townrouter(res,convo);

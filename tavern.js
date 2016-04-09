@@ -27,7 +27,7 @@ tavern: function(res,convo){
 
 tavernrouter = function(res,convo){
 	quicksave();
-	var temp = res.text;
+	var temp = res.text.toLowerCase();
     if (temp.includes('talk')){
         talk(res,convo);
     } else if (temp.includes('drink')){
@@ -93,7 +93,7 @@ drink = function(res, convo){
 }
 
 drinkrouter = function(res,convo){
-	var temp = res.text;
+	var temp = res.text.toLowerCase();
 	if (temp.includes("1")) {
 		if (user.gold < 5){ insufficientfunds() }
 		else {		
@@ -170,7 +170,7 @@ minstrel = function(res,convo){
 }
 
 minstrelrouter = function(res,convo){
-	var temp = res.text;
+	var temp = res.text.toLowerCase();
 	if (temp.includes("request")){
 		if (!minst){
 			var rando = Math.random();
@@ -225,6 +225,12 @@ minstrelrouter = function(res,convo){
 			} else if (temp2===3){
 				user.attributes.myst += 1;
 			}
+			for (i=0;i<user.items.other.length;i++){
+				if (user.items.other[i].name==="Precious rubies"){
+					user.items.other.splice(i,1);
+					break;
+				}
+			}
 			user.items.rubies --;
 			convo.say("You discreetly hand the Minstrel your small pouch of rubies. He bows deeply in receipt. \n>Why, dear Patron, you honor me. Allow me to sing this ballad in your honor! \nThe Minstrel sings a great, stirring tale of your bravery and courage!");
 			convo.say("You are a patron of the arts. *1 point* has been added to one of your attributes!");
@@ -268,7 +274,7 @@ tavstalk = function(res,convo){
 }
 
 tavstalkrouter = function(res,convo){
-	var temp = res.text;
+	var temp = res.text.toLowerCase();
 	if (temp===user.username){
 		convo.say("Dean furrows his brow. \n>You tryin' to make a damn fool of me? You're standing right there!");
 		convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){
@@ -324,7 +330,7 @@ send = function(res,convo){
 }
 
 sendrouter = function(res,convo){
-	var temp = res.text;
+	var temp = res.text.toLowerCase();
 	if (temp.includes("none") || temp===user.username ) {
 		convo.say("Dean looks at you, confused. \nStrange one, I see...");
 		convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){
@@ -346,7 +352,7 @@ sendrouter = function(res,convo){
 
 sendrouter2 = function(res,convo){
 	console.log("tempdrinkobject: " + tempdrinkobject);
-	var temp = res.text;
+	var temp = res.text.toLowerCase();
 	if (temp==="1"){ tempdrinkobject.type = drinks.grog;
 			console.log("tempdrinkobject name: " + tempdrinkobject.type.name) }
 	else if (temp===2) { tempdrinkobject.type = drinks.ale }
@@ -371,7 +377,7 @@ sendrouter2 = function(res,convo){
 }
 
 sendrouter3 = function(res,convo){
-	var temp = res.text;
+	var temp = res.text.toLowerCase();
 	if (temp.length>200){
 		convo.say("Your message is too long. Try again.");
 		convo.repeat();
@@ -386,7 +392,7 @@ sendrouter3 = function(res,convo){
 }
 
 sendrouter4 = function(res,convo) {
-	var temp = res.text;
+	var temp = res.text.toLowerCase();
 	if (temp.includes("confirm")){
 		convo.say("Dean takes the napkin and sets it behind the counter. \n>I'll pass on your message - and the drink!");
 		savedrink(tempdrinkobject);
@@ -424,7 +430,7 @@ pickupdrink = function(res,convo){
 }
 
 pickup2 = function(res,convo){
-	var temp = res.text;
+	var temp = res.text.toLowerCase();
 	if (temp.includes("none")){
 		convo.say("Dean looks at you, confused. \nSuit yourself...");
 		convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){

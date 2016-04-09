@@ -17,9 +17,10 @@ beasts = require('./lib/beasts');
 // KEY PLAYER VARIABLES
 
 var reply, reply2, input, userid, msg;
-
-
-// user stuff here
+globalfortune=0;
+batpoints=0;
+shieldflag=false;
+swordflag=false;
 
 //////////////////////////////////////
 
@@ -206,7 +207,7 @@ newplayer = function(res,convo){
 }
 
 newplayer2 = function(res,convo){
-    var temp = res.text;
+    var temp = res.text.toLowerCase();
     if (temp.includes("charisma")){
         user.attributes.charisma += 1;
         convo.say(">Outstanding! You are now wittier, funnier and more fun to be around!");
@@ -243,7 +244,7 @@ newplayer2 = function(res,convo){
 
 enter2 = function(res,convo){
     // instructions or town
-    var temp = res.text;
+    var temp = res.text.toLowerCase();
     if (temp==="instructions"){
         convo.ask("The Innkeeper nods his head. \n>Okay then. You probably lots of questions. What topic would you like explained? Let me pour you some ale, and I'll explain concepts like the `village` of Coneshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Coneshire.\"", function(res, convo){
             instructions(res,convo);
@@ -262,7 +263,7 @@ enter2 = function(res,convo){
 }
 
 instructions = function(res,convo){
-    var temp = res.text;
+    var temp = res.text.toLowerCase();
     if (temp.includes('village')){
         convo.say(">The Village of Dunshire is a peaceful place - mostly. There are several small merchants in town for you to meet, as well as places to explore. As you become more experienced, you will discover some that you hadn't noticed at first. The Village is surrounded by the Dark Woods. The Woods are inhabited by a fearsome variety of beasts - from the [insert beast name] to the [other beast name] and many more. You will need to acquire better weapons, armor and more to defeat them all as time goes on. \nThere are other towns beyond the Dark Woods, of course. But you needn't worry about them for now.\n");
         convo.ask("What can I answer next? (Want a `reminder`?)", function(res,convo){
@@ -362,7 +363,7 @@ savedrink = function(drinkobject){
 
 status = function(){
     return ("Your current status: \n```Hitpoints: " + user.hp + "   Level: " + user.level.name + "\n" +
-        "Gold: " + user.gold + "         Experience: " + user.xp + "\n" +
+        "Gold: " + user.gold + "        Experience: " + user.xp + "\n" +
         "Weapon: " + user.items.weapon.name + "   Armor: " + user.items.armor.name + "\n" +
         "Magicks: " + ifmagic() + "\n" +
         "Attributes: Charisma (" + user.attributes.luck + ") Mysticism (" + user.attributes.myst + ") Luck (" + user.attributes.luck + ") Strength (" + user.attributes.strength + ")\n" + 
@@ -370,18 +371,15 @@ status = function(){
 }
 
 ifmagic = function(){
-    if (user.items.magic != []){
+    if (user.items.magic.length===0){
+        return ("none")
+    } else {
         var temp = "";
         for (i=0;i<user.items.magic.length;i++){
-            if (i===0){
-                temp += user.items.magic[i].name;
-            } else if (i!=0){
-                temp += ", " + user.items.magic[i].name;
-            }
+            temp += user.items.magic[i].name + ", ";
         }
+        temp += "and ephemeral bits.";
         return temp;
-    } else {
-        return "None";
     }
 }
 
