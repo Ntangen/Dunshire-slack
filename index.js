@@ -9,6 +9,8 @@ drinkvar=false;
 town = require('./town');
 tavern = require('./tavern');
 woods = require('./woods');
+farm = require('./farm');
+bank = require('./bank');
 items = require('./lib/items');
 levs = require('./lib/levels');
 utility = require('./utility');
@@ -21,6 +23,7 @@ globalfortune=0;
 batpoints=0;
 shieldflag=false;
 swordflag=false;
+gran = true;
 
 //////////////////////////////////////
 

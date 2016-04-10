@@ -31,11 +31,11 @@ townrouter = function(res,convo){
     	convo.say("This will do things.");
         apoth(res,convo);
     } else if (temp.includes('bank')){
-        bank(res,convo);
+        bank.bank(res,convo);
     } else if (temp.includes('abbey')){
         abbey(res,convo);
     } else if (temp.includes('farm')){
-        farm(res,convo);
+        farm.farm(res,convo);
     } else if (temp.includes('woods')){
     	// convo.say("You follow the dirt track that leads out of town and into the dark forest that surrounds the town.");
         woods.woodsstart(res,convo);
