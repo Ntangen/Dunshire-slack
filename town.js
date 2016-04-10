@@ -25,11 +25,9 @@ townrouter = function(res,convo){
     } else if (temp.includes('tavern')){
         tavern.tavern(res,convo);
     } else if (temp.includes('smither')){
-    	convo.say("This will do things.");
-        smither(res,convo);
+        smith.smithy(res,convo);
     } else if (temp.includes('apothecary')){
-    	convo.say("This will do things.");
-        apoth(res,convo);
+    	apot.apothecary(res,convo);
     } else if (temp.includes('bank')){
         bank.bank(res,convo);
     } else if (temp.includes('abbey')){
@@ -37,7 +35,7 @@ townrouter = function(res,convo){
     } else if (temp.includes('farm')){
         farm.farm(res,convo);
     } else if (temp.includes('woods')){
-    	// convo.say("You follow the dirt track that leads out of town and into the dark forest that surrounds the town.");
+    	convo.say("You follow the dirt track that leads out of town and into the dark woods...");
         woods.woodsstart(res,convo);
     } else if (temp.includes('status')){
         townstatus(res,convo);

@@ -11,6 +11,8 @@ tavern = require('./tavern');
 woods = require('./woods');
 farm = require('./farm');
 bank = require('./bank');
+apot = require('./apot');
+smith = require('./smith');
 items = require('./lib/items');
 levs = require('./lib/levels');
 utility = require('./utility');
@@ -24,6 +26,7 @@ batpoints=0;
 shieldflag=false;
 swordflag=false;
 gran = true;
+currentmerch = undefined;
 
 //////////////////////////////////////
 

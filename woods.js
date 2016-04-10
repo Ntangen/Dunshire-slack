@@ -1,7 +1,5 @@
 // woods
 
-var town = require('./town');
-
 monster=undefined;
 mhp = 0;
 turns=0;
@@ -9,7 +7,7 @@ turns=0;
 module.exports = {
 	woodsstart: function(res,convo){
 		convo.say("*-------------------------------------T H E  D A R K  W O O D S-------------------------------------*");
-		convo.say("The wind rustles through the trees. A darkness settles over the forest as you make your way through...");
+		convo.say("The wind rustles through the trees. A darkness settles over the dense forest as you make your way through...");
 		woodsmenu(res,convo);	
 	}
 }
