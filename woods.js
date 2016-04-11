@@ -202,7 +202,6 @@ woodsusegear = function(res,convo){
 			if (user.items.other[i].name.includes(temp)){
 				var temp = user.items.other.splice(i,1);
 				var temp2 = utility.items(temp[0].name); 
-				console.log("temp2: " + temp2);
 				convo.say(temp2);
 				// quicksave();
 				convo.ask("What next? (Want a `reminder`?)", function(res,convo){

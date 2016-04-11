@@ -7,6 +7,7 @@ module.exports = {
 	items: function(x){
 		var temp2;
 		if (x === "Healing elixir"){
+			console.log("item use: healing elixir");
 			if (user.hp + items.heals.basic.potency > user.level.maxhp){
 				user.hp = user.level.maxhp;
 			} else {
@@ -15,6 +16,7 @@ module.exports = {
 			var temp = user.items.other.splice(i,1);
 			return "You uncork Morgan's " + items.heals.basic.name + " and swill it all. You feel stronger already!";
 		} else if (x === "Extra potent healing elixir"){
+			console.log("item use: potent healing elixir");
 			if (user.hp + items.heals.potent.potency > user.level.maxhp){
 				user.hp = user.level.maxhp;
 			} else {
@@ -30,14 +32,35 @@ module.exports = {
 			return "You can't use that here.";
 			// var temp = user.items.other.splice(i,1);
 		} else if (x === "Innoculated kola nuts"){
+			console.log("item use: kola");
 			user.turnsToday += 5;
 			user.drugs += 1;
 			return "You take a handful of Morgan's special kola nuts and crunch down on them. The bitterness almost makes you gag. \nYou are energized! Five turns are added to your daily limit!";
 		} else if (x === "Berserker infusion"){
+			console.log("item use: berserker");
 			batpoints = 5;
 			user.drugs += 2; 
 			return "Steadying yourself, you gulp down the vial of Morgan's Berserker infusion. It burns going down. \nYou feel the strength of ten men, and crave battle!";
 		}
-	}
+	},
 
+	levelup: function(x){
+		if (x===2){
+			user.level = levs.levels.apprentice;
+			user.hp = levs.levels.apprentice.maxhp;
+			user.mission = "";
+			missioncomplete = undefined;
+		} else if (x===3){
+			user.level = levs.levels.challenger;
+			user.hp = levs.levels.challenger.maxhp
+		} else if (x===4){
+			user.level = levs.levels.journeyman;
+			user.hp = levs.levels.journeyman.maxhp
+		} else if (x===5){
+			user.level = levs.levels.ranger;
+			user.hp = levs.levels.ranger.maxhp
+		}
+	}
 }
+
+

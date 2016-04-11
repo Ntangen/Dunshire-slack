@@ -13,6 +13,7 @@ farm = require('./farm');
 bank = require('./bank');
 apot = require('./apot');
 smith = require('./smith');
+abbey = require('./abbey');
 items = require('./lib/items');
 levs = require('./lib/levels');
 utility = require('./utility');
@@ -163,6 +164,15 @@ controller.hears(
     bot.startConversation(message, welcome);
 
 });
+
+// controller.hears(
+//     ['help'], 
+//     ['direct_message','mention'], function (bot, message) {
+
+//     console.log("I'm trying to help! You're caught in the matrix!");
+//     quicksave();
+//     town.townsquare(res,convo);
+// });
 
 enter = function(res, convo){
     convo.say("Great! Let's go! 🐲");

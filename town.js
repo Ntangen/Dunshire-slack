@@ -31,7 +31,7 @@ townrouter = function(res,convo){
     } else if (temp.includes('bank')){
         bank.bank(res,convo);
     } else if (temp.includes('abbey')){
-        abbey(res,convo);
+        abbey.abbey(res,convo);
     } else if (temp.includes('farm')){
         farm.farm(res,convo);
     } else if (temp.includes('woods')){
