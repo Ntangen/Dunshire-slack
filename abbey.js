@@ -7,6 +7,7 @@ module.exports = {
 		if (user.xp < 102) {
 			convo.say("The Abbey's door hangs a single hinge. Inside, broken benches are strewn about in disarray. The altar in the front of the room is smashed. \nAn old man in a simple wool frock is sweeping debris on one side of the room. You can tell he has been weeping. \nHe looks up as you enter the room, but shakes his head.");
 			convo.say(">You can't help us yet! No one can...");	
+			convo.say("Seeing nothing more for you here, you turn and return to town.");
 			town.townsquare(res,convo);
 		} else if (user.xp >=102 && user.level.level<2){
 			if (user.mission==="abbey" && missioncomplete){
@@ -22,17 +23,16 @@ module.exports = {
 				});
 			} else if (user.mission==="abbey"){
 				// during mission	
-				output(1, "The Abbey's door hangs a single hinge. Inside, broken benches are strewn about in disarray. The altar in the front of the room is smashed.<br>");
-				output(2, "The old Cleric looks up from his cleaning as you enter the room, and his wet eyes brighten. <span id=quote>\"Greetings, wanderer. Our congregation cannot wait for the safe return of our precious censer... truly, you are most noble in taking on this dangerous task!\"</span><br>");
-				output(3, "<span id=menu>Press (<span id=letter>Any</span>) key to return to town.</span><br>");
-				thread = 1.9;
+				convo.say("The Abbey's door hangs a single hinge. Inside, broken benches are strewn about in disarray. The altar in the front of the room is smashed. The old Cleric looks up from his cleaning as you enter the room, and his wet eyes brighten. \n>Greetings, wanderer. Our congregation cannot wait for the safe return of our precious censer... truly, you are most noble in taking on this dangerous task!");
+				convo.say("Seeing nothing more for you here, you turn and return to town.");
+				town.townsquare(res,convo);
 			} else {
 				// give mission
-				output(1, "The Abbey's door hangs a single hinge. Inside, broken benches are strewn about in disarray. The altar in the front of the room is smashed.<br>");
-				output(2, "An old Cleric in a simple wool frock is sweeping debris on one side of the room. You can tell he has been weeping.<br>");
-				output(3, "He looks up as you enter the room, and his eyes light up. <span id=quote>\"Greetings, wanderer. You... you aren't here to loot us, are you? As you can see, we have nothing else of value here...\"</span><br>");
-				output(4, "<span id=menu>Press (<span id=letter>Any</span>) key to ask the old man what happened, or (<span id=letter>Q</span>) to leave.</span><br>");
-				thread = 5;
+				convo.say("The Abbey's door hangs a single hinge. Inside, broken benches are strewn about in disarray. The altar in the front of the room is smashed. An old Cleric in a simple wool frock is sweeping debris on one side of the room. You can tell he has been weeping. \nHe looks up as you enter the room, and his eyes light up. \n>Greetings, wanderer. You... you aren't here to loot us, are you? As you can see, we have nothing else of value here...");
+				convo.ask("`Ask` the old man what happened, or turn and `return` to town.", function(res,convo){
+					abbeyrouter(res,convo,1);
+					convo.next();
+				});
 			}
 		} else if (user.level.level>=2){
 			// beyond level 1
@@ -44,5 +44,15 @@ module.exports = {
 	}
 }
 
+abbeyrouter = function(res,convo,x){
+	var temp = res.text.toLowerCase();
+	if (x===2){
 
+	} else if (temp.includes('ask')){	
+
+	} else if (temp.includes('return')){
+		convo.say("Seeing nothing more for you here, you turn and return to town.");
+		town.townsquare(res,convo);
+	}
+}
 
