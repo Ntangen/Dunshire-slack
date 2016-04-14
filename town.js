@@ -97,6 +97,7 @@ townusegear = function(res,convo){
 	} else {
 		for (i=0;i<user.items.other.length;i++){
 			if (user.items.other[i].name.includes(temp)){
+				console.log("found: " + user.items.other[i].name);
 				var temp = user.items.other.splice(i,1);
 				var temp2 = utility.items(temp[0].name); 
 				console.log("temp2: " + temp2);
