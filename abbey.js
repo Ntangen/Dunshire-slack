@@ -5,7 +5,7 @@ module.exports = {
 	abbey: function(res,convo){
 		convo.say("*-------------------------------------T H E  V I L L A G E  A B B E Y-------------------------------------*");
 		if (user.xp < 102) {
-			convo.say("The Abbey's door hangs a single hinge. Inside, broken benches are strewn about in disarray. The altar in the front of the room is smashed. \nAn old man in a simple wool frock is sweeping debris on one side of the room. You can tell he has been weeping. \nHe looks up as you enter the room, but shakes his head.");
+			convo.say("The Abbey's door hangs a single hinge. Inside, broken benches are strewn about in disarray. The altar in the front of the room is smashed. \nAn old man in a simple wool frock is sweeping debris on one side of the room. You can tell he has been weeping. He looks up as you enter the room, but shakes his head.");
 			convo.say(">You can't help us yet! No one can...");	
 			convo.say("Seeing nothing more for you here, you turn and return to town.");
 			town.townsquare(res,convo);

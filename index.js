@@ -2,6 +2,12 @@
 
 // get those modules
 var Store = require('jfs');
+var Botkit = require('botkit'),
+    firebaseStorage = require('botkit-storage-mongo')({mongoUri: 'mongodb://heroku_n887n3w4:DHpVdMBPp&80rry@ds023560.mlab.com:23560/heroku_n887n3w4'}),
+    controller = Botkit.slackbot({
+        storage: firebaseStorage
+});
+
 user = require('./lib/user');
 allNames = "";
 stew = false;
