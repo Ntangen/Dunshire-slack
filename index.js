@@ -183,7 +183,7 @@ controller.hears(
 
 enter = function(res, convo){
     var beans = {id: 'cool', beans: ['pinto', 'garbanzo']};
-    controller.storage.users.save(beans});
+    controller.storage.users.save(beans);
     var temp = controller.storage.users.get('cool');
     console.log("temp: " + temp);
     }
