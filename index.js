@@ -63,11 +63,12 @@ if (process.env.MONGOLAB_URI) {
     config = {
         storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
     };
-} else {
-    config = {
-        json_file_store: ((process.env.TOKEN)?'./db_slack_bot_ci/':'./db_slack_bot_a/'), //use a different name if an app or CI
-    };
-}
+} 
+// else {
+//     config = {
+//         json_file_store: ((process.env.TOKEN)?'./db_slack_bot_ci/':'./db_slack_bot_a/'), //use a different name if an app or CI
+//     };
+// }
 
 // initialization
 
@@ -181,6 +182,11 @@ controller.hears(
 // });
 
 enter = function(res, convo){
+    var beans = {id: 'cool', beans: ['pinto', 'garbanzo']};
+    controller.storage.users.save(beans});
+    var temp = controller.storage.users.get('cool');
+    console.log("temp: " + temp);
+    }
     convo.say("Great! Let's go! 🐲");
     convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. You open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
     convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
