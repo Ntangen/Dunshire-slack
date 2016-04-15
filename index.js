@@ -186,7 +186,6 @@ enter = function(res, convo){
     controller.storage.users.save(beans);
     var temp = controller.storage.users.get('cool');
     console.log("temp: " + temp);
-    }
     convo.say("Great! Let's go! 🐲");
     convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. You open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
     convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
