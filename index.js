@@ -136,7 +136,6 @@ controller.hears(
     controller.storage.users.get(user.userid, function(err,user_data){
         console.log("user.userid: " + user.userid);
         console.log("user_data: " + user_data);
-        console.log("user_data props: " + Object.getOwnPropertyNames(user_data));
         var temp = user_data;
         if (temp===undefined || temp===null){
             // no record for this user, so we'll set one up
