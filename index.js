@@ -33,6 +33,12 @@ currentmerch = undefined;
 
 // boring stuff
 
+var http = require('http');
+http.createServer(function (req, res) {
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.send('it is running\n');
+}).listen(process.env.PORT || 5000);
+
 function onInstallation(bot, installer) {
     if (installer) {
         bot.startPrivateConversation({user: installer}, function (err, convo) {
