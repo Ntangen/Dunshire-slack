@@ -1,12 +1,6 @@
 // Coneshire bot!
 
 // get those modules
-var Store = require('jfs');
-var Botkit = require('botkit'),
-    firebaseStorage = require('botkit-storage-mongo')({mongoUri: 'mongodb://heroku_n887n3w4:DHpVdMBPp&80rry@ds023560.mlab.com:23560/heroku_n887n3w4'}),
-    controller = Botkit.slackbot({
-        storage: firebaseStorage
-});
 
 user = require('./lib/user');
 allNames = "";
@@ -64,11 +58,6 @@ if (process.env.MONGOLAB_URI) {
         storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
     };
 } 
-// else {
-//     config = {
-//         json_file_store: ((process.env.TOKEN)?'./db_slack_bot_ci/':'./db_slack_bot_a/'), //use a different name if an app or CI
-//     };
-// }
 
 // initialization
 
@@ -155,7 +144,11 @@ controller.hears(
             bot.api.users.info({'user':user.userid},function(err,res){
                 user.username = res.user.name;
                 user.email = res.user.profile.email;
-                controller.storage.users.save({id: user.userid, user:user});
+                controller.storage.users.save({id: user.userid, user:user}, function(err,res){
+                    console.log("storage call checkin");
+                    if (err) console.log("err: " + err);
+                    else console.log("res: " + res);
+                });
             });
         } else {
             // found a record for user
@@ -183,8 +176,15 @@ controller.hears(
 
 enter = function(res, convo){
     var beans = {id: 'cool', beans: ['pinto', 'garbanzo']};
-    controller.storage.users.save(beans);
-    var temp = controller.storage.users.get('cool');
+    controller.storage.users.save(beans, function(err,res){
+        console.log("second save call checkin");
+        if (err) console.log("err: " + err);
+        else console.log("res: " + res);
+        var temp = controller.storage.users.get('cool', function(err,res){
+            if (err) console.log("err: " + err);
+            else console.log("res: " + res);
+        });
+    });
     console.log("temp: " + temp);
     convo.say("Great! Let's go! 🐲");
     convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. You open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
