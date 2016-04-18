@@ -160,7 +160,6 @@ controller.hears(
         } else {
             // found a record for user
             console.log("found a record!");
-            console.log("user_data props: " + Object.getOwnPropertyNames(temp));
             user = temp.user
             if (user.drinkflag===true){
                 drinkvar=true;
