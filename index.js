@@ -134,8 +134,8 @@ controller.hears(
 
     // get user collection; check knownPlayer flag; if none, set basic info
     controller.storage.users.get(user.userid, function(err,user_data){
+        if (err) console.log("err: " + err);
         console.log("user.userid: " + user.userid);
-        console.log("user_data: " + user_data);
         var temp = user_data;
         if (temp===undefined || temp===null){
             // no record for this user, so we'll set one up
@@ -154,6 +154,7 @@ controller.hears(
         } else {
             // found a record for user
             console.log("found a record!");
+            console.log("user_data props: " + Object.getOwnPropertyNames(temp));
             user = temp.user
             if (user.drinkflag===true){
                 drinkvar=true;
@@ -176,17 +177,6 @@ controller.hears(
 // });
 
 enter = function(res, convo){
-    var beans = {id: 'cool', beans: ['pinto', 'garbanzo']};
-    controller.storage.users.save(beans, function(err,res){
-        console.log("second save call checkin");
-        if (err) console.log("err: " + err);
-        else console.log("res: " + res);
-        var temp = controller.storage.users.get('cool', function(err,res){
-            console.log("third get call checkin");
-            if (err) console.log("err: " + err);
-            else console.log("res: " + res);
-        });
-    });
     convo.say("Great! Let's go! 🐲");
     convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. You open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
     convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
@@ -366,8 +356,11 @@ grabAllNames = function(x,y){
 }
 
 quicksave = function(){
-    controller.storage.users.save({id: user.userid, user:user});
-    console.log("user info saved");
+    controller.storage.users.save({id: user.userid, user:user}, function(err,res){
+        console.log("user info saved");
+        if (err) console.log("err: " + err);
+        else console.log("res: " + res);
+    });
 }
 
 savedrink = function(drinkobject){
