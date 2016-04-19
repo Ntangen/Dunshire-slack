@@ -1,1 +1,1 @@
-npm start
+heroku run npm start
