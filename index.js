@@ -223,9 +223,12 @@ enter = function(res, convo){
 newplayer = function(res,convo){
     convo.say("The Innkeeper smacks the long bench with his palm and grins. \n>Excellent! I wish you luck and good fortune on your journies to come in the village of Coneshire - and the lands beyond... \n>As a last step before you go, you may choose to add 1 point to any of your four key character attributes. Which do you choose?");
     convo.ask("`Charisma`: this will help you get along with other characters. \n`Luck`: this will grant you good fortune. \n`Mysticism`: this will build your mental fortitude. \n`Strength`: this will make you more powerful in combat.", function(res,convo){
-            controller.storage.users.save({id: userid, user:user});
-            newplayer2(res,convo);
-            convo.next();
+            controller.storage.users.save({id: userid, user:user}, function(err,res){
+                if (err) console.log("err: " + err);
+                else console.log("res: " + res);
+                newplayer2(res,convo);
+                convo.next();
+            });
     });
 }
 
@@ -350,6 +353,15 @@ instructions = function(res,convo){
     }
 }
 
+quit = function(res,convo){
+    quicksave();
+    var temp = res.text.toLowerCase();
+    convo.say("*-------------------------------------T H E  F I E L D S-------------------------------------*");
+    convo.say("You make camp for the night and settle in.");
+    convo.say("See you tomorrow, wanderer.");
+    convo.next();
+}
+
 // handy game-wide functions
 
 grabAllNames = function(x,y){
@@ -362,9 +374,8 @@ grabAllNames = function(x,y){
 
 quicksave = function(){
     controller.storage.users.save({id: user.userid, user:user}, function(err,res){
-        console.log("user info saved");
-        if (err) console.log("err: " + err);
-        else console.log("res: " + res);
+        console.log("user info save");
+        if (err) console.log("save err: " + err);
     });
 }
 
