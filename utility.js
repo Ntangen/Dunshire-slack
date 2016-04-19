@@ -60,6 +60,24 @@ module.exports = {
 			user.level = levs.levels.ranger;
 			user.hp = levs.levels.ranger.maxhp
 		}
+	},
+
+	dailyreboot: function(){
+		var date = new Date();
+		var today = date.getDate(); 
+		if(user.lastPlayed != today){
+			// user did not play today, so get 'em going with full hp & turns again
+			user.hp = user.level.maxhp;
+			user.turnsToday = 20;
+			user.lastPlayed = today;
+			return 1; 
+		} else if (user.hp <= 0) {
+			// user is dead
+			return 2;
+		} else {
+			// user played today, isn't dead yet, may/may not have turns left
+			return 1;
+		}
 	}
 }
 

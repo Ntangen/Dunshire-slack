@@ -101,7 +101,6 @@ controller.hears(
     ['direct_message','mention'], function (bot, message) {
 
     user.userid = message.user;
-    console.log("message.user: " + message.user);
     team = message.team;
 
     // welcome function
@@ -213,10 +212,16 @@ enter = function(res, convo){
         ]);
     } else {
         // known user continuing their quest
-        convo.ask(">*Well met, " + user.username + "!* Good to see you again. Would you care to hear some `instructions`? Or just continue on to `town`?", function(response,convo){
-        enter2(response,convo);
-        convo.next();
-        });
+        var temp = utility.dailyreboot();
+        if (temp===2){
+            convo.say("You remain dead. But don't worry - try back tomorrow!");
+            convo.next();
+        } else {
+            convo.ask(">*Well met, " + user.username + "!* Good to see you again. Would you care to hear some `instructions`? Or just continue on to `town`?", function(response,convo){
+            enter2(response,convo);
+            convo.next();
+            });
+        }
     }
 }
 
