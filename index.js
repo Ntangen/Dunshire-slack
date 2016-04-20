@@ -177,21 +177,6 @@ controller.hears(
 
 });
 
-convo.on('end', function(convo){
-    if (convo.status==='completed'){
-        console.log("convo is completed");
-        console.log("channel: " + channel);
-        bot.say(
-            { 
-            text: 'has left Coneshire',
-            channel: channel
-            }
-        );
-    } else {
-        // something else here
-    }
-});
-
 enter = function(res, convo){
     convo.say("Great! Let's go! 🐲");
     convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. You open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
@@ -377,6 +362,20 @@ quit = function(res,convo){
     convo.say("You make camp for the night and settle in.");
     convo.say("See you tomorrow, fellow wanderer.");
     convo.next();
+    convo.on('end', function(convo){
+        if (convo.status==='completed'){
+            console.log("convo is completed");
+            console.log("channel: " + channel);
+            bot.say(
+                { 
+                text: 'has left Coneshire',
+                channel: channel
+                }
+            );
+        } else {
+            // something else here
+        }
+    });
 }
 
 death = function(res,convo){
