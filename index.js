@@ -368,20 +368,6 @@ quit = function(res,convo){
     convo.say("You make camp for the night and settle in.");
     convo.say("See you tomorrow, fellow wanderer.");
     convo.next();
-    convo.on('end', function(convo){
-        if (convo.status==='completed'){
-            console.log("convo is completed");
-            console.log("channel: " + channel);
-            bot.say(
-                { 
-                text: 'has left Coneshire',
-                channel: channel
-                }
-            );
-        } else {
-            // something else here
-        }
-    });
 }
 
 death = function(res,convo){
