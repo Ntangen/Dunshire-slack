@@ -179,9 +179,11 @@ controller.hears(
 
 controller.on('end', function(convo){
     if (convo.status==='completed'){
+        console.log("convo is completed");
+        console.log("channel: " + channel);
         bot.say(
             { 
-            text: user.username + 'has left Coneshire.',
+            text: 'has left Coneshire',
             channel: channel
             }
         );
