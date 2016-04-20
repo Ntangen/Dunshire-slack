@@ -82,6 +82,7 @@ hunt = function(res,convo,x){
 				output(4, "The " + monster.name + " are too fast for you, and manage to strike first!");
 				woodsfight(res,convo,2)
 			}
+		}
 	} else if (x===2){
 		// (user.mission==="grannon" && Math.random()>0.9){
 		granfight();
