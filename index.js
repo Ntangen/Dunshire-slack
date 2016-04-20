@@ -171,7 +171,13 @@ controller.hears(
         }
     });
 
-    channel = message.channel;
+    // channel = message.channel;
+
+    bot.identifyTeam(function(err,team_id){
+        if (err) console.log("err: " + err);
+        else console.log("team_id: " + team_id);
+        channel = team_id;
+    })
 
     bot.startConversation(message, welcome);
 
@@ -366,12 +372,12 @@ quit = function(res,convo){
         if (convo.status==='completed'){
             console.log("convo is completed");
             console.log("channel: " + channel);
-            bot.say(
-                { 
-                text: 'has left Coneshire',
-                channel: channel
-                }
-            );
+            // bot.say(
+            //     { 
+            //     text: 'has left Coneshire',
+            //     channel: channel
+            //     }
+            // );
         } else {
             // something else here
         }
