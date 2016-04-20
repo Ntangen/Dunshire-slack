@@ -25,7 +25,7 @@ module.exports = {
 				convo.say("Seeing nothing more for you here, you turn and return to town.");
 				town.townsquare(res,convo);
 			} else {
-				// give mission
+				// gives mission
 				convo.say("The Abbey's door hangs a single hinge. Inside, broken benches are strewn about in disarray. The altar in the front of the room is smashed. An old Cleric in a simple wool frock is sweeping debris on one side of the room. You can tell he has been weeping. \nHe looks up as you enter the room, and his eyes light up. \n>Greetings, wanderer. You... you aren't here to loot us, are you? As you can see, we have nothing else of value here...");
 				convo.ask("`Ask` the old man what happened, or turn and `return` to town.", function(res,convo){
 					abbeyrouter(res,convo,1);
@@ -41,6 +41,7 @@ module.exports = {
 				});
 		}
 	}
+
 }
 
 abbeyrouter = function(res,convo,x){
@@ -48,7 +49,7 @@ abbeyrouter = function(res,convo,x){
 	if (x===1){
 		// cleric gives the mission
 		if (temp.includes('ask')){
-			convo.say("The old Cleric pauses his sweeping and settles on one of the few benches left intact. \n>Well... as you can see, wanderer, we are but a humble village abbey here. As Cleric, I lead the people here in our observance of The Faith, as the Great Father requires. \n>The other day, this holy sanctuary was desecrated by marauders. They came in the night, stole our precious censer, and gave me quite a bump on the head in the process... \n>I see you do not wear the hood of a Keeper of our Faith. Even so, perhaps you would be willing to help catch these bandits and recover our lost censer? This Abbey would be greatly in your debt.");
+			convo.say("The old Cleric pauses his sweeping and settles on one of the few benches left intact. \n>Well... as you can see, wanderer, we are but a humble village abbey here. As Cleric, I lead the people here in our observance of The Faith, as the Great Father requires. \n>The other day, this holy sanctuary was desecrated by marauders. They came in the night, stole our precious censer, and gave me quite a bump on the head in the process... they fled to the *Dark Woods* and haven't been seen since. \n>I see you do not wear the hood of a Keeper of our Faith. Even so, perhaps you would be willing to help catch these bandits and recover our lost censer? This Abbey would be greatly in your debt.");
 			convo.ask("You may `accept` the Cleric's request, or opt to `decline` for now.", function(res,convo){
 				abbey1(res,convo);
 				convo.next();
@@ -62,14 +63,19 @@ abbeyrouter = function(res,convo,x){
 	} else {
 		// level 2 or higher menu
 		if (temp.includes('faith')){
-
+			afaith(res,convo);
 		} else if (temp.includes('rest')){
-
+			convo.say("You quietly take a seat in the Abbey's nave. You are contemplative and silent for a while.");
+			convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+			    abbeyrouter(res,convo);
+			    convo.next();
+			});
 		} else if (temp.includes('heal')){
-			
+			abbeyheal(res,convo);
 		} else if (temp.includes('return')){
-			
-		} else if (temp.includes('remind')){
+			convo.say("Giving your respects to the Cleric, you rise and head for the door.");
+        	town.townsquare(res,convo);
+		} else if (temp.includes('reminder')){
 			convo.ask("You may inquire about The `Faith`, `rest` and reflect in the nave, ask the Cleric to `heal` you, or turn and `return` to town.", function(res,convo){
 					abbeyrouter(res,convo);
 					convo.next();
@@ -83,9 +89,8 @@ abbeyrouter = function(res,convo,x){
 abbey1 = function(res,convo){
 	var temp = res.text.toLowerCase();
 	if (temp.includes('accept')){
-		convo.say("The old Cleric's face brightens and he claps his hands with quiet gratitude. \n>Truly, the Great Father sent you to us! Thank you, my child! With your formidable skills and the Great Father's guiding hand, how can you not succeed? \n>All I know is that the thieves fled into the Dark Woods. They were last seen by a farmer heading east. Be vigilant - they are armed, and do not likely fear meeting the Great Father in the world beyond!");
-		convo.say("*You have accepted the Cleric's mission!*");
-		convo.say("Filled with newfound purpose, you turn to leave the Abbey.");
+		convo.say("The old Cleric's face brightens and he claps his hands with quiet gratitude. \n>Truly, the Great Father sent you to us! Thank you, my child! With your formidable skills and the Great Father's guiding hand, how can you not succeed? \n>All I know is that the thieves fled into the *Dark Woods*. They were last seen by a farmer heading east. Be vigilant - they are armed, and do not likely fear meeting the Great Father in the world beyond!");
+		convo.say("*You have accepted the Cleric's mission!* \nFilled with newfound purpose, you turn to leave the Abbey.");
 		user.mission = "abbey"
 		town.townsquare(res,convo);
 	} else if (temp.includes('decline')) {
@@ -126,5 +131,47 @@ abbeyup = function(res,convo,x){
 			convo.next();
 		});
 	}
+}
+
+afaith = function(res,convo){
+	// if (x===1){
+	// 	clear();
+	// 	output(1, "<span id=quote>\"The Faithful are an order devoted to righteousness and the True Path. We also help our brothers and sisters in Faith however we can.\"</span><br>");
+	// 	output(2, "<span id=quote>\"Are you, my child, interested in one day taking the Cowl of our Faith?\"</span><br>");
+	// 	output(3, "<span id=menu>Press <span id=enter>Y</span> for yes, or <span id=enter>any</span> other key for no.</span><br>");
+	// 	thread = 5.51;
+	// }
+	// else if (x===2){
+	// 	if (userInfo.level.level<=3){
+	// 		output(3, "The Cleric smiles warmly and grasps your arm. <span id=quote>\"Truly, you honor us, child.\"</span><br>");	
+	// 		output(4, "<span id=quote>\"But you are as yet inexperienced. Ask again when you achieve the level of Challenger - and we will consider your worthiness for the community of The Faithful.\"</span><br>");
+	// 		output(5, "<span id=menu>Press <span id=enter>Any</span> key to continue.</span><br>");	
+	// 		thread = 5.4;
+	// 	}
+	// 	else {
+	// 		// join The Faithful here
+	// 	}
+	// }
+}
+
+abbeyheal = function(res,convo){
+	// if (x==="n"){
+	// 	abbey();
+	// } else {
+	// 	if (userInfo.gold>=65){
+	// 		Meteor.call("acts",x,"events","abbey heal");
+	// 		userInfo.hp = userInfo.level.maxhp;
+	// 		userInfo.gold -= 65;
+	// 		output(4, "The Cleric hurries you over to an empty bench, and gives you an infusion from behind the altar. You breathe a deep sigh of relief as your health comes rushing back.<br>");	
+	// 		output(5, "You hardly notice that your gold pouch is a little lighter.<br>");
+	// 		output(6, "<span id=menu>Press <span id=enter>Any</span> key to continue.</span><br>");	
+	// 		statusupdate();
+	// 		thread = 5.4;
+	// 	} else {
+	// 		output(4, "The Cleric stammers uncomfortably. <span id=quote>\"You, ahem... seem to have misplaced your funds, my child. When you find them, please return so we can heal your wounds.\"</span><br>");
+	// 		output(5, "<span id=menu>Press <span id=enter>Any</span> key to continue.</span><br>");	
+	// 		thread = 5.4;
+	// 	}
+	// }
 }
 
