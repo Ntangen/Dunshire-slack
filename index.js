@@ -177,7 +177,7 @@ controller.hears(
 
 });
 
-controller.on('end', function(convo){
+convo.on('end', function(convo){
     if (convo.status==='completed'){
         console.log("convo is completed");
         console.log("channel: " + channel);
