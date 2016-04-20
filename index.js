@@ -372,12 +372,12 @@ quit = function(res,convo){
         if (convo.status==='completed'){
             console.log("convo is completed");
             console.log("channel: " + channel);
-            // bot.say(
-            //     { 
-            //     text: 'has left Coneshire',
-            //     channel: channel
-            //     }
-            // );
+            bot.say(
+                { 
+                text: 'has left Coneshire',
+                channel: channel
+                }
+            );
         } else {
             // something else here
         }
