@@ -177,14 +177,18 @@ controller.hears(
 
 });
 
-// controller.hears(
-//     ['help'], 
-//     ['direct_message','mention'], function (bot, message) {
-
-//     console.log("I'm trying to help! You're caught in the matrix!");
-//     quicksave();
-//     town.townsquare(res,convo);
-// });
+controller.on('end', function(convo){
+    if (convo.status==='completed'){
+        bot.say(
+            { 
+            text: user.username + 'has left Coneshire.',
+            channel: channel
+            }
+        );
+    } else {
+        // something else here
+    }
+});
 
 enter = function(res, convo){
     convo.say("Great! Let's go! 🐲");
@@ -370,12 +374,6 @@ quit = function(res,convo){
     convo.say("*-------------------------------------T H E  F I E L D S-------------------------------------*");
     convo.say("You make camp for the night and settle in.");
     convo.say("See you tomorrow, fellow wanderer.");
-    bot.say(
-        { 
-        text: user.username + 'has left Coneshire.',
-        channel: channel
-        }
-    );
     convo.next();
 }
 
