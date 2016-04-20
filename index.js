@@ -99,12 +99,10 @@ controller.on('bot_channel_join', function (bot, message) {
 });
 
 controller.on('mention', function (bot,message) {
-    bot.reply(message, "I see you mentioning me! If you'd like to the village of Coneshire, just direct message me.");
+    bot.reply(message, "Greetings, fellow wanderers. If you'd like to enter the village of Coneshire, just direct message me.");
 });
 
-controller.hears(
-    ['hello','hi','howdy'], 
-    ['direct_message'], function (bot, message) {
+controller.on('direct_message', function (bot, message) {
 
     user.userid = message.user;
     team = message.team;

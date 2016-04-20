@@ -23,7 +23,7 @@ woodsmenu = function(res,convo){
 				temp +="Search for the `bandits` who stole the Cleric's censer. ";
 			}
 		} else if (user.mission==="grannon"){
-			temp +="Follow Grannon's directions to the `Mage`'s Cave. ");
+			temp +="Follow Grannon's directions to the `Mage`'s Cave.";
 		}
 	temp += "`Hunt` for beasts, check your `status`, review your `supplies`, or return to `town`.";
 	convo.ask(temp, function(res,convo){
