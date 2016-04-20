@@ -97,7 +97,7 @@ controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "Thanks for inviting me to the channel! I'll give more instructions later.");
 });
 
-controller.on(['direct_mention','mention'], function (bot,message) {
+controller.on('mention', function (bot,message) {
     bot.reply(message, "I see you mentioning me! If you'd like to the village of Coneshire, just direct message me.");
 });
 
