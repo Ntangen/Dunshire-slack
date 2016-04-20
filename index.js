@@ -3,9 +3,6 @@
 // get those modules
 
 user = require('./lib/user');
-allNames = "";
-stew = false;
-drinkvar=false;
 town = require('./town');
 tavern = require('./tavern');
 woods = require('./woods');
@@ -28,6 +25,10 @@ shieldflag=false;
 swordflag=false;
 gran = true;
 currentmerch = undefined;
+allNames = "";
+stew = false;
+drinkvar=false;
+channel=undefined;
 
 //////////////////////////////////////
 
@@ -93,12 +94,16 @@ controller.on('rtm_close', function (bot) {
 // here's where the magic happens
 
 controller.on('bot_channel_join', function (bot, message) {
-    bot.reply(message, "I'm here!")
+    bot.reply(message, "Thanks for inviting me to the channel! I'll give more instructions later.");
+});
+
+controller.on(['direct_mention','mention'], function (bot,message) {
+    bot.reply(message, "I see you mentioning me! If you'd like to the village of Coneshire, just direct message me.");
 });
 
 controller.hears(
     ['hello','hi','howdy'], 
-    ['direct_message','mention'], function (bot, message) {
+    ['direct_message'], function (bot, message) {
 
     user.userid = message.user;
     team = message.team;
@@ -124,7 +129,6 @@ controller.hears(
             default: true,
             callback: function(res,convo){
                 convo.repeat();
-                convo.next();
            }
         }
         ]); 
@@ -166,6 +170,8 @@ controller.hears(
             console.log("user.username: " + user.username);
         }
     });
+
+    channel = message.channel;
 
     bot.startConversation(message, welcome);
 
@@ -363,7 +369,31 @@ quit = function(res,convo){
     var temp = res.text.toLowerCase();
     convo.say("*-------------------------------------T H E  F I E L D S-------------------------------------*");
     convo.say("You make camp for the night and settle in.");
-    convo.say("See you tomorrow, wanderer.");
+    convo.say("See you tomorrow, fellow wanderer.");
+    bot.say(
+        { 
+        text: user.username + 'has left Coneshire.',
+        channel: channel
+        }
+    );
+    convo.next();
+}
+
+death = function(res,convo){
+    var temp = res.text.toLowerCase();
+    convo.say("*-----------------------------------------D E A T H-----------------------------------------*");
+    convo.say("_You are dead._ \n_Don't worry - it won't last long._");
+    var temp = Math.random();
+    if (temp<0.33){
+        user.gold = Math.round(user.gold * 0.60);
+    } else if (temp>0.50){
+        user.gold = Math.round(user.gold * 0.90);
+    } else {
+        user.gold = 0;
+    }
+    quicksave();
+    convo.say("When you come to, you are back at the country inn outside of town. Everything is a bit hazy. \nYou go inside. The Innkeeper is still there, and as he sees you stagger in, he beckons you over and helps you down on to a bench. Your muscles ache. Your head throbs. \n>Looks like you had a bad encounter with that forest beast! No shame in that, " + user.username + ". It's happened to all of us. You'll be back in the action tomorrow. For now, sit a spell. Have a drink. \nHe plops a tankard of frothy ale down in front of you, and the pounding in your head begins to subside. You decide to get comfortable.");
+    convo.say("Better luck tomorrow. See you soon, fellow wanderer.");
     convo.next();
 }
 
@@ -371,15 +401,15 @@ quit = function(res,convo){
 
 grabAllNames = function(x,y){
     controller.storage.users.all(function(err, all_user_data) {
-    for (i=0;i<all_user_data.length;i++){
-        allNames += "*" + all_user_data[i].user.username + "*, ";
+        for (i=0;i<all_user_data.length;i++){
+            allNames += "*" + all_user_data[i].user.username + "*, ";
         }
     }); 
 }
 
 quicksave = function(){
     controller.storage.users.save({id: user.userid, user:user}, function(err,res){
-        console.log("user info save");
+        console.log("user save");
         if (err) console.log("save err: " + err);
     });
 }
@@ -393,11 +423,13 @@ savedrink = function(drinkobject){
                 controller.storage.users.get(temp, function(err,user_data){
                     var targetData = user_data.user;
                     targetData.drinks.recd.push(drinkobject);
-                    controller.storage.users.save({id: temp, user:targetData});
-                    console.log("target data saved");
+                    controller.storage.users.save({id: temp, user:targetData},function(err,res){
+                        if (err) console.log("err: " + err);
+                        else console.log("target data saved");
+                        user.drinks.sent.push(drinkobject);
+                        quicksave();
+                    });
                 });
-                user.drinks.sent.push(drinkobject);
-                quicksave();
             }
         }
     });

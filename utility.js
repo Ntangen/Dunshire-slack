@@ -78,7 +78,38 @@ module.exports = {
 			// user played today, isn't dead yet, may/may not have turns left
 			return 1;
 		}
+	},
+
+	fortune: function(x){
+	if (x==="luck"){
+		var temp = Math.random();
+		if (user.attributes.luck!=0){
+			temp += user.attributes.luck * 0.1;
+		}
+		console.log("luck var: " + temp);
+		if (temp>=0.5){
+			return true
+		} else return false;
+	} 
+	else if (x==="char"){
+		var temp = Math.random();
+		if (user.attributes.charisma!=0){
+			temp += user.attributes.charisma * 0.25;
+		}
+		console.log("charisma var: " + temp);
+		if (temp>=0.5){
+			return true
+		} else return false;
 	}
+	else {
+		// for adding variables in battle
+		// spirits; berzerk; 
+		var temp = Math.round(((Math.random()+1) + user.attributes.luck) + globalfortune);
+		var temp2 = temp + batpoints;
+		console.log("fortune points: " + temp2);
+		return temp2;
+	}
+}
 }
 
 

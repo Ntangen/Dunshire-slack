@@ -125,7 +125,8 @@ woodsfight = function(res,convo,turn){
 		if (result === "dead"){
 			console.log("dead");
 			convo.say("Oh no! The *" + monster.name + "* " + monster.strike1 + ", and it kills you!");
-			// TBD
+			death(res,convo);
+			convo.next();
 		}
 		else if (result==="zip"){
 			convo.say("The *" + monster.name + "* " + monster.strike1 + ", but your armor protects you! You sustain 0 damage! \n" +
@@ -237,7 +238,7 @@ userfight = function(monster){
 		// still working on this
 		attackdamage = Math.round((user.items.weapon.attack * (Math.random()+ 1)) + user.attributes.strength - monster.defense);
 	} else {
-		attackdamage = Math.round((user.items.weapon.attack * (Math.random()+ 1)) + user.attributes.strength + fortune() - monster.defense);
+		attackdamage = Math.round((user.items.weapon.attack * (Math.random()+ 1)) + user.attributes.strength + utility.fortune() - monster.defense);
 	}
 	console.log("user attack: " + attackdamage);
 	turns++;
@@ -254,7 +255,7 @@ monsterfight = function(monster){
 	if (shieldflag){
 		damage = Math.round((monster.attack*((Math.random()+1)) - user.items.armor.armor)*.75);
 	} else {
-		damage = Math.round((monster.attack*((Math.random()+1)) - fortune() - user.items.armor.armor));
+		damage = Math.round((monster.attack*((Math.random()+1)) - utility.fortune() - user.items.armor.armor));
 	}
 	console.log("monster attack: " + damage);
 	if (damage<=0){
@@ -276,37 +277,6 @@ events = function(res,convo){
 		user.items.rubies++
 		convo.say("You discover precious rubies with the creature!");
 		convo.next();
-	}
-}
-
-fortune = function(x){
-	if (x==="luck"){
-		var temp = Math.random();
-		if (user.attributes.luck!=0){
-			temp += user.attributes.luck * 0.1;
-		}
-		console.log("luck var: " + temp);
-		if (temp>=0.5){
-			return true
-		} else return false;
-	} 
-	else if (x==="char"){
-		var temp = Math.random();
-		if (user.attributes.charisma!=0){
-			temp += user.attributes.charisma * 0.25;
-		}
-		console.log("charisma var: " + temp);
-		if (temp>=0.5){
-			return true
-		} else return false;
-	}
-	else {
-		// for adding variables in battle
-		// spirits; berzerk; 
-		var temp = Math.round(((Math.random()+1) + user.attributes.luck) + globalfortune);
-		var temp2 = temp + batpoints;
-		console.log("fortune points: " + temp2);
-		return temp2;
 	}
 }
 
