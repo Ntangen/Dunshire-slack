@@ -133,45 +133,76 @@ abbeyup = function(res,convo,x){
 	}
 }
 
-afaith = function(res,convo){
-	// if (x===1){
-	// 	clear();
-	// 	output(1, "<span id=quote>\"The Faithful are an order devoted to righteousness and the True Path. We also help our brothers and sisters in Faith however we can.\"</span><br>");
-	// 	output(2, "<span id=quote>\"Are you, my child, interested in one day taking the Cowl of our Faith?\"</span><br>");
-	// 	output(3, "<span id=menu>Press <span id=enter>Y</span> for yes, or <span id=enter>any</span> other key for no.</span><br>");
-	// 	thread = 5.51;
-	// }
-	// else if (x===2){
-	// 	if (userInfo.level.level<=3){
-	// 		output(3, "The Cleric smiles warmly and grasps your arm. <span id=quote>\"Truly, you honor us, child.\"</span><br>");	
-	// 		output(4, "<span id=quote>\"But you are as yet inexperienced. Ask again when you achieve the level of Challenger - and we will consider your worthiness for the community of The Faithful.\"</span><br>");
-	// 		output(5, "<span id=menu>Press <span id=enter>Any</span> key to continue.</span><br>");	
-	// 		thread = 5.4;
-	// 	}
-	// 	else {
-	// 		// join The Faithful here
-	// 	}
-	// }
+afaith = function(res,convo,x){
+	if (x===1){
+		convo.say("The Cleric smiles warmly and grasps your arm. \n>Truly, you honor us, child. But you are as yet inexperienced. Ask again when you achieve the level of Challenger - and we will consider your worthiness for the community of The Faithful.");
+			convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+			    abbeyrouter(res,convo);
+			    convo.next();
+			});
+		} // add faithful stuff here
+	else {
+		var temp = res.text.toLowerCase();
+		convo.say(">The Faithful are an order devoted to righteousness and the True Path. We also help our brothers and sisters in Faith however we can.");
+		convo.ask(">Are you, my child, interested in one day taking the Cowl of our Faith?", [
+	        {
+	            pattern: bot.utterances.yes,
+	            callback: function(res,convo){
+	                afaith(res,convo,1);
+	                convo.next();
+	           }
+	        },
+	        { 
+	            pattern: bot.utterances.no,
+	            callback: function(res,convo){
+	                afaith(res,convo,1)
+	                convo.next();
+	           }
+	        },
+	        { 
+	            default: true,
+	            callback: function(res,convo){
+	                convo.repeat();
+	           }
+	        }
+	        ]);
+	}
 }
 
-abbeyheal = function(res,convo){
-	// if (x==="n"){
-	// 	abbey();
-	// } else {
-	// 	if (userInfo.gold>=65){
-	// 		Meteor.call("acts",x,"events","abbey heal");
-	// 		userInfo.hp = userInfo.level.maxhp;
-	// 		userInfo.gold -= 65;
-	// 		output(4, "The Cleric hurries you over to an empty bench, and gives you an infusion from behind the altar. You breathe a deep sigh of relief as your health comes rushing back.<br>");	
-	// 		output(5, "You hardly notice that your gold pouch is a little lighter.<br>");
-	// 		output(6, "<span id=menu>Press <span id=enter>Any</span> key to continue.</span><br>");	
-	// 		statusupdate();
-	// 		thread = 5.4;
-	// 	} else {
-	// 		output(4, "The Cleric stammers uncomfortably. <span id=quote>\"You, ahem... seem to have misplaced your funds, my child. When you find them, please return so we can heal your wounds.\"</span><br>");
-	// 		output(5, "<span id=menu>Press <span id=enter>Any</span> key to continue.</span><br>");	
-	// 		thread = 5.4;
-	// 	}
-	// }
+abbeyheal = function(res,convo,x){
+	var temp = res.text.toLowerCase();
+	if (x===1){
+		if (temp.includes("change")){
+		convo.say(">Suit yourself, my child.");
+		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+			    abbeyrouter(res,convo);
+			    convo.next();
+			});
+		} else if (temp.includes("heal")) {
+			if (user.gold>=65){
+				userInfo.hp = userInfo.level.maxhp;
+				userInfo.gold -= 65;
+				convo.say("The Cleric hurries you over to an empty bench, and gives you an infusion from a vial hidden behind the altar. You breathe a deep sigh of relief as your health comes rushing back. You hardly notice that your gold pouch is a little lighter.");
+				convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+				    abbeyrouter(res,convo);
+				    convo.next();
+				});
+			} else if (user.gold<65){
+				convo.say("The Cleric stammers uncomfortably. \n>You, ahem... seem to have misplaced your funds, my child. When you find them, please return so we can heal your wounds.")
+				convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+				    abbeyrouter(res,convo);
+				    convo.next();
+				});
+			}
+		} else {
+			convo.repeat();
+		}
+	} else {
+		convo.say(">Do you require our aid to revive your health, my child? We stand ready to assist. All we ask is a small donation for... expenses. You understand, I'm sure.");
+		convo.ask("Do you ask the Cleric to `heal` you completely for *65 gold, or `change` your mind?*", function(err,res){
+			abbeyheal(res,convo,1);
+			convo.next();
+		});
+	}
 }
 
