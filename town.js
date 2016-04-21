@@ -101,18 +101,19 @@ townusegear = function(res,convo){
 			if (user.items.other[i].name.includes(temp)){
 				console.log("check 3");
 				console.log("found: " + user.items.other[i].name);
-				var temp = user.items.other.splice(i,1);
-				var temp2 = utility.items(temp[0].name);
-				console.log("temp item spliced: " + temp[0].name)
-				console.log("temp2: " + temp2);
+				var temp2 = user.items.other.splice(i,1);
+				var temp3 = utility.items(temp2[0].name);
+				console.log("temp2 item spliced: " + temp2[0].name)
+				console.log("temp3 will say: " + temp3);
 				// quicksave();
 				console.log("check 5");
-				convo.say(temp2);
+				convo.say(temp3);
 				convo.ask("What next? (Want a `reminder`?)", function(res,convo){
 					console.log("check 6");
 				    townrouter(res,convo);
 				    convo.next();
 				});
+				break;
 			} else {
 				convo.say("Come again?");
 				convo.repeat();
