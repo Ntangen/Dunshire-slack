@@ -52,14 +52,14 @@ smithmerchrouter = function(res,convo,x){
 	} else if (x===1){
 		// weapons
 		if (temp.includes("1")){
-			currentmerch = item.weapons.club;
-			convo.ask("Are you sure you want the " + item.weapons.club.name + "? \n You may `confirm` your purchase, or `change` your mind.", function(res,convo){
+			currentmerch = items.weapons.club;
+			convo.ask("Are you sure you want the " + items.weapons.club.name + "? \n You may `confirm` your purchase, or `change` your mind.", function(res,convo){
 				smithmerchconfirm(res,convo);
 				convo.next();
 			});
 		} else if (temp.includes("2")){
 			currentmerch = items.weapons.sclub;
-			convo.ask("Are you sure you want the " + item.weapons.sclub.name + "?\n You may `confirm` your purchase, or `change` your mind.", function(res,convo){
+			convo.ask("Are you sure you want the " + items.weapons.sclub.name + "?\n You may `confirm` your purchase, or `change` your mind.", function(res,convo){
 				smithmerchconfirm(res,convo);
 				convo.next();
 			});

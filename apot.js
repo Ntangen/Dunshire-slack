@@ -11,7 +11,7 @@ module.exports = {
 		// 	output(4, "<span id=quote>Now, dear... what do you seek today?</span><br><br>" +
 		// 		"<span id=menu>Press (<span id=letter>H</span>) to peruse Morgan's healing potions, (<span id=letter>M</span>) to browse her medicine list, (<span id=letter>A</span>) to ask what she's working on now, (<span id=letter>D</span>) to inquire about curing your addiction, or (<span id=letter>L</span>) to leave.</span><br>");
 		// } else {
-		convo.ask(">Step carefully, friend... We don't need an explosion in here. Unless, that is... well, my dear, what is it you seek? \nPeruse Morgan's `heal`ing potions, browse her `medicines` list, `ask` what she's working on now, or return to the `street`.", function(res,convo){
+		convo.ask(">Step carefully, friend... We don't need an explosion in here. Unless, that is... uh... well, my dear, what is it you seek? \nPeruse Morgan's `heal`ing potions, browse her `medicines` list, `ask` what she's working on now, or return to the `street`.", function(res,convo){
 			apotrouter(res,convo);
 			convo.next();
 		});

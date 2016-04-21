@@ -64,7 +64,7 @@ woods = function(x){
 
 townstatus = function(res,convo){
 	convo.say(status());
-	convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+	convo.ask("The town square bustles around you. What next? (Want a `reminder`?)", function(res,convo){
 	    townrouter(res,convo);
 	    convo.next();
 	});
@@ -74,7 +74,7 @@ towngear = function(res,convo){
 	var temp = utility.showgear();
 	if (temp === 0){
 		convo.say("You have no items!");
-		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+		convo.ask("The town square bustles around you. What next? (Want a `reminder`?)", function(res,convo){
 		    townrouter(res,convo);
 		    convo.next();
 		});
@@ -90,7 +90,7 @@ towngear = function(res,convo){
 townusegear = function(res,convo){
 	var temp = res.text.toLowerCase();
 	if (temp.includes('none')){
-		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+		convo.ask("The town square bustles around you. What next? (Want a `reminder`?)", function(res,convo){
 		    townrouter(res,convo);
 		    convo.next();
 		});
