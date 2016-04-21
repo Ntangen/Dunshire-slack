@@ -72,6 +72,8 @@ hunt = function(res,convo,x){
 		} else if (aturns===2){
 			convo.say("You round a corner, and there they are! The two common-looking thieves have been expecting you - and their shortswords are already unsheathed. You see the Cleric's censer behind them in a bag! \nThe bandits rush towards you!");
 			monster = beasts.lev1b;
+			console.log("boss lev1b: " + beasts.beasts.lev1b);
+			console.log("bossmonster: " + monster);
 			mhp = monster.hp;
 			if (Math.random() < 0.7){
 				// player gets first shot
