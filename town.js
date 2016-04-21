@@ -6,7 +6,7 @@ module.exports = {
 
 townsquare: function(res, convo){
 	convo.say("*-------------------------------------T H E  T O W N  S Q U A R E-------------------------------------*");
-	convo.ask("The town square is calm. Merchants hawk their goods, neighbors greet each other, and a few children go chasing each other through the streets. \nYou may `hear` the town crier's news of the day, visit the `Tavern`, the `Smither` Shop, the `Apothecary` Cabin, the `Bank` of Doworth, the village `Abbey`, Old Grannon's `farm`, or venture into the Dark `Woods`. \n\nYou can also check your `status`, review your `supplies`, or `quit` to your campsite.", function(res,convo){
+	convo.ask("The town square is calm. Merchants hawk their goods, neighbors greet each other, and a few children go chasing each other through the streets. \n\nYou may `hear` the town crier's news of the day, visit the `Tavern`, the `Smither` Shop, the `Apothecary` Cabin, the `Bank` of Doworth, the village `Abbey`, Old Grannon's `farm`, or venture into the Dark `Woods`. \n\nYou can also check your `status`, review your `supplies`, or `quit` to your campsite.", function(res,convo){
 			townrouter(res,convo);
             convo.next();
         });
@@ -99,9 +99,10 @@ townusegear = function(res,convo){
 			if (user.items.other[i].name.includes(temp)){
 				console.log("found: " + user.items.other[i].name);
 				var temp = user.items.other.splice(i,1);
-				var temp2 = utility.items(temp[0].name); 
-				console.log("temp2: " + temp2);
-				convo.say(temp2);
+				console.log("temp item spliced: " + temp[0].name)
+				// var temp2 = utility.items(temp[0].name); 
+				// console.log("temp2: " + temp2);
+				convo.say(utility.items(temp[0].name));
 				// quicksave();
 				convo.ask("What next? (Want a `reminder`?)", function(res,convo){
 				    townrouter(res,convo);

@@ -183,6 +183,15 @@ controller.on('direct_message', function (bot, message) {
 
 });
 
+controller.hears('stop','direct_message',function(bot,message){
+    stopper = function(res,convo){
+        convo.say("🚨Yikes!🚨 We're going to try to stop this conversation now.");
+        convo.stop();
+    }
+
+    bot.startConversation(message,stopper)
+});
+
 enter = function(res, convo){
     convo.say("Great! Let's go! 🐲");
     convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. You open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");

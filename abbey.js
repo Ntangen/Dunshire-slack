@@ -90,7 +90,7 @@ abbey1 = function(res,convo){
 	var temp = res.text.toLowerCase();
 	if (temp.includes('accept')){
 		convo.say("The old Cleric's face brightens and he claps his hands with quiet gratitude. \n>Truly, the Great Father sent you to us! Thank you, my child! With your formidable skills and the Great Father's guiding hand, how can you not succeed? \n\n>All I know is that the thieves fled into the *Dark Woods*. They were last seen by a farmer heading east. Be vigilant - they are armed, and do not likely fear meeting the Great Father in the world beyond!");
-		convo.say("*You have accepted the Cleric's mission!* \nFilled with newfound purpose, you turn to leave the Abbey.\n");
+		convo.say("*You have accepted the Cleric's mission!* \nFilled with newfound purpose, you turn to leave the Abbey.\n\n");
 		user.mission = "abbey"
 		town.townsquare(res,convo);
 	} else if (temp.includes('decline')) {

@@ -133,10 +133,8 @@ apotmerchconfirm = function(res,convo){
             convo.next();
         });
 	} else if (temp.includes("confirm")) {
-		console.log("pre - items length: " + user.items.other.length);
 		user.gold -= currentmerch.gold;
 		user.items.other.push(currentmerch);
-		console.log("post - items length: " + user.items.other.length);
 		convo.say("Morgan smiles, handing you the " + currentmerch.name + " and slipping your gold into one of her robe's deep pockets. \n>Feel better soon, " + user.level.name + ".");
 		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
             apotrouter(res,convo);
