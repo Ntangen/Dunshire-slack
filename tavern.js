@@ -48,7 +48,7 @@ tavernrouter = function(res,convo){
     } else if (temp.includes('brunswick')){
         stew(res,convo);
     } else if (temp.includes('retrieve')){
-    	if (drink) { pickupdrink(res,convo) }
+    	if (drinkvar) { pickupdrink(res,convo) }
     	else { 
     		convo.say ("Dean is confused. No drinks await you!");
     		convo.repeat();
@@ -438,7 +438,7 @@ pickup2 = function(res,convo){
 		});
 	} else {
 		for(i=0;i<user.drinks.recd.length;i++){
-			if (user.drinks.recd[i].from===temp){
+			if (user.drinks.recd[i].from.toLowerCase()===temp){
 				var temp2 = user.drinks.recd[i]
 				convo.say("You happily take the " + temp2.type.name + " and tip it back as you read *" + temp2.from + "'s* message: \n>" + temp2.msg);
 				var oldmsg = user.drinks.recd.splice(i,1);
