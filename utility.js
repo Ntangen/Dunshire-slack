@@ -8,13 +8,14 @@ module.exports = {
 		var temp2;
 		if (x === "Healing elixir"){
 			console.log("item use: healing elixir");
+			console.log("check 4");
 			if (user.hp + items.heals.basic.potency > user.level.maxhp){
 				user.hp = user.level.maxhp;
 			} else {
 				user.hp += items.heals.basic.potency;
 			}
 			var temp = user.items.other.splice(i,1);
-			// return "You uncork Morgan's " + items.heals.basic.name + " and swill it all. You feel stronger already!";
+			return "You uncork Morgan's " + items.heals.basic.name + " and swill it all. You feel stronger already!";
 		} else if (x === "Extra potent healing elixir"){
 			console.log("item use: potent healing elixir");
 			if (user.hp + items.heals.potent.potency > user.level.maxhp){
@@ -81,35 +82,48 @@ module.exports = {
 	},
 
 	fortune: function(x){
-	if (x==="luck"){
-		var temp = Math.random();
-		if (user.attributes.luck!=0){
-			temp += user.attributes.luck * 0.1;
+		if (x==="luck"){
+			var temp = Math.random();
+			if (user.attributes.luck!=0){
+				temp += user.attributes.luck * 0.1;
+			}
+			console.log("luck var: " + temp);
+			if (temp>=0.5){
+				return true
+			} else return false;
+		} 
+		else if (x==="char"){
+			var temp = Math.random();
+			if (user.attributes.charisma!=0){
+				temp += user.attributes.charisma * 0.25;
+			}
+			console.log("charisma var: " + temp);
+			if (temp>=0.5){
+				return true
+			} else return false;
+		} else {
+			// for adding variables in battle
+			// spirits; berzerk; 
+			var temp = Math.round(((Math.random()+1) + user.attributes.luck) + globalfortune);
+			var temp2 = temp + batpoints;
+			console.log("fortune points: " + temp2);
+			return temp2;
 		}
-		console.log("luck var: " + temp);
-		if (temp>=0.5){
-			return true
-		} else return false;
-	} 
-	else if (x==="char"){
-		var temp = Math.random();
-		if (user.attributes.charisma!=0){
-			temp += user.attributes.charisma * 0.25;
-		}
-		console.log("charisma var: " + temp);
-		if (temp>=0.5){
-			return true
-		} else return false;
+	}, 
+
+	showgear: function(x){
+	    if (user.items.other.length===0){
+	        return 0;
+	    } else {
+	        var returnvar = "Your current supplies:\n";
+	        for (i=0;i<user.items.other.length;i++){
+	            returnvar += user.items.other[i].name + ", ";
+	        }
+	    returnvar += "and a bit of dust.\n";
+	    return returnvar;
+	    }
 	}
-	else {
-		// for adding variables in battle
-		// spirits; berzerk; 
-		var temp = Math.round(((Math.random()+1) + user.attributes.luck) + globalfortune);
-		var temp2 = temp + batpoints;
-		console.log("fortune points: " + temp2);
-		return temp2;
-	}
-}
+
 }
 
 

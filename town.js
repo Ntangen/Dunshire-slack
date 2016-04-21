@@ -71,7 +71,7 @@ townstatus = function(res,convo){
 }
 
 towngear = function(res,convo){
-	var temp = showgear();
+	var temp = utility.showgear();
 	if (temp === 0){
 		convo.say("You have no items!");
 		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
@@ -95,16 +95,21 @@ townusegear = function(res,convo){
 		    convo.next();
 		});
 	} else {
+		console.log("check 1");
 		for (i=0;i<user.items.other.length;i++){
+			console.log("check 2");
 			if (user.items.other[i].name.includes(temp)){
+				console.log("check 3");
 				console.log("found: " + user.items.other[i].name);
 				var temp = user.items.other.splice(i,1);
+				var temp2 = utility.items(temp[0].name);
 				console.log("temp item spliced: " + temp[0].name)
-				var temp2 = utility.items(temp[0].name); 
 				console.log("temp2: " + temp2);
-				convo.say("Okay!");
 				// quicksave();
+				console.log("check 5");
+				convo.say(temp2);
 				convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+					console.log("check 6");
 				    townrouter(res,convo);
 				    convo.next();
 				});
@@ -116,9 +121,9 @@ townusegear = function(res,convo){
 	}
 }
 
-duelflagger = function(){
+// duelflagger = function(){
 
-}
+// }
 
 crier = function(){
 	var temp = monthday.split("-");

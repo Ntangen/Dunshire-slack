@@ -200,7 +200,7 @@ woodsstatus = function(res,convo){
 }
 
 woodssupplies = function(res,convo){
-	var temp = showgear();
+	var temp = utility.showgear();
 	if (temp === 0){
 		convo.say("You have no items!");
 		convo.ask("What next? (Want a `reminder`?)", function(res,convo){

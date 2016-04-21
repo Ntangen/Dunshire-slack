@@ -457,19 +457,6 @@ ifmagic = function(){
     }
 }
 
-showgear = function(x){
-    if (user.items.other.length===0){
-        return 0;
-    } else {
-        var returnvar = "Your current supplies:\n";
-        for (i=0;i<user.items.other.length;i++){
-            returnvar += user.items.other[i].name + ", ";
-        }
-    returnvar += "and a bit of dust.\n";
-    return returnvar;
-    }
-}
-
 showmagic = function(x){
     var returnvar = "You have knowledge of the following magicks:\n";
         for (i=0;i<user.items.magic.length;i++){
