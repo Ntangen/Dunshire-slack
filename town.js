@@ -107,7 +107,7 @@ townusegear = function(res,convo){
 				console.log("temp3 will say: " + temp3);
 				// quicksave();
 				console.log("check 5");
-				convo.say(temp3);
+				convo.say("this should say: " + temp3);
 				convo.ask("What next? (Want a `reminder`?)", function(res,convo){
 					console.log("check 6");
 				    townrouter(res,convo);
@@ -115,6 +115,7 @@ townusegear = function(res,convo){
 				});
 				break;
 			} else {
+				console.log("check X");
 				convo.say("Come again?");
 				convo.repeat();
 			}
