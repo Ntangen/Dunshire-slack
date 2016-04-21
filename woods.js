@@ -77,7 +77,7 @@ hunt = function(res,convo,x){
 			mhp = monster.hp;
 			if (Math.random() < 0.7){
 				// player gets first shot
-				convo.say("You ready your " + user.items.weapon.name + " in time to strike first!<br>");
+				convo.say("You ready your " + user.items.weapon.name + " in time to strike first!");
 				woodsfight(res,convo,1)
 			} else {
 				// monster gets first shot
