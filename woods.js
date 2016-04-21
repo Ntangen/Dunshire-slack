@@ -14,7 +14,7 @@ module.exports = {
 	
 
 woodsmenu = function(res,convo){
-	var temp;
+	var temp = "";
 	if (user.level.level<3){
 		if (user.mission==="abbey"){
 			if (missioncomplete){
@@ -307,7 +307,7 @@ events = function(res,convo){
 
 woodsreward = function(res,convo){
 	// add gloating here
-	if (monster = beasts.lev1b){
+	if (monster === beasts.lev1b){
 		convo.say("You parry their thrust and make a final, skillful blow with your " + userInfo.items.weapon.name + ", slaying the two thieves! They will never burlarize the Abbey ever again. \nYou collect their bag, feeling the Cleric's censer inside. You should return it to the Abbey right away!");
 		missioncomplete = true;
 		monster=undefined;
@@ -322,6 +322,7 @@ woodsreward = function(res,convo){
 		}
 		user.turnsToday -= turns;
 		events(res,convo);
+		monster=undefined;
 		turns = 0;
 		shieldflag=false;
 		swordflag=false;
