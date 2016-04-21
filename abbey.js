@@ -22,7 +22,7 @@ module.exports = {
 			} else if (user.mission==="abbey"){
 				// during mission	
 				convo.say("The Abbey's door hangs a single hinge. Inside, broken benches are strewn about in disarray. The altar in the front of the room is smashed. The old Cleric looks up from his cleaning as you enter the room, and his wet eyes brighten. \n>Greetings, wanderer. Our congregation cannot wait for the safe return of our precious censer... truly, you are most noble in taking on this dangerous task!");
-				convo.say("Seeing nothing more for you here, you turn and return to town.");
+				convo.say("Seeing nothing more for you here, you turn and return to town. \n");
 				town.townsquare(res,convo);
 			} else {
 				// gives mission

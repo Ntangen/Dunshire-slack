@@ -193,7 +193,7 @@ woodsfight = function(res,convo,turn){
 
 woodsstatus = function(res,convo){
 	convo.say(status());
-	convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+	convo.ask("The Dark Woods are quiet, but menacing. What next? (Want a `reminder`?)", function(res,convo){
 	    woodsrouter(res,convo);
 	    convo.next();
 	});
@@ -203,7 +203,7 @@ woodssupplies = function(res,convo){
 	var temp = utility.showgear();
 	if (temp === 0){
 		convo.say("You have no items!");
-		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+		convo.ask("The Dark Woods are quiet, but menacing. What next? (Want a `reminder`?)", function(res,convo){
 		    woodsrouter(res,convo);
 		    convo.next();
 		});
@@ -219,25 +219,29 @@ woodssupplies = function(res,convo){
 woodsusegear = function(res,convo){
 	var temp = res.text.toLowerCase();
 	if (temp.includes('none')){
-		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+		convo.ask("The Dark Woods are quiet, but menacing. What next? (Want a `reminder`?)", function(res,convo){
 		    woodsrouter(res,convo);
 		    convo.next();
 		});
 	} else {
+		var temp2=0;
 		for (i=0;i<user.items.other.length;i++){
 			if (user.items.other[i].name.includes(temp)){
-				var temp = user.items.other.splice(i,1);
-				var temp2 = utility.items(temp[0].name); 
-				convo.say(temp2);
-				// quicksave();
-				convo.ask("What next? (Want a `reminder`?)", function(res,convo){
-				    woodsrouter(res,convo);
-				    convo.next();
-				});
-			} else {
-				convo.say("Come again?");
-				convo.repeat();
+				var temp2 = user.items.other.splice(i,1);
+				break;
 			}
+		}
+		if (temp2===0){
+			convo.say("Come again?");
+			convo.repeat();
+		} else {
+			var temp3 = utility.items(temp2[0].name);
+			quicksave();
+			convo.say(temp3);
+			convo.ask("The Dark Woods are quiet, but menacing. What next? (Want a `reminder`?)", function(res,convo){
+			    woodsrouter(res,convo);
+			    convo.next();
+			});
 		}
 	}
 }

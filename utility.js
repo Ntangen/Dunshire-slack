@@ -8,7 +8,6 @@ module.exports = {
 		var temp2;
 		if (x === "Healing elixir"){
 			console.log("item use: healing elixir");
-			console.log("check 4");
 			if (user.hp + items.heals.basic.potency > user.level.maxhp){
 				user.hp = user.level.maxhp;
 			} else {
