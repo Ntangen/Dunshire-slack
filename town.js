@@ -100,9 +100,9 @@ townusegear = function(res,convo){
 				console.log("found: " + user.items.other[i].name);
 				var temp = user.items.other.splice(i,1);
 				console.log("temp item spliced: " + temp[0].name)
-				// var temp2 = utility.items(temp[0].name); 
-				// console.log("temp2: " + temp2);
-				convo.say(utility.items(temp[0].name));
+				var temp2 = utility.items(temp[0].name); 
+				console.log("temp2: " + temp2);
+				convo.say("Okay!");
 				// quicksave();
 				convo.ask("What next? (Want a `reminder`?)", function(res,convo){
 				    townrouter(res,convo);

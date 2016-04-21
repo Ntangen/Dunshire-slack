@@ -14,7 +14,7 @@ module.exports = {
 				user.hp += items.heals.basic.potency;
 			}
 			var temp = user.items.other.splice(i,1);
-			return "You uncork Morgan's " + items.heals.basic.name + " and swill it all. You feel stronger already!";
+			// return "You uncork Morgan's " + items.heals.basic.name + " and swill it all. You feel stronger already!";
 		} else if (x === "Extra potent healing elixir"){
 			console.log("item use: potent healing elixir");
 			if (user.hp + items.heals.potent.potency > user.level.maxhp){
