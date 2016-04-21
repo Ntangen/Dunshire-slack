@@ -96,29 +96,32 @@ townusegear = function(res,convo){
 		});
 	} else {
 		console.log("check 1");
+		var temp2=0;
 		for (i=0;i<user.items.other.length;i++){
 			console.log("check 2");
 			if (user.items.other[i].name.includes(temp)){
 				console.log("check 3");
 				console.log("found: " + user.items.other[i].name);
 				var temp2 = user.items.other.splice(i,1);
-				var temp3 = utility.items(temp2[0].name);
-				console.log("temp2 item spliced: " + temp2[0].name)
-				console.log("temp3 will say: " + temp3);
-				// quicksave();
-				console.log("check 5");
-				convo.say("this should say: " + temp3);
-				convo.ask("What next? (Want a `reminder`?)", function(res,convo){
-					console.log("check 6");
-				    townrouter(res,convo);
-				    convo.next();
-				});
 				break;
-			} else {
-				console.log("check X");
-				convo.say("Come again?");
-				convo.repeat();
 			}
+		}
+		if (temp2===0){
+			console.log("check X");
+			convo.say("Come again?");
+			convo.repeat();
+		} else {
+			var temp3 = utility.items(temp2[0].name);
+			console.log("temp2 item spliced: " + temp2[0].name)
+			console.log("temp3 will say: " + temp3);
+			// quicksave();
+			console.log("check 5");
+			convo.say("this should say: " + temp3);
+			convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+				console.log("check 6");
+			    townrouter(res,convo);
+			    convo.next();
+			});
 		}
 	}
 }
