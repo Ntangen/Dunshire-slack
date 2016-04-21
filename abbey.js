@@ -49,7 +49,7 @@ abbeyrouter = function(res,convo,x){
 	if (x===1){
 		// cleric gives the mission
 		if (temp.includes('ask')){
-			convo.say("The old Cleric pauses his sweeping and settles on one of the few benches left intact. \n>Well... as you can see, wanderer, we are but a humble village abbey here. As Cleric, I lead the people here in our observance of The Faith, as the Great Father requires. \n>The other day, this holy sanctuary was desecrated by marauders. They came in the night, stole our precious censer, and gave me quite a bump on the head in the process... they fled to the *Dark Woods* and haven't been seen since. \n>I see you do not wear the hood of a Keeper of our Faith. Even so, perhaps you would be willing to help catch these bandits and recover our lost censer? This Abbey would be greatly in your debt.");
+			convo.say("The old Cleric pauses his sweeping and settles on one of the few benches left intact. \n>Well... as you can see, wanderer, we are but a humble village abbey here. As Cleric, I lead the people here in our observance of The Faith, as the Great Father requires. \n\n>The other day, this holy sanctuary was desecrated by marauders. They came in the night, stole our precious censer, and gave me quite a bump on the head in the process... they fled to the *Dark Woods* and haven't been seen since. \n\n>I see you do not wear the hood of a Keeper of our Faith. Even so, perhaps you would be willing to help catch these bandits and recover our lost censer? This Abbey would be greatly in your debt.");
 			convo.ask("You may `accept` the Cleric's request, or opt to `decline` for now.", function(res,convo){
 				abbey1(res,convo);
 				convo.next();
@@ -89,8 +89,8 @@ abbeyrouter = function(res,convo,x){
 abbey1 = function(res,convo){
 	var temp = res.text.toLowerCase();
 	if (temp.includes('accept')){
-		convo.say("The old Cleric's face brightens and he claps his hands with quiet gratitude. \n>Truly, the Great Father sent you to us! Thank you, my child! With your formidable skills and the Great Father's guiding hand, how can you not succeed? \n>All I know is that the thieves fled into the *Dark Woods*. They were last seen by a farmer heading east. Be vigilant - they are armed, and do not likely fear meeting the Great Father in the world beyond!");
-		convo.say("*You have accepted the Cleric's mission!* \nFilled with newfound purpose, you turn to leave the Abbey.");
+		convo.say("The old Cleric's face brightens and he claps his hands with quiet gratitude. \n>Truly, the Great Father sent you to us! Thank you, my child! With your formidable skills and the Great Father's guiding hand, how can you not succeed? \n\n>All I know is that the thieves fled into the *Dark Woods*. They were last seen by a farmer heading east. Be vigilant - they are armed, and do not likely fear meeting the Great Father in the world beyond!");
+		convo.say("*You have accepted the Cleric's mission!* \nFilled with newfound purpose, you turn to leave the Abbey.\n");
 		user.mission = "abbey"
 		town.townsquare(res,convo);
 	} else if (temp.includes('decline')) {

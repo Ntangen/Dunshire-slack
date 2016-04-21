@@ -30,6 +30,7 @@ stew = false;
 drinkvar=false;
 channel=undefined;
 aturns=0;
+missioncomplete=false;
 
 //////////////////////////////////////
 
