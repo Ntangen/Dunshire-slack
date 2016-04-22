@@ -152,10 +152,12 @@ afaith = function(res,convo,x){
 }
 
 abbeyheal = function(res,convo,x){
+	console.log("1");
 	console.log("res: " + res);
 	console.log("res.text: " + res.text);
 	var temp = res.text.toLowerCase();
 	if (x===1){
+		console.log("2");
 		if (temp.includes("change")){
 		convo.say(">Suit yourself, my child.");
 		convo.ask("The Abbey is quiet and solumn. What next? (Want a `reminder`?)", function(res,convo){
@@ -163,6 +165,7 @@ abbeyheal = function(res,convo,x){
 			    convo.next();
 			});
 		} else if (temp.includes("heal")) {
+			console.log("3");
 			if (user.gold>=65){
 				userInfo.hp = userInfo.level.maxhp;
 				userInfo.gold -= 65;
@@ -179,9 +182,11 @@ abbeyheal = function(res,convo,x){
 				});
 			}
 		} else {
+			console.log("4");
 			convo.repeat();
 		}
 	} else {
+		console.log("5");
 		convo.say(">Do you require our aid to revive your health, my child? We stand ready to assist. All we ask is a small donation for... expenses. You understand, I'm sure.");
 		convo.ask("Do you ask the Cleric to `heal` you completely for *65 gold*, or `change` your mind?", function(err,res){
 			abbeyheal(res,convo,1);
