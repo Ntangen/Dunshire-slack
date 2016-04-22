@@ -68,8 +68,10 @@ hunt = function(res,convo,x){
 		// abbey mission - hunting bandits
 		if (aturns===0){
 			convo.say("Following the Cleric's tip, you head east in the woods, hoping to find some sign of the thieves who stole the Abbey's censer.");
+			hunt(res,convo);
 		} else if (aturns===1){
 			convo.say("You're tracking the thieves' trail! Their camp can't be too far away...");
+			hunt(res,convo);
 		} else if (aturns===2){
 			convo.say("You round a corner, and there they are! The two common-looking thieves have been expecting you - and their shortswords are already unsheathed. You see the Cleric's censer behind them in a bag! \nThe bandits rush towards you!");
 			monster = beasts.beasts.lev1b;
