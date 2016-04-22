@@ -152,7 +152,9 @@ afaith = function(res,convo,x){
 }
 
 abbeyheal = function(res,convo,x){
-	var temp = res.text.toLowerCase();
+	console.log("res: " + res);
+	console.log("res.text: " + res.text);
+	// var temp = res.text.toLowerCase();
 	if (x===1){
 		if (temp.includes("change")){
 		convo.say(">Suit yourself, my child.");
