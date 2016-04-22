@@ -66,7 +66,7 @@ abbeyrouter = function(res,convo,x){
 			afaith(res,convo);
 		} else if (temp.includes('rest')){
 			convo.say("You quietly take a seat in the Abbey's nave. You are contemplative and silent for a while.");
-			convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+			convo.ask("The Abbey is quiet and solumn. What next? (Want a `reminder`?)", function(res,convo){
 			    abbeyrouter(res,convo);
 			    convo.next();
 			});
@@ -136,7 +136,7 @@ abbeyup = function(res,convo,x){
 afaith = function(res,convo,x){
 	if (x===1){
 		convo.say("The Cleric smiles warmly and grasps your arm. \n>Truly, you honor us, child. But you are as yet inexperienced. Ask again when you achieve the level of Challenger - and we will consider your worthiness for the community of The Faithful.");
-			convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+			convo.ask("The Abbey is quiet and solumn. What next? (Want a `reminder`?)", function(res,convo){
 			    abbeyrouter(res,convo);
 			    convo.next();
 			});
@@ -174,7 +174,7 @@ abbeyheal = function(res,convo,x){
 	if (x===1){
 		if (temp.includes("change")){
 		convo.say(">Suit yourself, my child.");
-		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+		convo.ask("The Abbey is quiet and solumn. What next? (Want a `reminder`?)", function(res,convo){
 			    abbeyrouter(res,convo);
 			    convo.next();
 			});
@@ -183,13 +183,13 @@ abbeyheal = function(res,convo,x){
 				userInfo.hp = userInfo.level.maxhp;
 				userInfo.gold -= 65;
 				convo.say("The Cleric hurries you over to an empty bench, and gives you an infusion from a vial hidden behind the altar. You breathe a deep sigh of relief as your health comes rushing back. You hardly notice that your gold pouch is a little lighter.");
-				convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+				convo.ask("The Abbey is quiet and solumn. What next? (Want a `reminder`?)", function(res,convo){
 				    abbeyrouter(res,convo);
 				    convo.next();
 				});
 			} else if (user.gold<65){
 				convo.say("The Cleric stammers uncomfortably. \n>You, ahem... seem to have misplaced your funds, my child. When you find them, please return so we can heal your wounds.")
-				convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+				convo.ask("The Abbey is quiet and solumn. What next? (Want a `reminder`?)", function(res,convo){
 				    abbeyrouter(res,convo);
 				    convo.next();
 				});
@@ -199,7 +199,7 @@ abbeyheal = function(res,convo,x){
 		}
 	} else {
 		convo.say(">Do you require our aid to revive your health, my child? We stand ready to assist. All we ask is a small donation for... expenses. You understand, I'm sure.");
-		convo.ask("Do you ask the Cleric to `heal` you completely for *65 gold, or `change` your mind?*", function(err,res){
+		convo.ask("Do you ask the Cleric to `heal` you completely for *65 gold*, or `change` your mind?", function(err,res){
 			abbeyheal(res,convo,1);
 			convo.next();
 		});
