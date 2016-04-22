@@ -36,11 +36,11 @@ missioncomplete=false;
 
 // boring stuff
 
-// var http = require('http');
-// http.createServer(function (req, res) {
-//     res.writeHead(200, {'Content-Type': 'text/plain'});
-//     res.send('it is running\n');
-// }).listen(process.env.PORT || 5000);
+var http = require('http');
+http.createServer(function (req, res) {
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.send('it is running\n');
+}).listen(process.env.PORT || 5000);
 
 function onInstallation(bot, installer) {
     if (installer) {
@@ -96,10 +96,12 @@ controller.on('rtm_close', function (bot) {
 // here's where the magic happens
 
 controller.on('bot_channel_join', function (bot, message) {
+    console.log("channel join");
     bot.reply(message, "Thanks for inviting me to the channel! I'll give more instructions later.");
 });
 
 controller.on('mention', function (bot,message) {
+    console.log("mention in channel");
     bot.reply(message, "Greetings, fellow wanderers. If you'd like to enter the village of Coneshire, just direct message me.");
 });
 
