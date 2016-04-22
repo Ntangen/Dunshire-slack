@@ -375,7 +375,7 @@ quit = function(res,convo){
     var temp = res.text.toLowerCase();
     convo.say("*-------------------------------------T H E  F I E L D S-------------------------------------*");
     convo.say("You make camp for the night and settle in.");
-    convo.say("See you tomorrow, fellow wanderer.");
+    convo.say("*See you tomorrow, fellow wanderer.*");
     convo.next();
 }
 
