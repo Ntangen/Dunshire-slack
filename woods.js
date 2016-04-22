@@ -65,6 +65,7 @@ woodsrouter = function(res, convo){
 
 hunt = function(res,convo,x){
 	if (x===1){
+		// abbey mission - hunting bandits
 		if (aturns===0){
 			convo.say("Following the Cleric's tip, you head east in the woods, hoping to find some sign of the thieves who stole the Abbey's censer.");
 		} else if (aturns===1){
@@ -89,19 +90,21 @@ hunt = function(res,convo,x){
 		// (user.mission==="grannon" && Math.random()>0.9){
 		granfight();
 		// return here?
+	} else {
+		// your typical fight
+		monster = beasts.chooseBeastLevel();
+		mhp = monster.hp;
+		console.log("monster choice: " + monster.name);
+		convo.say("You hear a rustling nearby. Something draws near. You make ready as you turn your head and see...\n" +
+			"*A " + monster.name + " approaches!* _What do you do?_\n" +
+			"```Your hitpoints: " + user.hp + "\n" +
+			monster.name +"'s hitpoints: " + mhp + "```"
+			);
+		convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+			woodsfightrouter(res,convo);
+			convo.next();
+		});
 	}
-	monster = beasts.chooseBeastLevel();
-	mhp = monster.hp;
-	console.log("monster choice: " + monster.name);
-	convo.say("You hear a rustling nearby. Something draws near. You make ready as you turn your head and see...\n" +
-		"*A " + monster.name + " approaches!* _What do you do?_\n" +
-		"```Your hitpoints: " + user.hp + "\n" +
-		monster.name +"'s hitpoints: " + mhp + "```"
-		);
-	convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
-		woodsfightrouter(res,convo);
-		convo.next();
-	});
 }
 
 woodsfightrouter = function(res,convo,x){
