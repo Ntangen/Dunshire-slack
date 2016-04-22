@@ -134,6 +134,7 @@ abbeyup = function(res,convo,x){
 }
 
 afaith = function(res,convo,x){
+	var temp = res.text.toLowerCase();
 	if (x===1){
 		convo.say("The Cleric smiles warmly and grasps your arm. \n>Truly, you honor us, child. But you are as yet inexperienced. Ask again when you achieve the level of Challenger - and we will consider your worthiness for the community of The Faithful.");
 			convo.ask("The Abbey is quiet and solumn. What next? (Want a `reminder`?)", function(res,convo){
@@ -142,30 +143,11 @@ afaith = function(res,convo,x){
 			});
 		} // add faithful stuff here
 	else {
-		var temp = res.text.toLowerCase();
 		convo.say(">The Faithful are an order devoted to righteousness and the True Path. We also help our brothers and sisters in Faith however we can.");
-		convo.ask(">Are you, my child, interested in one day taking the Cowl of our Faith?", [
-	        {
-	            pattern: bot.utterances.yes,
-	            callback: function(res,convo){
-	                afaith(res,convo,1);
-	                convo.next();
-	           }
-	        },
-	        { 
-	            pattern: bot.utterances.no,
-	            callback: function(res,convo){
-	                afaith(res,convo,1)
-	                convo.next();
-	           }
-	        },
-	        { 
-	            default: true,
-	            callback: function(res,convo){
-	                convo.repeat();
-	           }
-	        }
-	        ]);
+		convo.ask(">Are you, my child, interested in one day taking the Cowl of our Faith?", function(res,convo){
+			afaith(res,convo,1);
+			convo.next();
+		});
 	}
 }
 
