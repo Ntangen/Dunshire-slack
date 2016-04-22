@@ -84,7 +84,7 @@ hunt = function(res,convo,x){
 				woodsfight(res,convo,1)
 			} else {
 				// monster gets first shot
-				output(4, "The " + monster.name + " are too fast for you, and manage to strike first!");
+				convo.say("The " + monster.name + " are too fast for you, and manage to strike first!");
 				woodsfight(res,convo,2)
 			}
 		}
