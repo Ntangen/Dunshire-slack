@@ -29,7 +29,7 @@ allNames = "";
 stew = false;
 drinkvar=false;
 channel=undefined;
-aturns=0;
+aturns=2;
 missioncomplete=false;
 
 //////////////////////////////////////
@@ -183,18 +183,17 @@ controller.on('direct_message', function (bot, message) {
 
 });
 
-controller.hears('stop','direct_message',function(bot,message){
-    stopper = function(res,convo){
+controller.hears('stop',['direct_message'],function(bot,message){
+
+    bot.startConversation(message, function(err,convo){
         convo.say("🚨Yikes!🚨 We're going to try to stop this conversation now.");
         convo.stop();
-    }
-
-    bot.startConversation(message,stopper)
+    });
 });
 
 enter = function(res, convo){
     convo.say("Great! Let's go! 🐲");
-    convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. \nYou open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
+    convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. \n\nYou open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
     convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
     console.log("user.knownPlayer is set to " + user.knownPlayer);
     if (!user.knownPlayer){

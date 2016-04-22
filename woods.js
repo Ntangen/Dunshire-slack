@@ -138,7 +138,7 @@ woodsfight = function(res,convo,turn){
 			}
 			else { 
 				console.log("kill");
-				convo.say("You vanquished the " + monster.name + "!");
+				convo.say("With a heroic blow, you vanquish the " + monster.name + "!");
 				woodsreward(res,convo);
 			}	
 		} else if (result==="zip"){
@@ -319,10 +319,10 @@ events = function(res,convo){
 woodsreward = function(res,convo){
 	// add gloating here
 	if (monster === beasts.beasts.lev1b){
-		convo.say("You parry their thrust and make a final, skillful blow with your " + userInfo.items.weapon.name + ", slaying the two thieves! They will never burlarize the Abbey ever again. \nYou collect their bag, feeling the Cleric's censer inside. You should return it to the *Abbey* right away!");
+		convo.say("You parry their thrust and make a final, skillful blow with your " + user.items.weapon.name + ", slaying the two thieves! They will never burlarize the Abbey ever again. \nYou collect their bag, feeling the Cleric's censer inside. You should return it to the *Abbey* right away!");
 		missioncomplete = true;
 		monster=undefined;
-		userInfo.turnsToday -= turns;
+		user.turnsToday -= turns;
 		turns = 0;
 		woodsmenu(res,convo);
 	} else {
