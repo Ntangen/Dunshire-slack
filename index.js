@@ -29,7 +29,7 @@ allNames = "";
 stew = false;
 drinkvar=false;
 channel=undefined;
-aturns=0;
+aturns=2;
 missioncomplete=false;
 
 //////////////////////////////////////
