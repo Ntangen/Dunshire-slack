@@ -36,10 +36,23 @@ missioncomplete=false;
 
 // boring stuff
 
-var http = require('http');
-http.createServer(function (req, res) {
-    res.json({ "status": "it is running" });
-}).listen(process.env.PORT || 5000);
+// var http = require('http');
+// http.createServer(function (req, res) {
+//     res.json({ "status": "it is running" });
+// }).listen(process.env.PORT || 5000);
+
+controller.setupWebserver(process.env.port,function(err,webserver) {
+  controller.createWebhookEndpoints(controller.webserver);
+
+  controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
+    if (err) {
+      res.status(500).send('ERROR: ' + err);
+    } else {
+      res.send('Success!');
+    }
+  });
+});
+
 
 function onInstallation(bot, installer) {
     if (installer) {
