@@ -41,19 +41,6 @@ missioncomplete=false;
 //     res.json({ "status": "it is running" });
 // }).listen(process.env.PORT || 5000);
 
-controller.setupWebserver(process.env.port,function(err,webserver) {
-  controller.createWebhookEndpoints(controller.webserver);
-
-  controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
-    if (err) {
-      res.status(500).send('ERROR: ' + err);
-    } else {
-      res.send('Success!');
-    }
-  });
-});
-
-
 function onInstallation(bot, installer) {
     if (installer) {
         bot.startPrivateConversation({user: installer}, function (err, convo) {
@@ -95,6 +82,20 @@ if (process.env.TOKEN || process.env.SLACK_TOKEN) {
     console.log('Error: If this is a custom integration, please specify TOKEN in the environment. If this is an app, please specify CLIENTID, CLIENTSECRET, and PORT in the environment');
     process.exit(1);
 }
+
+
+controller.setupWebserver(process.env.port,function(err,webserver) {
+  controller.createWebhookEndpoints(controller.webserver);
+
+  controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
+    if (err) {
+      res.status(500).send('ERROR: ' + err);
+    } else {
+      res.send('Success!');
+    }
+  });
+});
+
 
 controller.on('rtm_open', function (bot) {
     console.log('** The RTM api just connected!');
