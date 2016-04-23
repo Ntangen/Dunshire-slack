@@ -41,6 +41,7 @@ missioncomplete=false;
 //     res.json({ "status": "it is running" });
 // }).listen(process.env.PORT || 5000);
 
+
 function onInstallation(bot, installer) {
     if (installer) {
         bot.startPrivateConversation({user: installer}, function (err, convo) {
@@ -74,14 +75,7 @@ if (process.env.TOKEN || process.env.SLACK_TOKEN) {
     console.log("this is a custom integration");
     var customIntegration = require('./lib/custom_integrations');
     var token = (process.env.TOKEN) ? process.env.TOKEN : process.env.SLACK_TOKEN;
-    // var controller = customIntegration.configure(token, config, onInstallation);
-    var controller = customIntegration.configureSlackApp(
-      {
-        clientId: process.env.clientId,
-        clientSecret: process.env.clientSecret,
-        scopes: ['bot'],
-      }
-    );
+    var controller = customIntegration.configure(token, config, onInstallation);
 } else if (process.env.CLIENT_ID && process.env.CLIENT_SECRET && process.env.PORT) {
     //Treat this as an app
     var app = require('./lib/apps');
@@ -104,7 +98,9 @@ if (process.env.TOKEN || process.env.SLACK_TOKEN) {
 //   }
 // );
 
-controller.setupWebserver((process.env.port || 5000),function(err,webserver) {
+var http = require('http');
+http.createServer(function (req, res) {
+    
   controller.createWebhookEndpoints(controller.webserver);
 
   controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
@@ -114,7 +110,7 @@ controller.setupWebserver((process.env.port || 5000),function(err,webserver) {
       res.send('Success!');
     }
   });
-});
+}).listen(process.env.PORT || 5000);
 
 
 controller.on('rtm_open', function (bot) {
