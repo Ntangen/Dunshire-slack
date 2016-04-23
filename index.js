@@ -99,23 +99,23 @@ if (process.env.TOKEN || process.env.SLACK_TOKEN) {
 // );
 
 
-var http = require('http');
-http.createServer(function (req, res) {
-    res.json({ "status": "it is running" });
-}).listen(process.env.PORT);
+// var http = require('http');
+// http.createServer(function (req, res) {
+//     res.json({ "status": "it is running" });
+// }).listen(process.env.PORT);
 
 console.log("port: " + process.env.PORT);
 
-controller.setupWebserver(process.env.PORT,function(err,webserver) {  
-    if (err) console.log("err: " + err);
-    controller.createWebhookEndpoints(controller.webserver);
-    controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
-        if (err) {
-          res.status(500).send('ERROR: ' + err);
-        } else {
-              res.send('Success!');
-        }
-    });
+controller.setupWebserver(process.env.port,function(err,webserver) {
+  controller.createWebhookEndpoints(controller.webserver);
+
+  controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
+    if (err) {
+      res.status(500).send('ERROR: ' + err);
+    } else {
+      res.send('Success!');
+    }
+  });
 });
 
 
