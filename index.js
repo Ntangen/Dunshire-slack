@@ -101,18 +101,18 @@ if (process.env.TOKEN || process.env.SLACK_TOKEN) {
 
 var http = require('http');
 http.createServer(function (req, res) {
+    res.json({ "status": "it is running" });
+}).listen(process.env.PORT || 5000);
 
-    controller.setupWebserver((process.env.port || 5000),function(err,webserver) {
-    
-        controller.createWebhookEndpoints(controller.webserver);
-        controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
-            if (err) {
-              res.status(500).send('ERROR: ' + err);
-            } else {
-                  res.send('Success!');
-            }
-        });
-    }).listen(process.env.PORT || 5000);
+controller.setupWebserver((process.env.PORT || 5000),function(err,webserver) {  
+    controller.createWebhookEndpoints(controller.webserver);
+    controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
+        if (err) {
+          res.status(500).send('ERROR: ' + err);
+        } else {
+              res.send('Success!');
+        }
+    });
 });
 
 
