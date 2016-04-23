@@ -104,7 +104,10 @@ http.createServer(function (req, res) {
     res.json({ "status": "it is running" });
 }).listen(process.env.PORT || 5000);
 
+console.log("port: " + process.env.PORT);
+
 controller.setupWebserver((process.env.PORT || 5000),function(err,webserver) {  
+    if (err) console.log("err: " + err);
     controller.createWebhookEndpoints(controller.webserver);
     controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
         if (err) {
