@@ -106,7 +106,7 @@ if (process.env.TOKEN || process.env.SLACK_TOKEN) {
 
 console.log("port: " + process.env.PORT);
 
-controller.setupWebserver(process.env.port,function(err,webserver) {
+controller.setupWebserver(process.env.PORT,function(err,webserver) {
   controller.createWebhookEndpoints(controller.webserver);
 
   controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
