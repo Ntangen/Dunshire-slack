@@ -59,13 +59,13 @@ function onInstallation(bot, installer) {
  * Configure the persistence options
  */
 
-var config = {};
-if (process.env.MONGOLAB_URI) {
-    var BotkitStorage = require('botkit-storage-mongo');
-    config = {
-        storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
-    };
-} 
+// var config = {};
+// if (process.env.MONGOLAB_URI) {
+//     var BotkitStorage = require('botkit-storage-mongo');
+//     config = {
+//         storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
+//     };
+// } 
 
 // initialization
 
