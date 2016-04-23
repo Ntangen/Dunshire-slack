@@ -98,6 +98,19 @@ if (process.env.TOKEN || process.env.SLACK_TOKEN) {
 //   }
 // );
 
+
+controller.setupWebserver(process.env.port,function(err,webserver) {
+  controller.createWebhookEndpoints(controller.webserver);
+
+  controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
+    if (err) {
+      res.status(500).send('ERROR: ' + err);
+    } else {
+      res.send('Success!');
+    }
+  });
+});
+
 var http = require('http');
 http.createServer(function (req, res) {
     
