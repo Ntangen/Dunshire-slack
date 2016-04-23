@@ -84,7 +84,7 @@ if (process.env.TOKEN || process.env.SLACK_TOKEN) {
 }
 
 
-controller.setupWebserver(process.env.port,function(err,webserver) {
+controller.setupWebserver((process.env.port || 5000),function(err,webserver) {
   controller.createWebhookEndpoints(controller.webserver);
 
   controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
