@@ -38,8 +38,7 @@ missioncomplete=false;
 
 var http = require('http');
 http.createServer(function (req, res) {
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.send('it is running\n');
+    res.json({ "status": "it is running" });
 }).listen(process.env.PORT || 5000);
 
 function onInstallation(bot, installer) {
