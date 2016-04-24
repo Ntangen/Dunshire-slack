@@ -86,6 +86,10 @@ if (process.env.MONGOLAB_URI) {
 //     process.exit(1);
 // }
 
+console.log("clientid: " + process.env.CLIENT_ID);
+console.log("client sec: " + process.env.CLIENT_SECRET);
+console.log("port: " + process.env.PORT);
+
 var controller = Botkit.slackbot(
     process.env.PORT, process.env.CLIENT_ID, process.env.CLIENT_SECRET, config, onInstallation).configureSlackApp(
     {
@@ -99,8 +103,6 @@ var controller = Botkit.slackbot(
 // http.createServer(function (req, res) {
 //     res.json({ "status": "it is running" });
 // }).listen(process.env.PORT);
-
-console.log("port: " + process.env.PORT);
 
 controller.setupWebserver(process.env.PORT,function(err,webserver) {
   controller.createWebhookEndpoints(controller.webserver);
