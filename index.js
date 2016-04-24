@@ -76,6 +76,10 @@ var controller = Botkit.slackbot(
     }
 );
 
+var bot = controller.spawn({
+    token: process.env.SLACK_TOKEN
+}).startRTM();
+
 controller.setupWebserver(process.env.PORT,function(err,webserver) {
   controller.createWebhookEndpoints(controller.webserver);
 
