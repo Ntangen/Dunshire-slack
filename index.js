@@ -89,8 +89,8 @@ if (process.env.MONGOLAB_URI) {
 var controller = Botkit.slackbot(
     process.env.PORT, process.env.CLIENT_ID, process.env.CLIENT_SECRET, config, onInstallation).configureSlackApp(
     {
-        clientId: process.env.clientId,
-        clientSecret: process.env.clientSecret,
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
         scopes: ['bot'],
     }
 );
