@@ -55,14 +55,6 @@ function onInstallation(bot, installer) {
  * Configure the persistence options
  */
 
-// var config = {};
-// if (process.env.MONGOLAB_URI) {
-//     var BotkitStorage = require('botkit-storage-mongo');
-//     config = {
-//         storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
-//     };
-// } 
-
 var Botkit = require('botkit'),
     firebaseStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI}),
     controller = Botkit.slackbot({
@@ -70,6 +62,14 @@ var Botkit = require('botkit'),
 });
 
 // initialization
+
+var config = {};
+if (process.env.MONGOLAB_URI) {
+    var BotkitStorage = require('botkit-storage-mongo');
+    config = {
+        storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
+    };
+} 
 
 var controller = Botkit.slackbot(
     process.env.CLIENT_ID, process.env.CLIENT_SECRET, config, onInstallation).configureSlackApp(
