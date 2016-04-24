@@ -2,6 +2,7 @@
 
 // get those modules
 
+Botkit = require('botkit');
 user = require('./lib/user');
 town = require('./town');
 tavern = require('./tavern');
