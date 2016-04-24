@@ -55,12 +55,6 @@ function onInstallation(bot, installer) {
  * Configure the persistence options
  */
 
-var Botkit = require('botkit'),
-    firebaseStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI}),
-    controller = Botkit.slackbot({
-        storage: firebaseStorage
-});
-
 // initialization
 
 var config = {};
@@ -71,12 +65,15 @@ if (process.env.MONGOLAB_URI) {
     };
 } 
 
+var mongo = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI});
+
 var controller = Botkit.slackbot(
     process.env.CLIENT_ID, process.env.CLIENT_SECRET, config, onInstallation).configureSlackApp(
     {
         clientId: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
         scopes: ['bot'],
+        storage: mongo,
     }
 );
 
@@ -91,6 +88,12 @@ controller.setupWebserver(process.env.PORT,function(err,webserver) {
     }
   });
 });
+
+// var Botkit = require('botkit'),
+//     firebaseStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI}),
+//     controller = Botkit.slackbot({
+//         storage: firebaseStorage
+// });
 
 
 controller.on('rtm_open', function (bot) {
