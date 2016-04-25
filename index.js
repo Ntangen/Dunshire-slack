@@ -67,9 +67,11 @@ if (process.env.MONGOLAB_URI) {
 
 var mongo = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI});
 
-var controller = Botkit.slackbot(
-    {storage: mongo}, process.env.CLIENT_ID, process.env.CLIENT_SECRET, config, onInstallation).configureSlackApp(
-    {
+// var controller = Botkit.slackbot(
+//     {storage: mongo}, process.env.CLIENT_ID, process.env.CLIENT_SECRET, config, onInstallation).configureSlackApp(
+//     {
+var controller = Botkit.slackbot({storage: mongo}).configureSlackApp(
+    {    
         clientId: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
         scopes: ['bot'],
