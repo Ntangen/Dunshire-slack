@@ -126,7 +126,6 @@ controller.storage.teams.all(function(err, teams) {
           console.log('Error connecting bot to Slack:', rtmErr);
           return;
         }
-        // botManager.track(bot);
       });
     });
   }
@@ -205,9 +204,7 @@ controller.on('direct_message', function (bot, message) {
             // grab some deets real quick, saves to user var
             bot.api.users.info({'user':user.userid},function(err,res){
                 user.username = res.user.name;
-                user.email = res.user.profile.email;
                 controller.storage.users.save({id: user.userid, user:user}, function(err,res){
-                    console.log("storage call checkin");
                     if (err) console.log("err: " + err);
                     else console.log("res: " + res);
                 });
@@ -247,8 +244,8 @@ enter = function(res, convo){
     convo.say("Great! Let's go! 🐲");
     convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. \n\nYou open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
     convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
-    console.log("user.knownPlayer is set to " + user.knownPlayer);
     if (!user.knownPlayer){
+        console.log("this is a new player");
         convo.ask("The Innkeeper grunts. \n>Well met, *" + user.username + "*. Haven't seen you around here before. You mean to introduce yourself, and begin your adventure in Coneshire?", [
         {
             pattern: convo.task.bot.utterances.yes,
@@ -275,6 +272,7 @@ enter = function(res, convo){
         ]);
     } else {
         // known user continuing their quest
+        console.log("this is a returning player");
         var temp = utility.dailyreboot();
         if (temp===2){
             convo.say("You remain dead. But don't worry - try back tomorrow!");
@@ -294,6 +292,7 @@ newplayer = function(res,convo){
             controller.storage.users.save({id: userid, user:user}, function(err,res){
                 if (err) console.log("err: " + err);
                 else console.log("res: " + res);
+                utility.dailyreboot();
                 newplayer2(res,convo);
                 convo.next();
             });

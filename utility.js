@@ -69,6 +69,7 @@ module.exports = {
 			user.hp = user.level.maxhp;
 			user.turnsToday = 20;
 			user.lastPlayed = today;
+			user.logins++
 			return 1; 
 		} else if (user.hp <= 0) {
 			// user is dead
