@@ -122,7 +122,7 @@ controller.storage.teams.all(function(err, teams) {
     logger.info('Connecting ' + teams.length + ' teams');
 
     teams.forEach(function(team){
-      let bot = controller.spawn(team).startRTM(function(rtmErr) {
+      var bot = controller.spawn(team).startRTM(function(rtmErr) {
         if (rtmErr) {
           logger.warn('Error connecting bot to Slack:', rtmErr);
           return;
