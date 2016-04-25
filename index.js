@@ -50,11 +50,6 @@ function onInstallation(bot, installer) {
     }
 }
 
-
-/**
- * Configure the persistence options
- */
-
 // initialization
 
 var config = {};
@@ -67,9 +62,6 @@ if (process.env.MONGOLAB_URI) {
 
 var mongo = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI});
 
-// var controller = Botkit.slackbot(
-//     {storage: mongo}, process.env.CLIENT_ID, process.env.CLIENT_SECRET, config, onInstallation).configureSlackApp(
-//     {
 var controller = Botkit.slackbot({storage: mongo}).configureSlackApp(
     {    
         clientId: process.env.CLIENT_ID,
@@ -77,12 +69,6 @@ var controller = Botkit.slackbot({storage: mongo}).configureSlackApp(
         scopes: ['bot'],
     }
 );
-
-// var bot = controller.spawn({
-//     token: process.env.SLACK_TOKEN
-// }).startRTM();
-
-console.log("CHECKIN");
 
 controller.setupWebserver(process.env.PORT,function(err,webserver) {
   controller.createWebhookEndpoints(controller.webserver);
@@ -95,7 +81,6 @@ controller.setupWebserver(process.env.PORT,function(err,webserver) {
     }
   });
 });
-
 
 // just a simple way to make sure we don't
 // connect to the RTM twice for the same team
@@ -119,8 +104,7 @@ controller.on('create_bot',function(bot,config) {
         if (err) {
           console.log(err);
         } else {
-          convo.say('I am a bot that has just joined your team');
-          convo.say('You must now /invite me to a channel so that I can be of use!');
+          convo.say('Greetings, wanderer. \nYou must now */invite* me to a channel so that I can be of use!');
         }
       });
 
