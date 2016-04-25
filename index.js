@@ -113,6 +113,25 @@ controller.on('create_bot',function(bot,config) {
 
 });
 
+controller.storage.teams.all(function(err, teams) {
+  if (err) {
+    logger.warn(err)
+  }
+
+  if(teams && teams.length){
+    logger.info('Connecting ' + teams.length + ' teams');
+
+    teams.forEach(function(team){
+      let bot = controller.spawn(team).startRTM(function(rtmErr) {
+        if (rtmErr) {
+          logger.warn('Error connecting bot to Slack:', rtmErr);
+          return;
+        }
+        botManager.track(bot);
+      });
+    });
+  }
+});
 
 //////////
 
