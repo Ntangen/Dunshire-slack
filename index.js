@@ -126,7 +126,7 @@ controller.storage.teams.all(function(err, teams) {
           console.log('Error connecting bot to Slack:', rtmErr);
           return;
         }
-        botManager.track(bot);
+        // botManager.track(bot);
       });
     });
   }
