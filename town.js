@@ -21,8 +21,10 @@ townrouter = function(res,convo){
 	quicksave();
 	var temp = res.text.toLowerCase();
     if (temp.includes('hear')){
-    	convo.say("This will do things.");
-        // hear(res.convo);
+    	convo.ask("The town square bustles around you. \nWhat next? (Want a `reminder`?)", function(res,convo){
+		    townrouter(res,convo);
+		    convo.next();
+		});
     } else if (temp.includes('tavern')){
         tavern.tavern(res,convo);
     } else if (temp.includes('smither')){
