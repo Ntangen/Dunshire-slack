@@ -232,7 +232,7 @@ enter = function(res, convo){
     convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. \n\nYou open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
     convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
     if (!user.knownPlayer){
-        console.log("this is a new player");
+        console.log("setting up new player: " + user.username);
         convo.ask("The Innkeeper grunts. \n>Well met, *" + user.username + "*. Haven't seen you around here before. You mean to introduce yourself, and begin your adventure in Coneshire?", [
         {
             pattern: convo.task.bot.utterances.yes,
@@ -325,6 +325,7 @@ newplayer2 = function(res,convo){
 enter2 = function(res,convo){
     // instructions or town
     var temp = res.text.toLowerCase();
+    user.knownPlayer = true;
     if (temp==="instructions"){
         convo.ask("The Innkeeper nods his head. \n>Okay then. You probably lots of questions. What topic would you like explained? Let me pour you some ale, and I'll explain concepts like the `village` of Coneshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Coneshire.\"", function(res, convo){
             instructions(res,convo);
