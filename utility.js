@@ -62,6 +62,7 @@ module.exports = {
 	},
 
 	dailyreboot: function(){
+		console.log("player reboot");
 		var date = new Date();
 		var today = date.getDate(); 
 		if(user.lastPlayed != today){
