@@ -182,8 +182,9 @@ controller.on('direct_message', function (bot, message) {
     controller.storage.users.get(user.userid, function(err,user_data){
         if (err) console.log("err: " + err);
         console.log("user.userid: " + user.userid);
+        console.log("user props: " + Object.getOwnPropertyNames(user_data));
         var temp = user_data;
-        if (temp.username===undefined || temp.username===null){
+        if (temp===undefined || temp===null){
             // no record for this user, so we'll set one up
             user.knownPlayer = false
             console.log("this is not a known player");
