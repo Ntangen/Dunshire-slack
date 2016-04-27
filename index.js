@@ -279,7 +279,7 @@ newplayer = function(res,convo){
             controller.storage.users.save({id: userid, user:user}, function(err,res){
                 if (err) console.log("err: " + err);
                 else console.log("res: " + res);
-                utility.dailyreboot();
+                // utility.dailyreboot();
                 newplayer2(res,convo);
                 convo.next();
             });
@@ -287,6 +287,7 @@ newplayer = function(res,convo){
 }
 
 newplayer2 = function(res,convo){
+    console.log("res: " + res.text);
     var temp = res.text.toLowerCase();
     if (temp.includes("charisma")){
         user.attributes.charisma += 1;
