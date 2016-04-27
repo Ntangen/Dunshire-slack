@@ -199,10 +199,17 @@ controller.on('direct_message', function (bot, message) {
             // found a record for user
             console.log("found a record!");
             user = temp.user
-            if (user.drinkflag===true){
-                drinkvar=true;
-            }
-            console.log("user.username: " + user.username);
+            bot.api.users.info({'user':user.userid},function(err,res){
+                user.username = res.user.name;
+                console.log("user.username: " + user.username);
+                controller.storage.users.save({id: user.userid, user:user}, function(err,res){
+                    if (err) console.log("err: " + err);
+                    else console.log("res: " + res);
+                    if (user.drinkflag===true){
+                        drinkvar=true;
+                    }
+                });
+            });
         }
     });
 
