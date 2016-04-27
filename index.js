@@ -183,7 +183,7 @@ controller.on('direct_message', function (bot, message) {
         if (err) console.log("err: " + err);
         console.log("user.userid: " + user.userid);
         var temp = user_data;
-        if (temp===undefined || temp===null){
+        if (temp.username===undefined || temp.username===null){
             // no record for this user, so we'll set one up
             user.knownPlayer = false
             console.log("this is not a known player");
@@ -287,7 +287,6 @@ newplayer = function(res,convo){
 }
 
 newplayer2 = function(res,convo){
-    console.log("res: " + res.text);
     var temp = res.text.toLowerCase();
     if (temp.includes("charisma")){
         user.attributes.charisma += 1;
