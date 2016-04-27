@@ -276,7 +276,7 @@ enter = function(res, convo){
 newplayer = function(res,convo){
     convo.say("The Innkeeper smacks the long bench with his palm and grins. \n>Excellent! I wish you luck and good fortune on your journies to come in the village of Coneshire - and the lands beyond... \n>As a last step before you go, you may choose to add 1 point to any of your four key character attributes. Which do you choose?");
     convo.ask("`Charisma`: this will help you get along with other characters. \n`Luck`: this will grant you good fortune. \n`Mysticism`: this will build your mental fortitude. \n`Strength`: this will make you more powerful in combat.", function(res,convo){
-            controller.storage.users.save({id: userid, user:user}, function(err,output){
+            controller.storage.users.save({id: user.userid, user:user}, function(err,output){
                 if (err) console.log("err: " + err);
                 else console.log("output: " + output);
                 // utility.dailyreboot();
