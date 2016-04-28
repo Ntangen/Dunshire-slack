@@ -142,7 +142,8 @@ controller.on('mention', function (bot,message) {
 
 controller.on('direct_message', function (bot, message) {
 
-    user.userid = message.user;
+    userid = message.user;
+    user.userid = userid;
     team = message.team;
 
     // welcome function
@@ -179,9 +180,10 @@ controller.on('direct_message', function (bot, message) {
     };
 
     // get user collection; check knownPlayer flag; if none, set basic info
-    controller.storage.users.get(user.userid, function(err,user_data){
+    controller.storage.users.get(userid, function(err,user_data){
         if (err) console.log("err: " + err);
         console.log("user.userid: " + user.userid);
+        console.log("user_data: " + user_data);
         if (user_data===undefined || user_data===null || user_data.user.username===undefined){
             // no record for this user, so we'll set one up
             user.knownPlayer = false
@@ -451,7 +453,7 @@ grabAllNames = function(x,y){
 }
 
 quicksave = function(){
-    controller.storage.users.save({id: user.userid, user:user}, function(err,res){
+    controller.storage.users.save({id: userid, user:user}, function(err,res){
         console.log("user save");
         if (err) console.log("save err: " + err);
     });
