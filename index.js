@@ -132,7 +132,7 @@ controller.on('rtm_close', function (bot) {
 
 controller.on('bot_channel_join', function (bot, message) {
     console.log("channel join");
-    bot.reply(message, "Thanks for inviting me to the channel! I'll give more instructions later.");
+    bot.reply(message, "Thanks for inviting me to the channel!");
 });
 
 controller.on('mention', function (bot,message) {
@@ -338,6 +338,10 @@ enter2 = function(res,convo){
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Coneshire.");
         quicksave();
         town.townsquare(res, convo);
+    } else if (temp==="test") {
+        convo.say("Okay, we're gonna try something");
+        eventsave("activity here");
+        town.townsquare(res,convo);
     } else {
         convo.repeat();
     }
@@ -449,6 +453,13 @@ quicksave = function(){
     controller.storage.users.save({id: user.userid, user:user}, function(err,res){
         console.log("user save");
         if (err) console.log("save err: " + err);
+    });
+}
+
+eventsave = function(x){
+    controller.storage.activity.save({id: "4-27", key:x}, function(err,res){
+        if (err) console.log("save err: " + err);
+        else console.log("successfully saved activity: " + res);
     });
 }
 
