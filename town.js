@@ -119,14 +119,12 @@ townusegear = function(res,convo){
 	}
 }
 
-// duelflagger = function(){
-
-// }
-
 crier = function(){
-	var temp = monthday.split("-");
-	var yesterday = temp[1]-1
-	var lastdate = month + "-" + yesterday;
+	// working on eventsave function
+
+	// var temp = monthday.split("-");
+	// var yesterday = temp[1]-1
+	// var lastdate = month + "-" + yesterday;
 }
 
 

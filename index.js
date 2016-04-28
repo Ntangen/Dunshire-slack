@@ -326,6 +326,7 @@ enter2 = function(res,convo){
     // instructions or town
     var temp = res.text.toLowerCase();
     user.knownPlayer = true;
+    // new player event
     if (temp==="instructions"){
         convo.ask("The Innkeeper nods his head. \n>Okay then. You probably lots of questions. What topic would you like explained? Let me pour you some ale, and I'll explain concepts like the `village` of Coneshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Coneshire.\"", function(res, convo){
             instructions(res,convo);
@@ -457,9 +458,25 @@ quicksave = function(){
 }
 
 eventsave = function(x){
-    controller.storage.activity.save({id: "4-27", key:x}, function(err,res){
-        if (err) console.log("save err: " + err);
-        else console.log("successfully saved activity: " + res);
+    var temp = utility.todaysdate();
+    controller.storage.activity.get(temp, function(err,res){
+        if (err) console.log("event get err: " + err);
+        else if (res===null || res===undefined) {
+            // it's a new day - nothing here yet
+            // start array and put something in it
+            controller.storage.activity.save({id:temp, key:array}, function(err){
+                if (err) console.log("event save err: " + err);
+                else console.log("event save success");
+            });
+        } else {
+            // adding to the day's events
+            // push stuff to an array here
+            // push to res, which is an events array
+            controller.storage.activity.save({id:temp, key:array}, function(err){
+                if (err) console.log("event save err: " + err);
+                else console.log("event save success");
+            });
+        }
     });
 }
 

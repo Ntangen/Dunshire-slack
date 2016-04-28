@@ -63,7 +63,7 @@ module.exports = {
 
 	dailyreboot: function(){
 		console.log("player reboot");
-		var today = todaysdate("day");
+		var today = utility.todaysdate("day");
 		if(user.lastPlayed != today){
 			// user did not play today, so get 'em going with full hp & turns again
 			user.hp = user.level.maxhp;
@@ -121,18 +121,21 @@ module.exports = {
 	    returnvar += "and a bit of dust.\n";
 	    return returnvar;
 	    }
+	},
+
+	todaysdate: function(x){
+		var date = new Date();
+		var month = date.getMonth();
+		var day = date.getDate(); 
+		var monthday = month + "-" + day;
+		if (x==="day"){
+			// returns just day
+			return day
+		} else {
+			// returns MM-DD format
+			return monthday
+		}
 	}
 }
 
-todaysdate = function(x){
-	var date = new Date();
-	var month = date.getMonth();
-	var day = date.getDate(); 
-	var monthday = month + "-" + day;
-	if (x==="day"){
-		return day
-	} else {
-		return monthday
-	}
-}
 
