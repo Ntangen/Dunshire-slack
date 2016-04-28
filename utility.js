@@ -121,18 +121,18 @@ module.exports = {
 	    returnvar += "and a bit of dust.\n";
 	    return returnvar;
 	    }
-	},
+	}
+}
 
-	todaysdate: function(x){
-		var date = new Date();
-		var month = date.getMonth();
-		var day = date.getDate(); 
-		var monthday = month + "-" + day;
-		if (x==="day"){
-			return day
-		} else {
-			return monthday
-		}
+todaysdate = function(x){
+	var date = new Date();
+	var month = date.getMonth();
+	var day = date.getDate(); 
+	var monthday = month + "-" + day;
+	if (x==="day"){
+		return day
+	} else {
+		return monthday
 	}
 }
 
