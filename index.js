@@ -142,6 +142,8 @@ controller.on('mention', function (bot,message) {
 
 controller.on('direct_message', function (bot, message) {
 
+    console.log("xp: " + user.xp);
+
     userid = message.user;
     user.userid = userid;
     team = message.team;
@@ -192,7 +194,7 @@ controller.on('direct_message', function (bot, message) {
             bot.api.users.info({'user':user.userid},function(err,res){
                 user.username = res.user.name;
                 console.log("user.username: " + user.username);
-                controller.storage.users.save({id: user.userid, user:user}, function(err,res){
+                controller.storage.users.save({id: userid, user:user}, function(err,res){
                     if (err) console.log("err: " + err);
                     else console.log("res: " + res);
                 });
