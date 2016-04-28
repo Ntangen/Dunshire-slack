@@ -510,7 +510,7 @@ status = function(){
         "Gold: " + user.gold + "        Experience: " + user.xp + "\n" +
         "Weapon: " + user.items.weapon.name + "   Armor: " + user.items.armor.name + "\n" +
         "Magicks: " + ifmagic() + "\n" +
-        "Attributes: Charisma (" + user.attributes.luck + ") Mysticism (" + user.attributes.myst + ") Luck (" + user.attributes.luck + ") Strength (" + user.attributes.strength + ")\n" + 
+        "Attributes: Charisma (" + user.attributes.charisma + ") Mysticism (" + user.attributes.myst + ") Luck (" + user.attributes.luck + ") Strength (" + user.attributes.strength + ")\n" + 
         "Battle turns remaining today: " + user.turnsToday + "```");
 }
 
