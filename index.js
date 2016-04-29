@@ -488,13 +488,13 @@ savedrink = function(drinkobject){
     controller.storage.users.all(function(err, all_user_data) {
         for (i=0;i<all_user_data.length;i++){
             if (all_user_data[i].user.username===drinkobject.to) {
-                console.log("all_user data user userid: " + all_user_data[i].user.userid);
                 var temp = all_user_data[i].user.userid;
                 console.log("target userid: " + temp);
                 controller.storage.users.get(temp, function(err,user_data){
                     console.log("grabbed username: " + user_data.user.username)
                     var targetData = user_data.user;
                     targetData.drinks.recd.push(drinkobject);
+                    targetData.drinkflag = true;
                     controller.storage.users.save({id: temp, user:targetData},function(err,res){
                         if (err) console.log("err: " + err);
                         else console.log("target data saved");
