@@ -393,6 +393,7 @@ sendrouter3 = function(res,convo){
 sendrouter4 = function(res,convo) {
 	var temp = res.text.toLowerCase();
 	if (temp.includes("confirm")){
+		user.gold -= tempdrinkobject.type.gold;
 		convo.say("Dean takes the napkin and sets it behind the counter. \n>I'll pass on your message - and the drink!");
 		savedrink(tempdrinkobject);
 		convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){
