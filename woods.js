@@ -188,7 +188,7 @@ woodsfight = function(res,convo,turn){
 			convo.say("You have no knowledge of magicks yet!");
 			convo.repeat();
 		} else {
-			var temp = showmagic();
+			var temp = utility.showmagic();
 			convo.say(temp);
 			convo.ask("Enter the name of the magick you wish to lance, or use no magick at all and `attack` the old fashioned way.", function(res,convo){
 				woodsfightrouter(res,convo,3);
@@ -199,7 +199,7 @@ woodsfight = function(res,convo,turn){
 }
 
 woodsstatus = function(res,convo){
-	convo.say(status());
+	convo.say(utility.status());
 	convo.ask("The Dark Woods are quiet, but menacing. What next? (Want a `reminder`?)", function(res,convo){
 	    woodsrouter(res,convo);
 	    convo.next();

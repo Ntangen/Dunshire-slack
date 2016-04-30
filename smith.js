@@ -140,6 +140,7 @@ smithmerchconfirm = function(res,convo,x){
             convo.next();
         });
 	} else if (temp.includes("confirm")) {
+		sessionevents.minor.push["smithbuy"];
 		user.gold -= currentmerch.gold;
 		if (x===2){
 			console.log("pre - armor name: " + user.items.armor.name);

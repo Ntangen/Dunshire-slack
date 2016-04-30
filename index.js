@@ -14,6 +14,7 @@ smith = require('./smith');
 abbey = require('./abbey');
 items = require('./lib/items');
 levs = require('./lib/levels');
+events = require('./lib/events');
 utility = require('./utility');
 beasts = require('./lib/beasts');
 
@@ -32,6 +33,12 @@ drinkvar=false;
 channel=undefined;
 aturns=0;
 missioncomplete=false;
+sessionevents={
+    minor=["tavern","town","bank"],
+    majorflag=false,
+    major=[],
+    tobesaved=""
+};
 
 //////////////////////////////////////
 
@@ -330,7 +337,7 @@ enter2 = function(res,convo){
     // instructions or town
     var temp = res.text.toLowerCase();
     user.knownPlayer = true;
-    // new player event
+    sessionevents.major.push["newplayer"];
     if (temp==="instructions"){
         convo.ask("The Innkeeper nods his head. \n>Okay then. You probably lots of questions. What topic would you like explained? Let me pour you some ale, and I'll explain concepts like the `village` of Coneshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Coneshire.\"", function(res, convo){
             instructions(res,convo);
@@ -418,8 +425,10 @@ instructions = function(res,convo){
 }
 
 quit = function(res,convo){
-    quicksave();
     var temp = res.text.toLowerCase();
+    quicksave();
+    console.log("user quit: " + user.username);
+    eventsave();
     convo.say("*-------------------------------------T H E  F I E L D S-------------------------------------*");
     convo.say("You make camp for the night and settle in.");
     convo.say("*See you tomorrow, fellow wanderer.*");
@@ -428,6 +437,8 @@ quit = function(res,convo){
 
 death = function(res,convo){
     var temp = res.text.toLowerCase();
+    console.log("user death: " + user.username);
+    sessionevents.major.push["death"];
     convo.say("*-----------------------------------------D E A T H-----------------------------------------*");
     convo.say("_You are dead._ \n_Don't worry - it won't last long._");
     var temp = Math.random();
@@ -461,22 +472,25 @@ quicksave = function(){
     });
 }
 
-eventsave = function(x){
+eventsave = function(){
     var temp = utility.todaysdate();
     controller.storage.activity.get(temp, function(err,res){
         if (err) console.log("event get err: " + err);
         else if (res===null || res===undefined) {
+            console.log("no activity record yet");
             // it's a new day - nothing here yet
             // start array and put something in it
-            controller.storage.activity.save({id:temp, key:array}, function(err){
+            controller.storage.activity.save({id:temp, sessionevents.tobesaved}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("event save success");
             });
         } else {
+            console.log("adding to day's activity record");
             // adding to the day's events
             // push stuff to an array here
             // push to res, which is an events array
-            controller.storage.activity.save({id:temp, key:array}, function(err){
+            res += sessionevents.tobesaved;
+            controller.storage.activity.save({id:temp, res}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("event save success");
             });
@@ -507,35 +521,13 @@ savedrink = function(drinkobject){
     });
 }
 
-status = function(){
-    return ("Your current status: \n```Hitpoints: " + user.hp + "   Level: " + user.level.name + "\n" +
-        "Gold: " + user.gold + "        Experience: " + user.xp + "\n" +
-        "Weapon: " + user.items.weapon.name + "   Armor: " + user.items.armor.name + "\n" +
-        "Magicks: " + ifmagic() + "\n" +
-        "Attributes: Charisma (" + user.attributes.charisma + ") Mysticism (" + user.attributes.myst + ") Luck (" + user.attributes.luck + ") Strength (" + user.attributes.strength + ")\n" + 
-        "Battle turns remaining today: " + user.turnsToday + "```");
-}
-
-ifmagic = function(){
-    if (user.items.magic.length===0){
-        return ("none")
-    } else {
-        var temp = "";
-        for (i=0;i<user.items.magic.length;i++){
-            temp += user.items.magic[i].name + ", ";
+crierfetch = function(){
+    var temp = utility.todaysdate();
+    controller.storage.activity.get(temp, function(err,res){
+        if (err) console.log("event get err: " + err);
+        else {
+            return res
         }
-        temp += "and ephemeral bits.";
-        return temp;
-    }
-}
-
-showmagic = function(x){
-    var returnvar = "You have knowledge of the following magicks:\n";
-        for (i=0;i<user.items.magic.length;i++){
-            returnvar += "   " + user.items.magic[i].name + ": " + user.items.magic[i].desc + "\n";
-        }
-    returnvar += "\n";
-    return returnvar
 }
 
 

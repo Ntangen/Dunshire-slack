@@ -49,6 +49,8 @@ module.exports = {
 			user.hp = levs.levels.apprentice.maxhp;
 			user.mission = "";
 			missioncomplete = undefined;
+			sessionevents.majorflag=true;
+			sessionevents.major.push["lev2"];
 		} else if (x===3){
 			user.level = levs.levels.challenger;
 			user.hp = levs.levels.challenger.maxhp
@@ -135,7 +137,70 @@ module.exports = {
 			// returns MM-DD format
 			return monthday
 		}
+	},
+
+	ifmagic: function(){
+	    if (user.items.magic.length===0){
+	        return ("none")
+	    } else {
+	        var temp = "";
+	        for (i=0;i<user.items.magic.length;i++){
+	            temp += user.items.magic[i].name + ", ";
+	        }
+	        temp += "and ephemeral bits.";
+	        return temp;
+	    }
+	},
+
+	showmagic: function(x){
+	    var returnvar = "You have knowledge of the following magicks:\n";
+	        for (i=0;i<user.items.magic.length;i++){
+	            returnvar += "   " + user.items.magic[i].name + ": " + user.items.magic[i].desc + "\n";
+	        }
+	    returnvar += "\n";
+	    return returnvar
+	},
+
+	status: function(){
+    return ("Your current status: \n```Hitpoints: " + user.hp + "   Level: " + user.level.name + "\n" +
+        "Gold: " + user.gold + "        Experience: " + user.xp + "\n" +
+        "Weapon: " + user.items.weapon.name + "   Armor: " + user.items.armor.name + "\n" +
+        "Magicks: " + utility.ifmagic() + "\n" +
+        "Attributes: Charisma (" + user.attributes.charisma + ") Mysticism (" + user.attributes.myst + ") Luck (" + user.attributes.luck + ") Strength (" + user.attributes.strength + ")\n" + 
+        "Battle turns remaining today: " + user.turnsToday + "```");
+	},
+
+	eventbus: function(x){
+		var temp = "";
+		if (sessionevents.majorflag){
+	        for (i=0;i<sessionevents.major.length;i++){
+	        	console.log("sessionevents.major: " + sessionevents.major[i]);
+	        	var temp2 = sessionevents.major[i];
+	        	temp += user.username + " " + events.major.temp2 + "\n";
+	        }
+			sessionevents.tobesaved.push(temp)
+		}
+		if (sessionevents.minor.length>0){
+			if (sessionevents.minor.length===1){
+				// pick up event 
+				var temp2 = sessionevents.minor[0];
+				// pick up event description
+		        temp += user.username + " " + events.major.temp2 + "\n";
+			} else {
+				// pick a minor event at random
+				var temp2 = Math.round(Math.random() * sessionevents.minor.length);
+				console.log("temp2: " + temp2);
+				// pick up event
+				var temp3 = sessionevents.minor[temp2]
+				// pick up event description
+		        temp += user.username + " " + events.major.temp3 + "\n";
+			}
+		}
+		console.log("sessionevents.tobesaved: " + sessionevents.tobesaved);
+		sessionevents.tobesaved = temp;
 	}
+		// town, tavern, smither, smithbuy, apot, bank, abbey, farm, asking
+		// lev2, magic, newplayer, death
 }
 
 
