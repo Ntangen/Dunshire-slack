@@ -7,7 +7,7 @@ module.exports = {
 townsquare: function(res, convo){
 	convo.say("*-------------------------------------T H E  T O W N  S Q U A R E-------------------------------------*");
 	sessionevents.minor.push["town"];
-	hearings = crierfetch();
+	crierfetch();
 	convo.ask("The town square is calm. Merchants hawk their goods, neighbors greet each other, and a few children go chasing each other through the streets. \n\nYou may `hear` the town crier's news of the day, visit the `Tavern`, the `Smither` Shop, the `Apothecary` Cabin, the `Bank` of Doworth, the village `Abbey`, Old Grannon's `farm`, or venture into the Dark `Woods`. \n\nYou can also check your `status`, review your `supplies`, or `quit` to your campsite.", function(res,convo){
 			townrouter(res,convo);
             convo.next();
@@ -125,8 +125,7 @@ townusegear = function(res,convo){
 }
 
 crier = function(res,convo){
-    console.log("crierfetch follows:");
-    console.log(hearings);
+    console.log("crierfetch follows:" + hearings);
     convo.say(hearings);
     convo.ask("The town square bustles around you. What next? (Want a `reminder`?)", function(res,convo){
 	    townrouter(res,convo);

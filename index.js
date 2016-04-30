@@ -533,7 +533,7 @@ crierfetch = function(){
         if (err) console.log("event get err: " + err);
         else {
             console.log("res: " + res.activity);
-            return res.activity
+            hearings = res.activity;
         }
     });
 }
