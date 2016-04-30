@@ -34,7 +34,7 @@ channel=undefined;
 aturns=0;
 missioncomplete=false;
 sessionevents={
-    minor:["tavern","town","bank"],
+    minor:["tavern","smither","bank"],
     majorflag:false,
     major:[],
     tobesaved:""
