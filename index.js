@@ -33,6 +33,7 @@ drinkvar=false;
 channel=undefined;
 aturns=0;
 missioncomplete=false;
+hearings="";
 sessionevents={
     minor:["town","smither","bank"],
     majorflag:false,
