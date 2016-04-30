@@ -529,8 +529,8 @@ crierfetch = function(){
         else {
             return res
         }
+    });
 }
-
 
 // known bugs:
 // - tavern minstrel true/false var is not persistent; restarting game resets the var
