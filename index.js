@@ -34,7 +34,7 @@ channel=undefined;
 aturns=0;
 missioncomplete=false;
 sessionevents={
-    minor:["tavern","smither","bank"],
+    minor:["town","smither","bank"],
     majorflag:false,
     major:[],
     tobesaved:""
@@ -491,8 +491,8 @@ eventsave = function(){
             // adding to the day's events
             // push stuff to an array here
             // push to res, which is an events array
-            console.log("res: " + res);
-            var temp2 = res;
+            console.log("res.activity: " + res.activity);
+            var temp2 = res.activity;
             temp2 += sessionevents.tobesaved;
             controller.storage.activity.save({id:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
