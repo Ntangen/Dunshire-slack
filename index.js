@@ -482,7 +482,7 @@ eventsave = function(){
             // it's a new day - nothing here yet
             // start array and put something in it
             var temp2 = sessionevents.tobesaved
-            controller.storage.activity.save({id:temp, temp2}, function(err){
+            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("event save success");
             });
@@ -494,7 +494,7 @@ eventsave = function(){
             console.log("res: " + res);
             var temp2 = res;
             temp2 += sessionevents.tobesaved;
-            controller.storage.activity.save({id:temp, temp2}, function(err){
+            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("event save success");
             });
