@@ -527,6 +527,7 @@ savedrink = function(drinkobject){
 }
 
 crierfetch = function(){
+    console.log("crierfetch checkin");
     var temp = utility.todaysdate();
     controller.storage.activity.get(temp, function(err,res){
         if (err) console.log("event get err: " + err);
