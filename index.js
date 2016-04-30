@@ -34,10 +34,10 @@ channel=undefined;
 aturns=0;
 missioncomplete=false;
 sessionevents={
-    minor=["tavern","town","bank"],
-    majorflag=false,
-    major=[],
-    tobesaved=""
+    minor:["tavern","town","bank"],
+    majorflag:false,
+    major:[],
+    tobesaved:""
 };
 
 //////////////////////////////////////
