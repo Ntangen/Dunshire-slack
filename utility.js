@@ -190,15 +190,16 @@ module.exports = {
 				// pick a minor event at random
 				var temp2 = Math.round(Math.random() * sessionevents.minor.length);
 				console.log("temp2: " + temp2);
-				console.log("temp2 sessionevent: " + sessionevents.minor[temp2]);
 				// pick up event
 				var temp3 = sessionevents.minor[temp2]
+				console.log("temp3: " + temp3);
 				// pick up event description
+				console.log("event pulled: " + events.minor.temp3);
 		        temp += user.username + " " + events.minor.temp3 + "\n";
 			}
 		}
-		console.log("sessionevents.tobesaved: " + sessionevents.tobesaved);
 		sessionevents.tobesaved = temp;
+		console.log("sessionevents.tobesaved: " + sessionevents.tobesaved);
 	}
 		// town, tavern, smither, smithbuy, apot, bank, abbey, farm, asking
 		// lev2, magic, newplayer, death
