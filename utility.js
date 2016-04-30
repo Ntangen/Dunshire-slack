@@ -127,7 +127,7 @@ module.exports = {
 
 	todaysdate: function(x){
 		var date = new Date();
-		var month = date.getMonth();
+		var month = date.getMonth() + 1;
 		var day = date.getDate(); 
 		var monthday = month + "-" + day;
 		if (x==="day"){
