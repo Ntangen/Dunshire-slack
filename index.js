@@ -530,7 +530,8 @@ crierfetch = function(){
     controller.storage.activity.get(temp, function(err,res){
         if (err) console.log("event get err: " + err);
         else {
-            return res
+            console.log("res: " + res.activity);
+            return res.activity
         }
     });
 }
