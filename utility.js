@@ -195,7 +195,7 @@ module.exports = {
 				console.log("temp3: " + temp3);
 				// pick up event description
 				console.log("event pulled: " + events.minor[temp3]);
-		        temp += user.username + " " + events.minor[temp3] + "\n";
+		        temp += user.username + " " + events.minor[temp3] + "\n ";
 			}
 		}
 		sessionevents.tobesaved = temp;

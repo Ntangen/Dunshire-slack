@@ -491,6 +491,7 @@ eventsave = function(){
             // adding to the day's events
             // push stuff to an array here
             // push to res, which is an events array
+            console.log("res: " + res);
             var temp2 = res;
             temp2 += sessionevents.tobesaved;
             controller.storage.activity.save({id:temp, temp2}, function(err){
