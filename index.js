@@ -428,6 +428,7 @@ quit = function(res,convo){
     var temp = res.text.toLowerCase();
     quicksave();
     console.log("user quit: " + user.username);
+    utility.eventbus();
     eventsave();
     convo.say("*-------------------------------------T H E  F I E L D S-------------------------------------*");
     convo.say("You make camp for the night and settle in.");
