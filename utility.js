@@ -190,10 +190,11 @@ module.exports = {
 				// pick a minor event at random
 				var temp2 = Math.round(Math.random() * sessionevents.minor.length);
 				console.log("temp2: " + temp2);
+				console.log("temp2 sessionevent: " + sessionevents.minor[temp2]);
 				// pick up event
 				var temp3 = sessionevents.minor[temp2]
 				// pick up event description
-		        temp += user.username + " " + events.major.temp3 + "\n";
+		        temp += user.username + " " + events.minor.temp3 + "\n";
 			}
 		}
 		console.log("sessionevents.tobesaved: " + sessionevents.tobesaved);
