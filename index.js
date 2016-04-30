@@ -480,7 +480,8 @@ eventsave = function(){
             console.log("no activity record yet");
             // it's a new day - nothing here yet
             // start array and put something in it
-            controller.storage.activity.save({id:temp, sessionevents.tobesaved}, function(err){
+            var temp2 = sessionevents.tobesaved
+            controller.storage.activity.save({id:temp, temp2}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("event save success");
             });
