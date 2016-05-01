@@ -303,7 +303,7 @@ woodsrun = function(res,convo){
 		}
 }
 
-events = function (res,convo){
+woodsevents = function (res,convo){
 	// test to see if random events will happen
 	console.log("events checkin");
 	var rando = Math.random();
@@ -333,7 +333,7 @@ woodsreward = function(res,convo){
 			aturns++
 		}
 		user.turnsToday -= turns;
-		events(res,convo);
+		woodsevents(res,convo);
 		monster=undefined;
 		turns = 0;
 		shieldflag=false;
