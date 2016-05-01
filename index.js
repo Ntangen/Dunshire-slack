@@ -296,7 +296,7 @@ newplayer = function(res,convo){
 
 newplayer2 = function(res,convo){
     var temp = res.text.toLowerCase();
-    sessionevents.major.push["newplayer"];
+    sessionevents.major.push("newplayer");
     if (temp.includes("charisma")){
         user.attributes.charisma += 1;
         convo.say(">Outstanding! You are now wittier, funnier and more fun to be around!");
@@ -439,7 +439,7 @@ quit = function(res,convo){
 death = function(res,convo){
     var temp = res.text.toLowerCase();
     console.log("user death: " + user.username);
-    sessionevents.major.push["death"];
+    sessionevents.major.push("death");
     convo.say("*-----------------------------------------D E A T H-----------------------------------------*");
     convo.say("_You are dead._ \n_Don't worry - it won't last long._");
     var temp = Math.random();

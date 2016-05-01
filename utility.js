@@ -50,7 +50,7 @@ module.exports = {
 			user.mission = "";
 			missioncomplete = undefined;
 			sessionevents.majorflag=true;
-			sessionevents.major.push["lev2"];
+			sessionevents.major.push("lev2");
 		} else if (x===3){
 			user.level = levs.levels.challenger;
 			user.hp = levs.levels.challenger.maxhp

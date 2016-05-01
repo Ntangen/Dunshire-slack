@@ -26,22 +26,22 @@ townrouter = function(res,convo){
     if (temp.includes('hear')){
     	crier(res,convo);
     } else if (temp.includes('tavern')){
-    	sessionevents.minor.push["tavern"];
+    	sessionevents.minor.push("tavern");
         tavern.tavern(res,convo);
     } else if (temp.includes('smither')){
-    	sessionevents.minor.push["smither"];
+    	sessionevents.minor.push("smither");
         smith.smithy(res,convo);
     } else if (temp.includes('apothecary')){
-    	sessionevents.minor.push["apot"];
+    	sessionevents.minor.push("apot");
     	apot.apothecary(res,convo);
     } else if (temp.includes('bank')){
-    	sessionevents.minor.push["bank"];
+    	sessionevents.minor.push("bank");
         bank.bank(res,convo);
     } else if (temp.includes('abbey')){
-    	sessionevents.minor.push["abbey"];
+    	sessionevents.minor.push("abbey");
         abbey.abbey(res,convo);
     } else if (temp.includes('farm')){
-    	sessionevents.minor.push["farm"];
+    	sessionevents.minor.push("farm");
         farm.farm(res,convo);
     } else if (temp.includes('woods')){
     	convo.say("You follow the dirt track that leads out of town and into the dark woods...");

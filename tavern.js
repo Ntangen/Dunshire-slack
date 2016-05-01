@@ -199,7 +199,7 @@ minstrelrouter = function(res,convo){
 					convo.say("You can hear the music of the spheres more clearly now...");
 				}
 			} else if (rando>0.1 && rando<0.15) {
-				sessionevents.major.push["magic"];
+				sessionevents.major.push("magic");
 				user.bank.deposit = user.bank.deposit * 2;
 				convo.say("Somewhere, magic has happened!");
 			} else {
@@ -283,7 +283,7 @@ tavstalkrouter = function(res,convo){
         });
 	} else if (allNames.includes(temp)){
 		convo.say("As casually as you can, you ask Dean about " + temp + "'s recent whereabouts.");
-		sessionevents.minor.push["asking"];
+		sessionevents.minor.push("asking");
 		if (user.level.level===1){
 			convo.say("Dean narrows his bushy eyes at you, and then bursts out guffawing. \n>Have ye so much as slain a beast in the dark forest yet, stranger? I'd recommend cutting your teeth on the wee creatures out there before trying your hand at an opponent yer own size... ha!");
 			convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){
