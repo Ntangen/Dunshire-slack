@@ -482,6 +482,8 @@ eventsave = function(){
             console.log("no activity record yet");
             // it's a new day - nothing here yet
             // start array and put something in it
+            var placetemp = "place" + Math.round(Math.random()*3)
+            sessionevents.tobesaved += events.minor[placetemp];
             var temp2 = sessionevents.tobesaved
             controller.storage.activity.save({id:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
@@ -527,10 +529,6 @@ savedrink = function(drinkobject){
 }
 
 crierfetch = function(){
-    var placetemp = "place" + Math.round(Math.random()*3)
-    console.log("placetemp: " + placetemp);
-    console.log("placetemp event: " + events.minor[placetemp]);
-    hearings += events.minor.placetemp;
     var temp = utility.todaysdate();
     controller.storage.activity.get(temp, function(err,res){
         if (err) console.log("event get err: " + err);
