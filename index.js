@@ -529,7 +529,7 @@ savedrink = function(drinkobject){
 
 crierfetch = function(){
     var placetemp = "place" + Math.round(Math.random*3)
-    console.log("placetemp event: " + events.minor.placetemp);
+    console.log("placetemp event: " + events.minor[placetemp]);
     hearings += events.minor.placetemp;
     var temp = utility.todaysdate();
     controller.storage.activity.get(temp, function(err,res){
