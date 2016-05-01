@@ -150,8 +150,6 @@ controller.on('mention', function (bot,message) {
 
 controller.on('direct_message', function (bot, message) {
 
-    console.log("xp: " + user.xp);
-
     userid = message.user;
     user.userid = userid;
     team = message.team;
@@ -193,7 +191,6 @@ controller.on('direct_message', function (bot, message) {
     controller.storage.users.get(userid, function(err,user_data){
         if (err) console.log("err: " + err);
         console.log("user.userid: " + user.userid);
-        console.log("user_data: " + user_data);
         if (user_data===undefined || user_data===null || user_data.user.username===undefined){
             // no record for this user, so we'll set one up
             user.knownPlayer = false
