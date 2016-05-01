@@ -428,6 +428,8 @@ quit = function(res,convo){
     quicksave();
     console.log("user quit: " + user.username);
     utility.eventbus();
+    console.log("sessionevents.minor:");
+    console.log(sessionevents.minor);
     convo.say("*-------------------------------------T H E  F I E L D S-------------------------------------*");
     convo.say("You make camp for the night and settle in.");
     convo.say("*See you tomorrow, fellow wanderer.*");
@@ -526,6 +528,7 @@ savedrink = function(drinkobject){
 
 crierfetch = function(){
     var placetemp = "place" + Math.round(Math.random*3)
+    console.log("placetemp: " + placetemp);
     console.log("placetemp event: " + events.minor[placetemp]);
     hearings += events.minor.placetemp;
     var temp = utility.todaysdate();
