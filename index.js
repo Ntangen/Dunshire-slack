@@ -535,6 +535,9 @@ crierfetch = function(){
     var temp = utility.todaysdate();
     controller.storage.activity.get(temp, function(err,res){
         if (err) console.log("event get err: " + err);
+        else if (res===null) {
+            console.log("No activity log yet today.");
+        }
         else {
             console.log("activity res: " + res.activity);
             hearings += res.activity;
