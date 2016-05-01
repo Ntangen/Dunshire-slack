@@ -35,7 +35,7 @@ aturns=0;
 missioncomplete=false;
 hearings="";
 sessionevents={
-    minor:["town","smither","bank"],
+    minor:["place1","place2"],
     majorflag:false,
     major:[],
     tobesaved:""
@@ -291,7 +291,6 @@ newplayer = function(res,convo){
             controller.storage.users.save({id: user.userid, user:user}, function(err,output){
                 if (err) console.log("err: " + err);
                 else console.log("output: " + output);
-                // utility.dailyreboot();
                 newplayer2(res,convo);
                 convo.next();
             });
@@ -300,6 +299,7 @@ newplayer = function(res,convo){
 
 newplayer2 = function(res,convo){
     var temp = res.text.toLowerCase();
+    sessionevents.major.push["newplayer"];
     if (temp.includes("charisma")){
         user.attributes.charisma += 1;
         convo.say(">Outstanding! You are now wittier, funnier and more fun to be around!");
@@ -338,7 +338,6 @@ enter2 = function(res,convo){
     // instructions or town
     var temp = res.text.toLowerCase();
     user.knownPlayer = true;
-    sessionevents.major.push["newplayer"];
     if (temp==="instructions"){
         convo.ask("The Innkeeper nods his head. \n>Okay then. You probably lots of questions. What topic would you like explained? Let me pour you some ale, and I'll explain concepts like the `village` of Coneshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Coneshire.\"", function(res, convo){
             instructions(res,convo);
@@ -350,11 +349,12 @@ enter2 = function(res,convo){
         convo.say(">Good luck then, wanderer. You'll need it.\"");
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Coneshire.");
         quicksave();
+        crierfetch();
         town.townsquare(res, convo);
-    } else if (temp==="test") {
-        convo.say("Okay, we're gonna try something");
-        eventsave("activity here");
-        town.townsquare(res,convo);
+    // } 
+    // else if (temp==="test") {
+    //     convo.say("Okay, we're gonna try something");
+    //     town.townsquare(res,convo);
     } else {
         convo.repeat();
     }
@@ -411,6 +411,7 @@ instructions = function(res,convo){
         });
     } else if (temp.includes('continue')) {
         // go on to town
+        crierfetch();
         convo.say("\"Good luck, wanderer. You'll need it.\"");
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Coneshire.");
         town.townsquare(res, convo);
@@ -430,7 +431,6 @@ quit = function(res,convo){
     quicksave();
     console.log("user quit: " + user.username);
     utility.eventbus();
-    eventsave();
     convo.say("*-------------------------------------T H E  F I E L D S-------------------------------------*");
     convo.say("You make camp for the night and settle in.");
     convo.say("*See you tomorrow, fellow wanderer.*");
@@ -452,6 +452,7 @@ death = function(res,convo){
         user.gold = 0;
     }
     quicksave();
+    utility.eventbus();
     convo.say("When you come to, you are back at the country inn outside of town. Everything is a bit hazy. \nYou go inside. The Innkeeper is still there, and as he sees you stagger in, he beckons you over and helps you down on to a bench. Your muscles ache. Your head throbs. \n>Looks like you had a bad encounter with that forest beast! No shame in that, *" + user.username + "*. It's happened to all of us. You'll be back in the action tomorrow. For now, sit a spell. Have a drink. \nHe plops a tankard of frothy ale down in front of you, and the pounding in your head begins to subside. You decide to get comfortable.");
     convo.say("Better luck tomorrow. *See you soon, fellow wanderer.*");
     convo.next();
@@ -528,12 +529,15 @@ savedrink = function(drinkobject){
 
 crierfetch = function(){
     console.log("crierfetch checkin");
+    var placetemp = "place" + Math.round(Math.random*3)
+    console.log("placetemp event: " + events.minor.placetemp);
+    hearings += events.minor.placetemp;
     var temp = utility.todaysdate();
     controller.storage.activity.get(temp, function(err,res){
         if (err) console.log("event get err: " + err);
         else {
-            console.log("res: " + res.activity);
-            hearings = res.activity;
+            console.log("activity res: " + res.activity);
+            hearings += res.activity;
         }
     });
 }

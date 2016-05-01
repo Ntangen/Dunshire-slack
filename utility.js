@@ -176,16 +176,16 @@ module.exports = {
 	        for (i=0;i<sessionevents.major.length;i++){
 	        	console.log("sessionevents.major: " + sessionevents.major[i]);
 	        	var temp2 = sessionevents.major[i];
-	        	temp += user.username + " " + events.major.temp2 + "\n";
+	        	temp += events.major.temp2;
 	        }
-			sessionevents.tobesaved.push(temp)
+			sessionevents.tobesaved += temp;
 		}
 		if (sessionevents.minor.length>0){
 			if (sessionevents.minor.length===1){
 				// pick up event 
 				var temp2 = sessionevents.minor[0];
 				// pick up event description
-		        temp += user.username + " " + events.major.temp2 + "\n";
+		        temp += events.major.temp2;
 			} else {
 				// pick a minor event at random
 				var temp2 = Math.round(Math.random() * sessionevents.minor.length);
@@ -195,11 +195,12 @@ module.exports = {
 				console.log("temp3: " + temp3);
 				// pick up event description
 				console.log("event pulled: " + events.minor[temp3]);
-		        temp += user.username + " " + events.minor[temp3] + "\n ";
+		        temp += events.minor[temp3];
 			}
 		}
-		sessionevents.tobesaved = temp;
+		sessionevents.tobesaved += temp;
 		console.log("sessionevents.tobesaved: " + sessionevents.tobesaved);
+		eventsave();
 	}
 		// town, tavern, smither, smithbuy, apot, bank, abbey, farm, asking
 		// lev2, magic, newplayer, death
