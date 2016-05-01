@@ -305,7 +305,6 @@ woodsrun = function(res,convo){
 
 woodsevents = function (res,convo){
 	// test to see if random events will happen
-	console.log("events checkin");
 	var rando = Math.random();
 	if (rando>=0.1 && rando<=0.25){
 		// find magic stuff

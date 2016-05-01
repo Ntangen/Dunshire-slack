@@ -528,7 +528,6 @@ savedrink = function(drinkobject){
 }
 
 crierfetch = function(){
-    console.log("crierfetch checkin");
     var placetemp = "place" + Math.round(Math.random*3)
     console.log("placetemp event: " + events.minor.placetemp);
     hearings += events.minor.placetemp;

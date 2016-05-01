@@ -189,7 +189,9 @@ module.exports = {
 			} else {
 				// pick a minor event at random
 				var temp2 = Math.round(Math.random() * sessionevents.minor.length);
+				temp2 = temp2 - 1;
 				console.log("temp2: " + temp2);
+				console.log("sessionevents length: " + sessionevents.minor.length);
 				// pick up event
 				var temp3 = sessionevents.minor[temp2]
 				console.log("temp3: " + temp3);
