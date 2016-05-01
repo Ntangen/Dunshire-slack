@@ -35,7 +35,7 @@ aturns=0;
 missioncomplete=false;
 hearings="";
 sessionevents={
-    minor:["place1","place2"],
+    minor:[],
     majorflag:false,
     major:[],
     tobesaved:""
@@ -527,7 +527,7 @@ savedrink = function(drinkobject){
 }
 
 crierfetch = function(){
-    var placetemp = "place" + Math.round(Math.random*3)
+    var placetemp = "place" + Math.round(Math.random()*3)
     console.log("placetemp: " + placetemp);
     console.log("placetemp event: " + events.minor[placetemp]);
     hearings += events.minor.placetemp;
