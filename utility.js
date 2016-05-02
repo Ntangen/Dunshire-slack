@@ -221,6 +221,7 @@ module.exports = {
 				// pick up event
 				var temp3 = sessionevents.minor[temp2]
 				console.log("temp3: " + temp3);
+				console.log(events.eventReturner[temp3]);
 		        temp += events.eventReturner[temp3];
 			}
 		}
