@@ -201,7 +201,6 @@ module.exports = {
 		var temp = "";
 		if (sessionevents.major.length>0){
 	        for (i=0;i<sessionevents.major.length;i++){
-	        	console.log("sessionevents.major: " + sessionevents.major[i]);
 	        	var temp2 = sessionevents.major[i];
 	        	temp += events.eventReturner(temp2);
 	        }
@@ -216,12 +215,8 @@ module.exports = {
 			} else {
 				// pick a minor event at random
 				var temp2 = Math.round(Math.random() * (sessionevents.minor.length-1) );
-				console.log("temp2: " + temp2);
-				console.log("sessionevents length: " + sessionevents.minor.length);
 				// pick up event
 				var temp3 = sessionevents.minor[temp2]
-				console.log("temp3: " + temp3);
-				console.log(events.eventReturner(temp3));
 		        temp += events.eventReturner(temp3);
 			}
 		}
