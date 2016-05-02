@@ -83,6 +83,10 @@ module.exports = {
 	},
 
 	reboot: function(){
+		username=undefined;
+		currentuser=undefined;
+		userid=undefined;
+		msg=undefined;
 		user={};
 		globalfortune=0;
 		batpoints=0;
