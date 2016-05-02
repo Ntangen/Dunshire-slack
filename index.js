@@ -3,7 +3,7 @@
 // get those modules
 
 Botkit = require('botkit');
-user = require('./lib/user');
+newuser = require('./lib/user');
 town = require('./town');
 tavern = require('./tavern');
 woods = require('./woods');
@@ -20,7 +20,8 @@ beasts = require('./lib/beasts');
 
 // KEY PLAYER VARIABLES
 
-var reply, reply2, input, userid, msg;
+var username, userid, msg;
+user={};
 globalfortune=0;
 batpoints=0;
 shieldflag=false;
@@ -150,6 +151,7 @@ controller.on('mention', function (bot,message) {
 
 controller.on('direct_message', function (bot, message) {
 
+    utility.reboot();
     userid = message.user;
     user.userid = userid;
     team = message.team;
@@ -193,8 +195,10 @@ controller.on('direct_message', function (bot, message) {
         console.log("user.userid: " + user.userid);
         if (user_data===undefined || user_data===null || user_data.user.username===undefined){
             // no record for this user, so we'll set one up
-            user.knownPlayer = false
             console.log("this is not a known player");
+            user = newuser.newPlayer;
+            user.userid = userid;
+            user.knownPlayer = false;
             // grab some deets real quick, saves to user var
             bot.api.users.info({'user':user.userid},function(err,res){
                 user.username = res.user.name;
@@ -205,11 +209,9 @@ controller.on('direct_message', function (bot, message) {
                 });
             });
         } else {
-            var temp = user_data;
+            console.log("found a record for username: " + user_data.user.username);
             // found a record for user
-            console.log("found a record!");
-            user = temp.user
-            console.log("user.username: " + user.username);
+            user = user_data.user;
             if (user.drinkflag===true){
                 drinkvar=true;
             }
@@ -285,12 +287,8 @@ enter = function(res, convo){
 newplayer = function(res,convo){
     convo.say("The Innkeeper smacks the long bench with his palm and grins. \n>Excellent! I wish you luck and good fortune on your journies to come in the village of Coneshire - and the lands beyond... \n>As a last step before you go, you may choose to add 1 point to any of your four key character attributes. Which do you choose?");
     convo.ask("`Charisma`: this will help you get along with other characters. \n`Luck`: this will grant you good fortune. \n`Mysticism`: this will build your mental fortitude. \n`Strength`: this will make you more powerful in combat.", function(res,convo){
-            controller.storage.users.save({id: user.userid, user:user}, function(err,output){
-                if (err) console.log("err: " + err);
-                else console.log("output: " + output);
                 newplayer2(res,convo);
                 convo.next();
-            });
     });
 }
 
@@ -430,6 +428,7 @@ quit = function(res,convo){
     // utility.eventbus();
     // console.log("sessionevents.minor:");
     // console.log(sessionevents.minor);
+    user = undefined;
     convo.say("*-------------------------------------T H E  F I E L D S-------------------------------------*");
     convo.say("You make camp for the night and settle in.");
     convo.say("*See you tomorrow, fellow wanderer.*");
@@ -451,9 +450,10 @@ death = function(res,convo){
         user.gold = 0;
     }
     quicksave();
-    utility.eventbus();
+    // utility.eventbus();
     convo.say("When you come to, you are back at the country inn outside of town. Everything is a bit hazy. \nYou go inside. The Innkeeper is still there, and as he sees you stagger in, he beckons you over and helps you down on to a bench. Your muscles ache. Your head throbs. \n>Looks like you had a bad encounter with that forest beast! No shame in that, *" + user.username + "*. It's happened to all of us. You'll be back in the action tomorrow. For now, sit a spell. Have a drink. \nHe plops a tankard of frothy ale down in front of you, and the pounding in your head begins to subside. You decide to get comfortable.");
     convo.say("Better luck tomorrow. *See you soon, fellow wanderer.*");
+    user = undefined;
     convo.next();
 }
 

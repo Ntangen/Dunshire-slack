@@ -82,6 +82,29 @@ module.exports = {
 		}
 	},
 
+	reboot: function(){
+		user={};
+		globalfortune=0;
+		batpoints=0;
+		shieldflag=false;
+		swordflag=false;
+		gran = true;
+		currentmerch = undefined;
+		allNames = "";
+		stew = false;
+		drinkvar=false;
+		channel=undefined;
+		aturns=0;
+		missioncomplete=false;
+		hearings="";
+		sessionevents={
+		    minor:[],
+		    majorflag:false,
+		    major:[],
+		    tobesaved:""
+		}
+	},
+
 	fortune: function(x){
 		if (x==="luck"){
 			var temp = Math.random();
