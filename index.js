@@ -478,31 +478,42 @@ eventsave = function(){
     var temp = utility.todaysdate();
     controller.storage.activity.get(temp, function(err,res){
         if (err) console.log("event get err: " + err);
-        else if (res===null || res===undefined) {
-            console.log("no activity record yet");
-            // it's a new day - nothing here yet
-            // start array and put something in it
-            var placetemp = "place" + Math.round(Math.random()*3)
-            sessionevents.tobesaved += events.minor[placetemp];
-            var temp2 = sessionevents.tobesaved
-            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
-                if (err) console.log("event save err: " + err);
-                else console.log("event save success");
-            });
-        } else {
-            console.log("adding to day's activity record");
-            // adding to the day's events
-            // push stuff to an array here
-            // push to res, which is an events array
-            console.log("res.activity: " + res.activity);
-            var temp2 = res.activity;
-            temp2 += sessionevents.tobesaved;
-            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
-                if (err) console.log("event save err: " + err);
-                else console.log("event save success");
-            });
-        }
-    });
+        else console.log("adding to day's activity record");
+        var temp2 = res.activity;
+        temp2 += sessionevents.tobesaved;
+        controller.storage.activity.save({id:temp, activity:temp2}, function(err){
+            if (err) console.log("event save err: " + err);
+            else console.log("event save success");
+        }); 
+    });       
+
+    // controller.storage.activity.get(temp, function(err,res){
+    //     if (err) console.log("event get err: " + err);
+    //     else if (res===null || res===undefined) {
+    //         console.log("no activity record yet");
+    //         // it's a new day - nothing here yet
+    //         // start array and put something in it
+    //         var placetemp = "place" + Math.round(Math.random()*3)
+    //         sessionevents.tobesaved += events.minor[placetemp];
+    //         var temp2 = sessionevents.tobesaved
+    //         controller.storage.activity.save({id:temp, activity:temp2}, function(err){
+    //             if (err) console.log("event save err: " + err);
+    //             else console.log("event save success");
+    //         });
+    //     } else {
+    //         console.log("adding to day's activity record");
+    //         // adding to the day's events
+    //         // push stuff to an array here
+    //         // push to res, which is an events array
+    //         console.log("res.activity: " + res.activity);
+    //         var temp2 = res.activity;
+    //         temp2 += sessionevents.tobesaved;
+    //         controller.storage.activity.save({id:temp, activity:temp2}, function(err){
+    //             if (err) console.log("event save err: " + err);
+    //             else console.log("event save success");
+    //         });
+    //     }
+    // });
 }
 
 savedrink = function(drinkobject){
@@ -531,11 +542,21 @@ savedrink = function(drinkobject){
 crierfetch = function(){
     var temp = utility.todaysdate();
     controller.storage.activity.get(temp, function(err,res){
-        if (err) console.log("event get err: " + err);
-        else if (res===null) {
-            console.log("No activity log yet today.");
+        if (err) console.log("activity get err: " + err);
+        else if (res===null) {            
+            // it's a new day - nothing here yet
+            console.log("No activity log yet today - populating");
+            var placetemp = "place" + Math.round(Math.random()*3)
+            sessionevents.tobesaved += events.eventReturner(placetemp);
+            var temp2 = sessionevents.tobesaved;
+            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
+                if (err) console.log("event save err: " + err);
+                else console.log("event save success");
+                hearings = temp2
+            });
         }
         else {
+            // grab today's activity
             console.log("activity res: " + res.activity);
             hearings += res.activity;
         }

@@ -195,11 +195,11 @@ module.exports = {
 
 	eventbus: function(x){
 		var temp = "";
-		if (sessionevents.majorflag){
+		if (sessionevents.major.length>0){
 	        for (i=0;i<sessionevents.major.length;i++){
 	        	console.log("sessionevents.major: " + sessionevents.major[i]);
 	        	var temp2 = sessionevents.major[i];
-	        	temp += events.major.temp2;
+	        	temp += events.eventReturner(temp2);
 	        }
 			sessionevents.tobesaved += temp;
 		}
@@ -208,7 +208,7 @@ module.exports = {
 				// pick up event 
 				var temp2 = sessionevents.minor[0];
 				// pick up event description
-		        temp += events.minor[temp2];
+		        temp += events.eventReturner(temp2);
 			} else {
 				// pick a minor event at random
 				var temp2 = Math.round(Math.random() * (sessionevents.minor.length) -1 );
@@ -217,9 +217,7 @@ module.exports = {
 				// pick up event
 				var temp3 = sessionevents.minor[temp2]
 				console.log("temp3: " + temp3);
-				// pick up event description
-				console.log("event pulled: " + events.minor[temp3]);
-		        temp += events.minor[temp3];
+		        temp += events.eventReturner[temp3];
 			}
 		}
 		sessionevents.tobesaved += temp;
