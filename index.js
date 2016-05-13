@@ -199,6 +199,7 @@ controller.on('direct_message', function (bot, message) {
             user = newuser.newPlayer;
             user.userid = userid;
             user.knownPlayer = false;
+            drinkvar=true;
             // grab some deets real quick, saves to user var
             bot.api.users.info({'user':user.userid},function(err,res){
                 user.username = res.user.name;
