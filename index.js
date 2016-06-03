@@ -99,7 +99,7 @@ controller.on('create_bot',function(bot,config) {
         if (err) {
           console.log(err);
         } else {
-          convo.say('Greetings, wanderer. \nYou must now */invite* me to a channel so that I can be of use!');
+          convo.say("Greetings, wanderer. To begin your journey, you can say hello here via DM anytime.");
         }
       });
 
