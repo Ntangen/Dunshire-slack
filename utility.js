@@ -208,11 +208,13 @@ module.exports = {
 		}
 		if (sessionevents.minor.length>0){
 			if (sessionevents.minor.length===1){
+				console.log("eventbus just 1 event");
 				// pick up event 
 				var temp2 = sessionevents.minor[0];
 				// pick up event description
 		        temp += events.eventReturner(temp2);
 			} else {
+				console.log("eventbus >1 event");
 				// pick a minor event at random
 				var temp2 = Math.round(Math.random() * (sessionevents.minor.length-1) );
 				// pick up event
