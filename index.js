@@ -534,6 +534,7 @@ crierfetch = function(){
                 else console.log("event save success");
                 hearings = temp2
             });
+            sessionevents.tobesaved = "";
         }
         else {
             // grab today's activity
