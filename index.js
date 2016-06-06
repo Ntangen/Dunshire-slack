@@ -72,7 +72,7 @@ controller.setupWebserver(process.env.PORT,function(err,webserver) {
     if (err) {
       res.status(500).send('ERROR: ' + err);
     } else {
-      res.send('Success!');
+      res.send('Success! Hurrah! Look for a new DM in your Slack team.');
     }
   });
 });
