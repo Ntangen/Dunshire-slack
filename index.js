@@ -528,7 +528,6 @@ crierfetch = function(){
             var placetemp = "place" + Math.round(Math.random()*3)
             sessionevents.tobesaved += events.eventReturner(placetemp);
             var temp2 = sessionevents.tobesaved;
-            console.log("crierfetch saving these events: " + temp2);
             controller.storage.activity.save({id:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("event save success");
