@@ -473,9 +473,11 @@ quicksave = function(){
 
 eventsave = function(){
     var temp = utility.todaysdate();
+    console.log("temp: " + temp);
     controller.storage.activity.get(temp, function(err,res){
         if (err) console.log("event get err: " + err);
         else console.log("adding to day's activity record");
+        console.log("list props: " + Object.getOwnPropertyNames(res));
         var temp2 = res.activity;
         temp2 += sessionevents.tobesaved;
         controller.storage.activity.save({id:temp, activity:temp2}, function(err){
