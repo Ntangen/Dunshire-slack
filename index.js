@@ -299,6 +299,7 @@ newplayer2 = function(res,convo){
     var temp = res.text.toLowerCase();
     sessionevents.major.push("newplayer");
     user.lastPlayed = today;
+    user.logins++;
     if (temp.includes("charisma")){
         user.attributes.charisma += 1;
         convo.say(">Outstanding! You are now wittier, funnier and more fun to be around!");
