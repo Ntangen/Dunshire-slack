@@ -41,6 +41,7 @@ sessionevents={
     major:[],
     tobesaved:""
 };
+today=0;
 
 //////////////////////////////////////
 
@@ -240,6 +241,7 @@ controller.hears('stop',['direct_message'],function(bot,message){
 });
 
 enter = function(res, convo){
+    today = utility.todaysdate("day");
     convo.say("Great! Let's go! 🐲");
     convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. \n\nYou open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
     convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
@@ -296,6 +298,7 @@ newplayer = function(res,convo){
 newplayer2 = function(res,convo){
     var temp = res.text.toLowerCase();
     sessionevents.major.push("newplayer");
+    user.lastPlayed = today;
     if (temp.includes("charisma")){
         user.attributes.charisma += 1;
         convo.say(">Outstanding! You are now wittier, funnier and more fun to be around!");
@@ -334,6 +337,7 @@ enter2 = function(res,convo){
     // instructions or town
     var temp = res.text.toLowerCase();
     user.knownPlayer = true;
+    grabAllNames();
     if (temp==="instructions"){
         convo.ask("The Innkeeper nods his head. \n>Okay then. You probably lots of questions. What topic would you like explained? Let me pour you some ale, and I'll explain concepts like the `village` of Coneshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Coneshire.\"", function(res, convo){
             instructions(res,convo);
@@ -347,10 +351,6 @@ enter2 = function(res,convo){
         quicksave();
         crierfetch();
         town.townsquare(res, convo);
-    // } 
-    // else if (temp==="test") {
-    //     convo.say("Okay, we're gonna try something");
-    //     town.townsquare(res,convo);
     } else {
         convo.repeat();
     }
