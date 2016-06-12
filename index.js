@@ -156,6 +156,7 @@ controller.on('direct_message', function (bot, message) {
     userid = message.user;
     user.userid = userid;
     team = message.team;
+    today = utility.todaysdate("day");
 
     // welcome function
     welcome = function(res,convo){
@@ -200,6 +201,7 @@ controller.on('direct_message', function (bot, message) {
             user = newuser.newPlayer;
             user.userid = userid;
             drinkvar=true;
+
             // grab some user deets real quick, saves to user var
             bot.api.users.info({'user':user.userid},function(err,res){
                 user.username = res.user.name;
@@ -240,7 +242,7 @@ controller.hears('stop',['direct_message'],function(bot,message){
 });
 
 enter = function(res, convo){
-    today = utility.todaysdate("day");
+    user.lastPlayed = today;
     convo.say("Great! Let's go! 🐲");
     convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. \n\nYou open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
     convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
