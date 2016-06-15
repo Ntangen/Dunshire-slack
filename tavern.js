@@ -353,25 +353,27 @@ sendrouter = function(res,convo){
 sendrouter2 = function(res,convo){
 	// console.log("tempdrinkobject: " + tempdrinkobject);
 	var temp = res.text.toLowerCase();
-	if (temp==="1"){ tempdrinkobject.type = drinks.grog }
-	else if (temp==="2") { tempdrinkobject.type = drinks.ale }
-	else if (temp==="3") { tempdrinkobject.type = drinks.beer }
-	else if (temp==="4") { tempdrinkobject.type = drinks.whiskey }
+	if (temp==="1" || temp==="2" || temp==="3" || temp==="4"){
+		if (temp==="1"){ tempdrinkobject.type = drinks.grog }
+		else if (temp==="2") { tempdrinkobject.type = drinks.ale }
+		else if (temp==="3") { tempdrinkobject.type = drinks.beer }
+		else if (temp==="4") { tempdrinkobject.type = drinks.whiskey }
+			// console.log("sendrounter2 - sending drink type: " + tempdrinkobject.type.name)
+		if (tempdrinkobject.type.gold > user.gold) {
+			convo.say("Dean looks at you askance. \n>Afraid this is a cash-only establishment, friend. And you don't seem to have it.");
+			convo.repeat();
+		} else {
+			convo.ask(">Okay. You can also leave a short message to *" + tempdrinkobject.to + "* - no longer than this napkin here, though. What would you like to say?", function (res,convo) {
+				sendrouter3(res,convo)
+				convo.next();
+			});
+		}
+	}
 	else { 
 		convo.say("Dean looks at you, confused. \nSuit yourself...");
 		convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){
 	        tavernrouter(res,convo);
 	        convo.next();
-		});
-	}
-	// console.log("sendrounter2 - sending drink type: " + tempdrinkobject.type.name)
-	if (tempdrinkobject.type.gold > user.gold) {
-		convo.say("Dean looks at you askance. \n>Afraid this is a cash-only establishment, friend. And you don't seem to have it.");
-		convo.repeat();
-	} else {
-		convo.ask(">Okay. You can also leave a short message to *" + tempdrinkobject.to + "* - no longer than this napkin here, though. What would you like to say?", function (res,convo) {
-			sendrouter3(res,convo)
-			convo.next();
 		});
 	}
 }
