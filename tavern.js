@@ -72,7 +72,7 @@ talk = function(res,convo){
         });
 	} else if(user.level.level===2){
 		convo.say("You sidle up to the bar, catching Dean the Barkeep's eye. He saunters over to your end.")
-		convo.say(">If you hope to reach the level of Challenger, you'll have to arm yourself with something powerful. You should go see the Smithy about that. \nSome awful strange stories coming out of the goat farm east of town. Grannon, the farmer there, might be losing his mind. You should go and get to the bottom of it.</span>");
+		convo.say(">If you hope to reach the level of Challenger, you'll have to arm yourself with something powerful. You should go see the Smithy about that. \nSome awful strange stories coming out of the goat farm east of town. Grannon, the farmer there, might be losing his mind. You should go and get to the bottom of it.");
 		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
             tavernrouter(res,convo);
             convo.next();
@@ -340,7 +340,7 @@ sendrouter = function(res,convo){
 	} else if (allNames.includes(temp)){
 		tempdrinkobject.to = temp;
 		tempdrinkobject.from = user.username;
-		convo.ask("Dean sniffs. \nSend a drink to *" + temp + "*. Got it. What do you want to send? Here's what we've got... \n`1` - " + drinks.grog.name + " (" + drinks.grog.gold + " Gold)\n`2` - " + drinks.ale.name + " (" + drinks.ale.gold + " Gold)\n`3` - " + drinks.beer.name + " (" + drinks.beer.gold + " Gold)\n`4` - " + drinks.whiskey.name + " (" + drinks.whiskey.gold + " Gold)\n`5` - `None` of these?", function(res,convo){
+		convo.ask("Dean sniffs. \nSend a drink to *" + temp + "*. Got it. What do you want to send? Here's what we've got... \n`1` - " + drinks.grog.name + " (" + drinks.grog.gold + " Gold)\n`2` - " + drinks.ale.name + " (" + drinks.ale.gold + " Gold)\n`3` - " + drinks.beer.name + " (" + drinks.beer.gold + " Gold)\n`4` - " + drinks.whiskey.name + " (" + drinks.whiskey.gold + " Gold)\n`5` - None of these?", function(res,convo){
 			sendrouter2(res,convo)
 			convo.next();
 		});
@@ -351,7 +351,7 @@ sendrouter = function(res,convo){
 }
 
 sendrouter2 = function(res,convo){
-	console.log("tempdrinkobject: " + tempdrinkobject);
+	// console.log("tempdrinkobject: " + tempdrinkobject);
 	var temp = res.text.toLowerCase();
 	if (temp==="1"){ tempdrinkobject.type = drinks.grog }
 	else if (temp==="2") { tempdrinkobject.type = drinks.ale }
@@ -364,7 +364,7 @@ sendrouter2 = function(res,convo){
 	        convo.next();
 		});
 	}
-	console.log("tempdrinkobject assigned name: " + tempdrinkobject.type.name)
+	// console.log("sendrounter2 - sending drink type: " + tempdrinkobject.type.name)
 	if (tempdrinkobject.type.gold > user.gold) {
 		convo.say("Dean looks at you askance. \n>Afraid this is a cash-only establishment, friend. And you don't seem to have it.");
 		convo.repeat();
@@ -383,6 +383,7 @@ sendrouter3 = function(res,convo){
 		convo.repeat();
 	} else {
 		tempdrinkobject.msg = temp;
+		console.log("drink event: " + user.username + " sending a " + tempdrinkobject.type.name + " to " + tempdrinkobject.to + " (sendrouter3)");
 		convo.say("Okay... we've got a glass of " + tempdrinkobject.type.name + " going to *" + tempdrinkobject.to + "* with the message: \"" + tempdrinkobject.msg + "\"\n>This sound good to you?");
 		convo.ask("You can `confirm` with Dean, or `change` your mind.", function(res,convo){
 			sendrouter4(res,convo);
@@ -397,6 +398,7 @@ sendrouter4 = function(res,convo) {
 		user.gold -= tempdrinkobject.type.gold;
 		convo.say("Dean takes the napkin and sets it behind the counter. \n>I'll pass on your message - and the drink!");
 		savedrink(tempdrinkobject);
+		tempdrinkobject = {};
 		convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){
 	        tavernrouter(res,convo);
 	        convo.next();
@@ -414,7 +416,7 @@ sendrouter4 = function(res,convo) {
 }
 
 pickupdrink = function(res,convo){
-	var temp="", temp2="";
+	var temp="";
 	if (user.drinks.recd.length>1){
 		for(i=0;i<user.drinks.recd.length;i++){
 			temp += user.drinks.recd[i].type.name + " from *`" + user.drinks.recd[i].from + "`*, ";
