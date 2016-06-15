@@ -41,6 +41,7 @@ sessionevents={
     major:[],
     tobesaved:""
 };
+today=0;
 
 //////////////////////////////////////
 
@@ -155,6 +156,7 @@ controller.on('direct_message', function (bot, message) {
     userid = message.user;
     user.userid = userid;
     team = message.team;
+    today = utility.todaysdate("day");
 
     // welcome function
     welcome = function(res,convo){
@@ -198,9 +200,9 @@ controller.on('direct_message', function (bot, message) {
             console.log("this is not a known player");
             user = newuser.newPlayer;
             user.userid = userid;
-            user.knownPlayer = false;
             drinkvar=true;
-            // grab some deets real quick, saves to user var
+
+            // grab some user deets real quick, saves to user var
             bot.api.users.info({'user':user.userid},function(err,res){
                 user.username = res.user.name;
                 console.log("user.username: " + user.username);
@@ -240,6 +242,7 @@ controller.hears('stop',['direct_message'],function(bot,message){
 });
 
 enter = function(res, convo){
+    user.lastPlayed = today;
     convo.say("Great! Let's go! 🐲");
     convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. \n\nYou open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
     convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
@@ -296,6 +299,8 @@ newplayer = function(res,convo){
 newplayer2 = function(res,convo){
     var temp = res.text.toLowerCase();
     sessionevents.major.push("newplayer");
+    user.lastPlayed = today;
+    user.logins++;
     if (temp.includes("charisma")){
         user.attributes.charisma += 1;
         convo.say(">Outstanding! You are now wittier, funnier and more fun to be around!");
@@ -334,6 +339,7 @@ enter2 = function(res,convo){
     // instructions or town
     var temp = res.text.toLowerCase();
     user.knownPlayer = true;
+    grabAllNames();
     if (temp==="instructions"){
         convo.ask("The Innkeeper nods his head. \n>Okay then. You probably lots of questions. What topic would you like explained? Let me pour you some ale, and I'll explain concepts like the `village` of Coneshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Coneshire.\"", function(res, convo){
             instructions(res,convo);
@@ -347,10 +353,6 @@ enter2 = function(res,convo){
         quicksave();
         crierfetch();
         town.townsquare(res, convo);
-    // } 
-    // else if (temp==="test") {
-    //     convo.say("Okay, we're gonna try something");
-    //     town.townsquare(res,convo);
     } else {
         convo.repeat();
     }
@@ -475,42 +477,24 @@ eventsave = function(){
     var temp = utility.todaysdate();
     controller.storage.activity.get(temp, function(err,res){
         if (err) console.log("event get err: " + err);
-        else console.log("adding to day's activity record");
-        var temp2 = res.activity;
-        temp2 += sessionevents.tobesaved;
-        controller.storage.activity.save({id:temp, activity:temp2}, function(err){
-            if (err) console.log("event save err: " + err);
-            else console.log("event save success");
-        }); 
-    });       
-
-    // controller.storage.activity.get(temp, function(err,res){
-    //     if (err) console.log("event get err: " + err);
-    //     else if (res===null || res===undefined) {
-    //         console.log("no activity record yet");
-    //         // it's a new day - nothing here yet
-    //         // start array and put something in it
-    //         var placetemp = "place" + Math.round(Math.random()*3)
-    //         sessionevents.tobesaved += events.minor[placetemp];
-    //         var temp2 = sessionevents.tobesaved
-    //         controller.storage.activity.save({id:temp, activity:temp2}, function(err){
-    //             if (err) console.log("event save err: " + err);
-    //             else console.log("event save success");
-    //         });
-    //     } else {
-    //         console.log("adding to day's activity record");
-    //         // adding to the day's events
-    //         // push stuff to an array here
-    //         // push to res, which is an events array
-    //         console.log("res.activity: " + res.activity);
-    //         var temp2 = res.activity;
-    //         temp2 += sessionevents.tobesaved;
-    //         controller.storage.activity.save({id:temp, activity:temp2}, function(err){
-    //             if (err) console.log("event save err: " + err);
-    //             else console.log("event save success");
-    //         });
-    //     }
-    // });
+        if (res===null){
+            console.log("No record found, but we caught it...");
+            console.log("NOW adding to day's activity record");
+            var temp2 = sessionevents.tobesaved;
+            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
+                if (err) console.log("event save err: " + err);
+                else console.log("event save success");
+            }); 
+        } else {
+            console.log("appending to day's existing activity record");
+            var temp2 = res.activity;
+            temp2 += sessionevents.tobesaved;
+            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
+                if (err) console.log("event save err: " + err);
+                else console.log("event save success");
+            }); 
+        }
+    });
 }
 
 savedrink = function(drinkobject){
@@ -551,6 +535,7 @@ crierfetch = function(){
                 else console.log("event save success");
                 hearings = temp2
             });
+            sessionevents.tobesaved = "";
         }
         else {
             // grab today's activity

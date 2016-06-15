@@ -8,7 +8,6 @@ tempdrinkobject = {};
 module.exports = {
 
 tavern: function(res,convo){
-	grabAllNames();
  	convo.say("*-------------------------------------T H E  T A V E R N-------------------------------------*");
 	convo.say("The heavy oaken tavern door swings open with a low squeal. The crowded tavern's patrons nurse their drinks and carry on while a Minstrel plays in the back. A man with a large, scratchy beard stands behind the bar with a towel.");
 	convo.say(">Well met, " + user.username + "!");
