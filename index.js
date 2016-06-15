@@ -502,9 +502,7 @@ savedrink = function(drinkobject){
         for (i=0;i<all_user_data.length;i++){
             if (all_user_data[i].user.username===drinkobject.to) {
                 var temp = all_user_data[i].user.userid;
-                console.log("target userid: " + temp + " (savedrink)");
                 controller.storage.users.get(temp, function(err,user_data){
-                    console.log("grabbed username: " + user_data.user.username + " (savedrink)");
                     var targetData = user_data.user;
                     targetData.drinks.recd.push(drinkobject);
                     targetData.drinkflag = true;
@@ -515,9 +513,6 @@ savedrink = function(drinkobject){
                         quicksave();
                     });
                 });
-            }
-            else {
-                console.log("ERROR: couldn't find drinkobject.to in all_user_data (savedrink)");
             }
         }
     });
