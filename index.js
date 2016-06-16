@@ -205,7 +205,7 @@ controller.on('direct_message', function (bot, message) {
             // grab some user deets real quick, saves to user var
             bot.api.users.info({'user':user.userid},function(err,res){
                 user.username = res.user.name;
-                console.log("user.username: " + user.username);
+                console.log("new user username: " + user.username + " (startup)");
                 controller.storage.users.save({id: userid, user:user}, function(err,res){
                     if (err) console.log("err: " + err);
                     else console.log("res: " + res);
@@ -233,13 +233,13 @@ controller.on('direct_message', function (bot, message) {
 
 });
 
-controller.hears('stop',['direct_message'],function(bot,message){
+// controller.hears('stop',['direct_message'],function(bot,message){
 
-    bot.startConversation(message, function(err,convo){
-        convo.say("🚨Yikes!🚨 We're going to try to stop this conversation now.");
-        convo.stop();
-    });
-});
+//     bot.startConversation(message, function(err,convo){
+//         convo.say("🚨Yikes!🚨 We're going to try to stop this conversation now.");
+//         convo.stop();
+//     });
+// });
 
 enter = function(res, convo){
     user.lastPlayed = today;
@@ -274,12 +274,13 @@ enter = function(res, convo){
         ]);
     } else {
         // known user continuing their quest
-        console.log("this is a returning player");
         var temp = utility.dailyreboot();
         if (temp===2){
+            console.log("player returned but is dead");
             convo.say("You remain dead. But don't worry - try back tomorrow!");
             convo.next();
         } else {
+            console.log("player reboot");
             convo.ask(">*Well met, " + user.username + "!* Good to see you again. Would you care to hear some `instructions`? Or just continue on to `town`?", function(response,convo){
             enter2(response,convo);
             convo.next();
@@ -289,6 +290,9 @@ enter = function(res, convo){
 }
 
 newplayer = function(res,convo){
+    user.knownPlayer = true;
+    user.profileStarted = today;
+    user.logins++;
     convo.say("The Innkeeper smacks the long bench with his palm and grins. \n>Excellent! I wish you luck and good fortune on your journies to come in the village of Coneshire - and the lands beyond... \n>As a last step before you go, you may choose to add 1 point to any of your four key character attributes. Which do you choose?");
     convo.ask("`Charisma`: this will help you get along with other characters. \n`Luck`: this will grant you good fortune. \n`Mysticism`: this will build your mental fortitude. \n`Strength`: this will make you more powerful in combat.", function(res,convo){
                 newplayer2(res,convo);
@@ -299,8 +303,6 @@ newplayer = function(res,convo){
 newplayer2 = function(res,convo){
     var temp = res.text.toLowerCase();
     sessionevents.major.push("newplayer");
-    user.lastPlayed = today;
-    user.logins++;
     if (temp.includes("charisma")){
         user.attributes.charisma += 1;
         convo.say(">Outstanding! You are now wittier, funnier and more fun to be around!");
@@ -338,8 +340,6 @@ newplayer2 = function(res,convo){
 enter2 = function(res,convo){
     // instructions or town
     var temp = res.text.toLowerCase();
-    user.knownPlayer = true;
-    grabAllNames();
     if (temp==="instructions"){
         convo.ask("The Innkeeper nods his head. \n>Okay then. You probably lots of questions. What topic would you like explained? Let me pour you some ale, and I'll explain concepts like the `village` of Coneshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Coneshire.\"", function(res, convo){
             instructions(res,convo);
@@ -347,11 +347,12 @@ enter2 = function(res,convo){
     });
     } else if (temp==="town"){
         // go on to town
-        user.knownPlayer = true;
         convo.say(">Good luck then, wanderer. You'll need it.\"");
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Coneshire.");
         quicksave();
+        // game lists: crierfetch gets list of daily activity, graballnames gets all user names
         crierfetch();
+        grabAllNames();
         town.townsquare(res, convo);
     } else {
         convo.repeat();
@@ -410,6 +411,7 @@ instructions = function(res,convo){
     } else if (temp.includes('continue')) {
         // go on to town
         crierfetch();
+        grabAllNames();
         convo.say("\"Good luck, wanderer. You'll need it.\"");
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Coneshire.");
         town.townsquare(res, convo);

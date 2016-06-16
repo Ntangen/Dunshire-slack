@@ -64,7 +64,6 @@ module.exports = {
 	},
 
 	dailyreboot: function(){
-		console.log("player reboot");
 		if(user.lastPlayed != today){
 			// user did not play today, so get 'em going with full hp & turns again
 			user.hp = user.level.maxhp;
