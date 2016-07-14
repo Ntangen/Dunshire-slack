@@ -191,6 +191,12 @@ controller.on('direct_message', function (bot, message) {
         });
     };
 
+    // grab some user deets real quick, saves to user var
+    bot.api.users.info({'user':user.userid},function(err,res){
+        username = res.user.name;
+        console.log("new user username: " + username + " (startup)");
+    });
+
     // get user collection; check knownPlayer flag; if none, set basic info
     controller.storage.users.get(userid, function(err,user_data){
         if (err) console.log("err: " + err);
@@ -200,34 +206,17 @@ controller.on('direct_message', function (bot, message) {
             console.log("this is not a known player");
             user = newuser.newPlayer;
             user.userid = userid;
+            user.username = username;
             drinkvar=true;
-
-            // grab some user deets real quick, saves to user var
-            bot.api.users.info({'user':user.userid},function(err,res){
-                user.username = res.user.name;
-                console.log("new user username: " + user.username + " (startup)");
-                controller.storage.users.save({id: userid, user:user}, function(err,res){
-                    if (err) console.log("err: " + err);
-                    else console.log("res: " + res);
-                });
-            });
         } else {
-            console.log("found a record for username: " + user_data.user.username);
             // found a record for user
+            console.log("found a record for username: " + user_data.user.username);
             user = user_data.user;
             if (user.drinkflag===true){
                 drinkvar=true;
             }
         }
     });
-
-    // channel = message.channel;
-
-    bot.identifyTeam(function(err,team_id){
-        if (err) console.log("err: " + err);
-        else console.log("team_id: " + team_id);
-        channel = team_id;
-    })
 
     bot.startConversation(message, welcome);
 
@@ -242,7 +231,6 @@ controller.on('direct_message', function (bot, message) {
 // });
 
 enter = function(res, convo){
-    user.lastPlayed = today;
     convo.say("Great! Let's go! 🐲");
     convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. \n\nYou open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
     convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
@@ -292,6 +280,7 @@ enter = function(res, convo){
 newplayer = function(res,convo){
     user.knownPlayer = true;
     user.profileStarted = today;
+    user.lastPlayed = today;
     user.logins++;
     convo.say("The Innkeeper smacks the long bench with his palm and grins. \n>Excellent! I wish you luck and good fortune on your journies to come in the village of Coneshire - and the lands beyond... \n>As a last step before you go, you may choose to add 1 point to any of your four key character attributes. Which do you choose?");
     convo.ask("`Charisma`: this will help you get along with other characters. \n`Luck`: this will grant you good fortune. \n`Mysticism`: this will build your mental fortitude. \n`Strength`: this will make you more powerful in combat.", function(res,convo){
@@ -344,7 +333,7 @@ enter2 = function(res,convo){
         convo.ask("The Innkeeper nods his head. \n>Okay then. You probably lots of questions. What topic would you like explained? Let me pour you some ale, and I'll explain concepts like the `village` of Coneshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Coneshire.\"", function(res, convo){
             instructions(res,convo);
             convo.next();
-    });
+        });
     } else if (temp==="town"){
         // go on to town
         convo.say(">Good luck then, wanderer. You'll need it.\"");
