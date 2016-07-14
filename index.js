@@ -20,7 +20,7 @@ beasts = require('./lib/beasts');
 
 // KEY PLAYER VARIABLES
 
-var username, currentuser, userid, msg;
+username, currentuser, userid, msg;
 user={};
 globalfortune=0;
 batpoints=0;
@@ -191,12 +191,6 @@ controller.on('direct_message', function (bot, message) {
         });
     };
 
-    // grab some user deets real quick, saves to user var
-    bot.api.users.info({'user':user.userid},function(err,res){
-        username = res.user.name;
-        console.log("new user username: " + username + " (startup)");
-    });
-
     // get user collection; check knownPlayer flag; if none, set basic info
     controller.storage.users.get(userid, function(err,user_data){
         if (err) console.log("err: " + err);
@@ -206,8 +200,12 @@ controller.on('direct_message', function (bot, message) {
             console.log("this is not a known player");
             user = newuser.newPlayer;
             user.userid = userid;
-            user.username = username;
             drinkvar=true;
+            // grab some user deets real quick, saves to user var
+            bot.api.users.info({'user':user.userid},function(err,res){
+                user.username = res.user.name;
+                console.log("new user username: " + user.username + " (startup)");
+            });
         } else {
             // found a record for user
             console.log("found a record for username: " + user_data.user.username);
