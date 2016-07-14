@@ -20,7 +20,8 @@ beasts = require('./lib/beasts');
 
 // KEY PLAYER VARIABLES
 
-username, currentuser, userid, msg;
+var currentuser, userid, msg;
+username=""; 
 user={};
 globalfortune=0;
 batpoints=0;
