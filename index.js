@@ -263,11 +263,11 @@ enter = function(res, convo){
         // known user continuing their quest
         var temp = utility.dailyreboot();
         if (temp===2){
-            console.log("player returned but is dead");
+            console.log("(" + user.username + ") player returned but is dead");
             convo.say("You remain dead. But don't worry - try back tomorrow!");
             convo.next();
         } else {
-            console.log("player reboot");
+            console.log("(" + user.username + ") player reboot");
             convo.ask(">*Well met, " + user.username + "!* Good to see you again. Would you care to hear some `instructions`? Or just continue on to `town`?", function(response,convo){
             enter2(response,convo);
             convo.next();
@@ -417,7 +417,7 @@ instructions = function(res,convo){
 quit = function(res,convo){
     var temp = res.text.toLowerCase();
     quicksave();
-    console.log("user quit: " + user.username);
+    console.log("(" + user.username + ") user quit: " + user.username);
     utility.eventbus();
     convo.say("*-------------------------------------T H E  F I E L D S-------------------------------------*");
     convo.say("You make camp for the night and settle in.");
@@ -427,7 +427,7 @@ quit = function(res,convo){
 
 death = function(res,convo){
     var temp = res.text.toLowerCase();
-    console.log("user death: " + user.username);
+    console.log("(" + user.username + ") user death: " + user.username);
     sessionevents.major.push("death");
     convo.say("*-----------------------------------------D E A T H-----------------------------------------*");
     convo.say("_You are dead._ \n_Don't worry - it won't last long._");
@@ -458,9 +458,16 @@ grabAllNames = function(x,y){
 
 quicksave = function(){
     controller.storage.users.save({id: userid, user:user}, function(err,res){
-        console.log("user save");
+        console.log("(" + user.username + ") user save");
         if (err) console.log("save err: " + err);
     });
+}
+
+CheckTurnsToday = function () {
+    if (user.turnsToday <= 0) {
+        convo.say("You are fatigued! You must keep inside town until tomorrow.");
+        return true;
+    }
 }
 
 eventsave = function(){
@@ -468,20 +475,19 @@ eventsave = function(){
     controller.storage.activity.get(temp, function(err,res){
         if (err) console.log("event get err: " + err);
         if (res===null){
-            console.log("No record found, but we caught it...");
-            console.log("NOW adding to day's activity record");
+            console.log("(" + user.username + ") No record found, but we caught it... (eventsave)");
             var temp2 = sessionevents.tobesaved;
             controller.storage.activity.save({id:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("event save success");
             }); 
         } else {
-            console.log("appending to day's existing activity record");
+            console.log("(" + user.username + ") appending to day's existing activity record");
             var temp2 = res.activity;
             temp2 += sessionevents.tobesaved;
             controller.storage.activity.save({id:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
-                else console.log("event save success");
+                else console.log("(" + user.username + ") event save success");
             }); 
         }
     });
@@ -498,7 +504,7 @@ savedrink = function(drinkobject){
                     targetData.drinkflag = true;
                     controller.storage.users.save({id: temp, user:targetData},function(err,res){
                         if (err) console.log("err: " + err);
-                        else console.log("target data saved (savedrink)");
+                        else console.log("(" + user.username + ") target data saved (savedrink)");
                         user.drinks.sent.push(drinkobject);
                         quicksave();
                     });
@@ -514,7 +520,7 @@ crierfetch = function(){
         if (err) console.log("activity get err: " + err);
         else if (res===null) {            
             // it's a new day - nothing here yet
-            console.log("No activity log yet today - populating");
+            console.log("(" + user.username + ") No activity log yet today - populating");
             var placetemp = "place" + Math.round(Math.random()*3)
             sessionevents.tobesaved += events.eventReturner(placetemp);
             var temp2 = sessionevents.tobesaved;
@@ -527,7 +533,6 @@ crierfetch = function(){
         }
         else {
             // grab today's activity
-            console.log("activity res: " + res.activity);
             hearings += res.activity;
         }
     });

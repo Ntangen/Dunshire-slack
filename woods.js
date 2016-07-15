@@ -6,36 +6,44 @@ turns=0;
 
 module.exports = {
 	woodsstart: function(res,convo){
-		convo.say("*-------------------------------------T H E  D A R K  W O O D S-------------------------------------*");
-		convo.say("The wind rustles through the trees. A darkness settles over the dense forest as you make your way through...");
-		woodsmenu(res,convo);	
+		if (CheckTurnsToday()){
+			town.townsquare(res,convo);
+		} else {
+			convo.say("*-------------------------------------T H E  D A R K  W O O D S-------------------------------------*");
+			convo.say("The wind rustles through the trees. A darkness settles over the dense forest as you make your way through...");
+			woodsmenu(res,convo);	
+		}
 	}
 }
 	
 
 woodsmenu = function(res,convo){
-	var temp = "";
-	if (user.level.level<3){
-		if (user.mission==="abbey"){
-			if (missioncomplete){
-				convo.say("*Don't forget to return the Cleric's censer at the Abbey!*")
-			} else {
-				temp +="Search for the `bandits` who stole the Cleric's censer. ";
-			}
-		} else if (user.mission==="grannon"){
-			temp +="Follow Grannon's directions to the `Mage`'s Cave.";
-		}
-	temp += "`Hunt` for beasts, check your `status`, review your `supplies`, or return to `town`.";
-	convo.ask(temp, function(res,convo){
-		woodsrouter(res,convo);
-		convo.next();
-		});
+	if (CheckTurnsToday()){
+			town.townsquare(res,convo);
 	} else {
-		// user level is >=3
-		convo.ask("`Hunt` for beasts, check your `status`, review your `supplies`, seek out the `Mage`'s Cave, or return to `town`.", function (res, convo){
+		var temp = "";
+		if (user.level.level<3){
+			if (user.mission==="abbey"){
+				if (missioncomplete){
+					convo.say("*Don't forget to return the Cleric's censer at the Abbey!*")
+				} else {
+					temp +="Search for the `bandits` who stole the Cleric's censer. ";
+				}
+			} else if (user.mission==="grannon"){
+				temp +="Follow Grannon's directions to the `Mage`'s Cave.";
+			}
+		temp += "`Hunt` for beasts, check your `status`, review your `supplies`, or return to `town`.";
+		convo.ask(temp, function(res,convo){
 			woodsrouter(res,convo);
 			convo.next();
-		});
+			});
+		} else {
+			// user level is >=3
+			convo.ask("`Hunt` for beasts, check your `status`, review your `supplies`, seek out the `Mage`'s Cave, or return to `town`.", function (res, convo){
+				woodsrouter(res,convo);
+				convo.next();
+			});
+		}
 	}
 }
 
@@ -75,8 +83,8 @@ hunt = function(res,convo,x){
 		} else if (aturns===2){
 			convo.say("You round a corner, and there they are! The two common-looking thieves have been expecting you - and their shortswords are already unsheathed. You see the Cleric's censer behind them in a bag! \nThe bandits rush towards you!");
 			monster = beasts.beasts.lev1b;
-			console.log("boss lev1b: " + beasts.beasts.lev1b);
-			console.log("bossmonster: " + monster);
+			console.log("(" + user.username + ") boss lev1b: " + beasts.beasts.lev1b);
+			console.log("(" + user.username + ") bossmonster: " + monster);
 			mhp = monster.hp;
 			if (Math.random() < 0.7){
 				// player gets first shot
@@ -96,7 +104,7 @@ hunt = function(res,convo,x){
 		// your typical fight
 		monster = beasts.chooseBeastLevel();
 		mhp = monster.hp;
-		console.log("monster choice: " + monster.name);
+		console.log("(" + user.username + ") monster choice: " + monster.name);
 		convo.say("You hear a rustling nearby. Something draws near. You make ready as you turn your head and see...\n" +
 			"*A " + monster.name + " approaches!* _What do you do?_\n" +
 			"```Your hitpoints: " + user.hp + "\n" +
@@ -133,11 +141,11 @@ woodsfight = function(res,convo,turn){
 		// kill the monster
 		if (result === "k") {
 			if (turns === 0) {
-				console.log("kill single blow");
+				console.log("(" + user.username + ") kill single blow");
 				convo.say("You vanquished the " + monster.name + " in a single blow!");
 			}
 			else { 
-				console.log("kill");
+				console.log("(" + user.username + ") kill");
 				convo.say("With a heroic blow, you vanquish the " + monster.name + "!");
 				woodsreward(res,convo);
 			}	
@@ -155,7 +163,7 @@ woodsfight = function(res,convo,turn){
 		// monster turn
 		var result = monsterfight(monster)
 		if (result === "dead"){
-			console.log("dead");
+			console.log("(" + user.username + ") dead");
 			convo.say("Oh no! The *" + monster.name + "* " + monster.strike1 + ", and it kills you!");
 			death(res,convo);
 			convo.next();
@@ -260,7 +268,7 @@ userfight = function(monster){
 	} else {
 		attackdamage = Math.round((user.items.weapon.attack * (Math.random()+ 1)) + user.attributes.strength + utility.fortune() - monster.defense);
 	}
-	console.log("user attack: " + attackdamage);
+	console.log("(" + user.username + ") user attack: " + attackdamage);
 	turns++;
 	if (attackdamage<=0){
 		return "zip"
@@ -277,7 +285,7 @@ monsterfight = function(monster){
 	} else {
 		damage = Math.round((monster.attack*((Math.random()+1)) - utility.fortune() - user.items.armor.armor));
 	}
-	console.log("monster attack: " + damage);
+	console.log("(" + user.username + ") monster attack: " + damage);
 	if (damage<=0){
 		return "zip"
 	} else {
@@ -290,7 +298,7 @@ monsterfight = function(monster){
 woodsrun = function(res,convo){
 	convo.say("You decide that discretion is the better part of valor, and turn tail in the opposite direction.");
 	var rando = Math.random();
-	console.log("run variable: " + rando);
+	console.log("(" + user.username + ") run variable: " + rando);
 	if (rando >= 0.75) {
 		convo.say("Oh no! You failed to outrun the " + monster.name + ".\n");
 		woodsfight(res,convo,2);
@@ -308,7 +316,7 @@ woodsevents = function (res,convo){
 	var rando = Math.random();
 	if (rando>=0.1 && rando<=0.25){
 		// find magic stuff
-		console.log("rubies event!");
+		console.log("(" + user.username + ") rubies event!");
 		user.items.other.push(items.stuff.gems.rubies);
 		user.items.rubies++
 		convo.say("You discover precious rubies with the creature!");

@@ -260,7 +260,7 @@ findgems = function(){
 }
 
 around = function(res,convo){
-	console.log("names around the bar: " + allNames);
+	console.log("(" + user.username + ") names around the bar: " + allNames);
     convo.say("You see " + allNames + "and others lurking about the bar.");
     convo.repeat();
 }
@@ -351,14 +351,12 @@ sendrouter = function(res,convo){
 }
 
 sendrouter2 = function(res,convo){
-	// console.log("tempdrinkobject: " + tempdrinkobject);
 	var temp = res.text.toLowerCase();
 	if (temp==="1" || temp==="2" || temp==="3" || temp==="4"){
 		if (temp==="1"){ tempdrinkobject.type = drinks.grog }
 		else if (temp==="2") { tempdrinkobject.type = drinks.ale }
 		else if (temp==="3") { tempdrinkobject.type = drinks.beer }
 		else if (temp==="4") { tempdrinkobject.type = drinks.whiskey }
-			// console.log("sendrounter2 - sending drink type: " + tempdrinkobject.type.name)
 		if (tempdrinkobject.type.gold > user.gold) {
 			convo.say("Dean looks at you askance. \n>Afraid this is a cash-only establishment, friend. And you don't seem to have it.");
 			convo.repeat();
@@ -385,7 +383,7 @@ sendrouter3 = function(res,convo){
 		convo.repeat();
 	} else {
 		tempdrinkobject.msg = temp;
-		console.log("drink event: " + user.username + " sending a " + tempdrinkobject.type.name + " to " + tempdrinkobject.to + " (sendrouter3)");
+		console.log("(" + user.username + ") drink event: " + user.username + " sending a " + tempdrinkobject.type.name + " to " + tempdrinkobject.to + " (sendrouter3)");
 		convo.say("Okay... we've got a glass of " + tempdrinkobject.type.name + " going to *" + tempdrinkobject.to + "* with the message: \"" + tempdrinkobject.msg + "\"\n>This sound good to you?");
 		convo.ask("You can `confirm` with Dean, or `change` your mind.", function(res,convo){
 			sendrouter4(res,convo);

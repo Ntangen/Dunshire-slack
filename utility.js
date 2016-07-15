@@ -7,7 +7,7 @@ module.exports = {
 	items: function(x){
 		var temp2;
 		if (x === "Healing elixir"){
-			console.log("item use: healing elixir");
+			console.log("(" + user.username + ") (" + user.username + ") item use: healing elixir");
 			if (user.hp + items.heals.basic.potency > user.level.maxhp){
 				user.hp = user.level.maxhp;
 			} else {
@@ -15,7 +15,7 @@ module.exports = {
 			}
 			return "You uncork Morgan's " + items.heals.basic.name + " and swill it all. You feel stronger already!";
 		} else if (x === "Extra potent healing elixir"){
-			console.log("item use: potent healing elixir");
+			console.log("(" + user.username + ") (" + user.username + ") item use: potent healing elixir");
 			if (user.hp + items.heals.potent.potency > user.level.maxhp){
 				user.hp = user.level.maxhp;
 			} else {
@@ -31,12 +31,12 @@ module.exports = {
 			return "You can't use that here.";
 			// var temp = user.items.other.splice(i,1);
 		} else if (x === "Innoculated kola nuts"){
-			console.log("item use: kola");
+			console.log("(" + user.username + ") (" + user.username + ") item use: kola");
 			user.turnsToday += 5;
 			user.drugs += 1;
 			return "You take a handful of Morgan's special kola nuts and crunch down on them. The bitterness almost makes you gag. \nYou are energized! Five turns are added to your daily limit!";
 		} else if (x === "Berserker infusion"){
-			console.log("item use: berserker");
+			console.log("(" + user.username + ") (" + user.username + ") item use: berserker");
 			batpoints = 5;
 			user.drugs += 2; 
 			return "Steadying yourself, you gulp down the vial of Morgan's Berserker infusion. It burns going down. \nYou feel the strength of ten men, and crave battle!";
@@ -64,19 +64,16 @@ module.exports = {
 	},
 
 	dailyreboot: function(){
-		console.log("player reboot");
-		console.log("the day is: " + today);
-		console.log("user.lastPlayed is: " + user.lastPlayed);
 		if(user.lastPlayed != today){
 			// user did not play today, so get 'em going with full hp & turns again
-			console.log("user.lastplayed!=today, successful reboot");
+			console.log("(" + user.username + ") successful reboot");
 			user.hp = user.level.maxhp;
 			user.turnsToday = 20;
 			user.lastPlayed = today;
 			user.logins++
 			return 1; 
 		} else if (user.hp <= 0) {
-			console.log("player is dead");
+			console.log("(" + user.username + ") player is dead");
 			// user is dead
 			return 2;
 		} else {
@@ -118,7 +115,7 @@ module.exports = {
 			if (user.attributes.luck!=0){
 				temp += user.attributes.luck * 0.1;
 			}
-			console.log("luck var: " + temp);
+			console.log("(" + user.username + ") luck var: " + temp);
 			if (temp>=0.5){
 				return true
 			} else return false;
@@ -128,7 +125,7 @@ module.exports = {
 			if (user.attributes.charisma!=0){
 				temp += user.attributes.charisma * 0.25;
 			}
-			console.log("charisma var: " + temp);
+			console.log("(" + user.username + ") charisma var: " + temp);
 			if (temp>=0.5){
 				return true
 			} else return false;
@@ -137,7 +134,7 @@ module.exports = {
 			// spirits; berzerk; 
 			var temp = Math.round(((Math.random()+1) + user.attributes.luck) + globalfortune);
 			var temp2 = temp + batpoints;
-			console.log("fortune points: " + temp2);
+			console.log("(" + user.username + ") fortune points: " + temp2);
 			return temp2;
 		}
 	}, 
@@ -211,13 +208,13 @@ module.exports = {
 		}
 		if (sessionevents.minor.length>0){
 			if (sessionevents.minor.length===1){
-				console.log("eventbus just 1 event");
+				console.log("(" + user.username + ") eventbus just 1 event");
 				// pick up event 
 				var temp2 = sessionevents.minor[0];
 				// pick up event description
 		        temp += events.eventReturner(temp2);
 			} else {
-				console.log("eventbus >1 event");
+				console.log("(" + user.username + ") eventbus >1 event");
 				// pick a minor event at random
 				var temp2 = Math.round(Math.random() * (sessionevents.minor.length-1) );
 				// pick up event
@@ -226,7 +223,7 @@ module.exports = {
 			}
 		}
 		sessionevents.tobesaved += temp;
-		console.log("sessionevents.tobesaved: " + sessionevents.tobesaved);
+		console.log("(" + user.username + ") sessionevents.tobesaved: " + sessionevents.tobesaved);
 		eventsave();
 	}
 		// town, tavern, smither, smithbuy, apot, bank, abbey, farm, asking
