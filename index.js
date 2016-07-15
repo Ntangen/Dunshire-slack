@@ -463,13 +463,6 @@ quicksave = function(){
     });
 }
 
-CheckTurnsToday = function () {
-    if (user.turnsToday <= 0) {
-        convo.say("You are fatigued! You must keep inside town until tomorrow.");
-        return true;
-    }
-}
-
 eventsave = function(){
     var temp = utility.todaysdate();
     controller.storage.activity.get(temp, function(err,res){

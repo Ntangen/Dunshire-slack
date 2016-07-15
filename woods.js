@@ -6,8 +6,9 @@ turns=0;
 
 module.exports = {
 	woodsstart: function(res,convo){
-		if (CheckTurnsToday()){
-			town.townsquare(res,convo);
+		if (user.turnsToday<=0){
+			convo.say("You are fatigued! You must keep inside town until tomorrow.");
+			townsquare(res,convo);
 		} else {
 			convo.say("*-------------------------------------T H E  D A R K  W O O D S-------------------------------------*");
 			convo.say("The wind rustles through the trees. A darkness settles over the dense forest as you make your way through...");
@@ -18,8 +19,9 @@ module.exports = {
 	
 
 woodsmenu = function(res,convo){
-	if (CheckTurnsToday()){
-			town.townsquare(res,convo);
+	if (user.turnsToday<=0){
+		convo.say("You are fatigued! You must keep inside town until tomorrow.");
+		townsquare(res,convo);
 	} else {
 		var temp = "";
 		if (user.level.level<3){
@@ -333,7 +335,6 @@ woodsreward = function(res,convo){
 		monster=undefined;
 		user.turnsToday -= turns;
 		turns = 0;
-		console.log("(" + user.username + ") user turns: " + user.turnsToday);
 		woodsmenu(res,convo);
 	} else {
 		convo.say("The " + monster.name + " lays dead before you. \n" +
@@ -342,6 +343,7 @@ woodsreward = function(res,convo){
 			aturns++
 		}
 		user.turnsToday -= turns;
+		console.log("(" + user.username + ") user turns: " + user.turnsToday);		
 		woodsevents(res,convo);
 		monster=undefined;
 		turns = 0;
