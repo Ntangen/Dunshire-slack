@@ -270,6 +270,7 @@ userfight = function(monster){
 	}
 	console.log("(" + user.username + ") user attack: " + attackdamage);
 	turns++;
+	console.log("(" + user.username + ") turns: " + turns);
 	if (attackdamage<=0){
 		return "zip"
 	} else {
@@ -332,6 +333,7 @@ woodsreward = function(res,convo){
 		monster=undefined;
 		user.turnsToday -= turns;
 		turns = 0;
+		console.log("(" + user.username + ") user turns: " + user.turnsToday);
 		woodsmenu(res,convo);
 	} else {
 		convo.say("The " + monster.name + " lays dead before you. \n" +
