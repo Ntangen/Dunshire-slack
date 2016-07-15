@@ -8,7 +8,7 @@ module.exports = {
 	woodsstart: function(res,convo){
 		if (user.turnsToday<=0){
 			convo.say("You are fatigued! You must keep inside town until tomorrow.");
-			townsquare(res,convo);
+			town.townsquare(res,convo);
 		} else {
 			convo.say("*-------------------------------------T H E  D A R K  W O O D S-------------------------------------*");
 			convo.say("The wind rustles through the trees. A darkness settles over the dense forest as you make your way through...");
@@ -21,7 +21,7 @@ module.exports = {
 woodsmenu = function(res,convo){
 	if (user.turnsToday<=0){
 		convo.say("You are fatigued! You must keep inside town until tomorrow.");
-		townsquare(res,convo);
+		town.townsquare(res,convo);
 	} else {
 		var temp = "";
 		if (user.level.level<3){
