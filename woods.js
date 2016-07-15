@@ -343,7 +343,10 @@ woodsreward = function(res,convo){
 			aturns++
 		}
 		user.turnsToday -= turns;
-		console.log("(" + user.username + ") user turns: " + user.turnsToday);		
+		console.log("(" + user.username + ") user turns: " + user.turnsToday);
+		if (user.turnsToday<0){
+			user.turnsToday=0;
+		}
 		woodsevents(res,convo);
 		monster=undefined;
 		turns = 0;
