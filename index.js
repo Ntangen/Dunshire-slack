@@ -23,6 +23,7 @@ beasts = require('./lib/beasts');
 var currentuser, userid, msg;
 username=""; 
 user={};
+shadow={};
 globalfortune=0;
 batpoints=0;
 shieldflag=false;
@@ -211,7 +212,9 @@ controller.on('direct_message', function (bot, message) {
             // found a record for user
             console.log("found a record for username: " + user_data.user.username);
             user = user_data.user;
-            if (user.drinkflag===true){
+            shadow = user_data.shadow;
+            // could add bank info here
+            if (shadow.drinkflag===true){
                 drinkvar=true;
             }
         }
@@ -337,6 +340,7 @@ enter2 = function(res,convo){
         // go on to town
         convo.say(">Good luck then, wanderer. You'll need it.\"");
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Coneshire.");
+        newUserSave();
         quicksave();
         // game lists: crierfetch gets list of daily activity, graballnames gets all user names
         crierfetch();
@@ -456,7 +460,17 @@ grabAllNames = function(x,y){
     }); 
 }
 
+newUserSave = function(){
+    // this sets up the "shadow" section of user profile
+    var shadow = newuser.shadow;
+    controller.storage.users.save({id: userid, shadow:shadow}, function(err,res){
+        console.log("(" + user.username + ") user shadow stats saved");
+        if (err) console.log("save err: " + err);
+    });
+}
+
 quicksave = function(){
+    // standard fast-save 
     controller.storage.users.save({id: userid, user:user}, function(err,res){
         console.log("(" + user.username + ") user save");
         if (err) console.log("save err: " + err);
@@ -492,12 +506,12 @@ savedrink = function(drinkobject){
             if (all_user_data[i].user.username===drinkobject.to) {
                 var temp = all_user_data[i].user.userid;
                 controller.storage.users.get(temp, function(err,user_data){
-                    var targetData = user_data.user;
+                    var targetData = user_data.shadow;
                     targetData.drinks.recd.push(drinkobject);
                     targetData.drinkflag = true;
-                    controller.storage.users.save({id: temp, user:targetData},function(err,res){
+                    controller.storage.users.save({id: temp, shadow:targetData},function(err,res){
                         if (err) console.log("err: " + err);
-                        else console.log("(" + user.username + ") target data saved (savedrink)");
+                        else console.log("(" + user.username + ") shadow target data saved (savedrink)");
                         user.drinks.sent.push(drinkobject);
                         quicksave();
                     });
