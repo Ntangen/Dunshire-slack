@@ -50,23 +50,17 @@ today=0;
 // boring stuff
 // initialization
 
-// var config = {};
-// if (process.env.MONGOLAB_URI) {
-//     var BotkitStorage = require('botkit-storage-mongo');
-//     config = {
-//         storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
-//     };
-// } 
-
 var config = {};
 if (process.env.MONGOLAB_URI) {
-    mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI});
-}
+    var BotkitStorage = require('botkit-storage-mongo');
+    config = {
+        storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
+    };
+} 
 
-// var mongo = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI});
+var mongo = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI});
 
-// var controller = Botkit.slackbot({storage: mongo}).configureSlackApp(
-controller = Botkit.slackbot({storage: mongoStorage}).configureSlackApp(    
+var controller = Botkit.slackbot({storage: mongo}).configureSlackApp(
     {    
         clientId: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
@@ -532,7 +526,9 @@ crierfetch = function(){
     var tempx = {id: temp, one:"two"};
     console.log("(" + user.username + ") attempting to save to activity log");
     console.log("temp: " + temp);
-    controller.storage.activity.save(temp);
+    var temp2 = controller.storage.activity.get('iwt35Y29NRetpNHaf');
+    console.log("temp2: " + temp2);
+    // controller.storage.activity.save(temp);
     //
     // controller.storage.activity.get(temp, function(err,res){
     //     if (err) console.log("activity get err: " + err);
