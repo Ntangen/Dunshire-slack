@@ -50,28 +50,33 @@ today=0;
 // boring stuff
 // initialization
 
-var config = {};
-if (process.env.MONGOLAB_URI) {
-    var BotkitStorage = require('botkit-storage-mongo');
-    config = {
-        storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
-    };
-} 
+// var config = {};
+// if (process.env.MONGOLAB_URI) {
+//     var BotkitStorage = require('botkit-storage-mongo');
+//     config = {
+//         storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
+//     };
+// } 
 
-var mongo = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI});
+// var mongo = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI});
 
-var controller = Botkit.slackbot({storage: mongo}).configureSlackApp(
-    {    
-        clientId: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        scopes: ['bot'],
-    }
-);
+// var controller = Botkit.slackbot({storage: mongo}).configureSlackApp(
+//     {    
+//         clientId: process.env.CLIENT_ID,
+//         clientSecret: process.env.CLIENT_SECRET,
+//         scopes: ['bot'],
+//     }
+// );
+
+//var Botkit = require('botkit'),
+mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI}),
+    controller = Botkit.slackbot({storage: mongoStorage });
+
 
 controller.setupWebserver(process.env.PORT,function(err,webserver) {
   controller.createWebhookEndpoints(controller.webserver);
 
-  controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
+controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
     if (err) {
       res.status(500).send('ERROR: ' + err);
     } else {
@@ -526,9 +531,7 @@ crierfetch = function(){
     var tempx = {id: temp, one:"two"};
     console.log("(" + user.username + ") attempting to save to activity log");
     console.log("temp: " + temp);
-    var temp2 = controller.storage.activity.get('iwt35Y29NRetpNHaf');
-    console.log("temp2: " + temp2);
-    // controller.storage.activity.save(temp);
+    controller.storage.activity.save(temp);
     //
     // controller.storage.activity.get(temp, function(err,res){
     //     if (err) console.log("activity get err: " + err);
