@@ -523,6 +523,7 @@ savedrink = function(drinkobject){
 
 crierfetch = function(){
     var temp = utility.todaysdate();
+    var tempx = {id: temp, one:"two"};
     console.log("(" + user.username + ") attempting to save to activity log");
     console.log("temp: " + temp);
     controller.storage.activity.save(temp);
