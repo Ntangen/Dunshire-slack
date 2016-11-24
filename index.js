@@ -50,17 +50,23 @@ today=0;
 // boring stuff
 // initialization
 
+// var config = {};
+// if (process.env.MONGOLAB_URI) {
+//     var BotkitStorage = require('botkit-storage-mongo');
+//     config = {
+//         storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
+//     };
+// } 
+
 var config = {};
 if (process.env.MONGOLAB_URI) {
-    var BotkitStorage = require('botkit-storage-mongo');
-    config = {
-        storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
-    };
-} 
+    mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI});
+}
 
-var mongo = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI});
+// var mongo = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI});
 
-var controller = Botkit.slackbot({storage: mongo}).configureSlackApp(
+// var controller = Botkit.slackbot({storage: mongo}).configureSlackApp(
+controller = Botkit.slackbot({storage: mongoStorage}).configureSlackApp(    
     {    
         clientId: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
