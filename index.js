@@ -523,16 +523,11 @@ savedrink = function(drinkobject){
 
 crierfetch = function(){
     var temp = utility.todaysdate();
-    console.log("(" + user.username + ") No activity log yet today - populating");
-        var placetemp = "place" + Math.round(Math.random()*3)
-        sessionevents.tobesaved += events.eventReturner(placetemp);
-        var temp2 = sessionevents.tobesaved;
-        controller.storage.activity.save({id:temp, activity:temp2}, function(err){
-            if (err) console.log("event save err: " + err);
-            else console.log("event save success");
-            hearings = temp2
-        });
-        sessionevents.tobesaved = "";
+    console.log("(" + user.username + ") attempting to save to activity log");
+    controller.storage.activity.save({date:temp}, function(err){
+        if (err) console.log("event save err: " + err);
+        else console.log("event save success");
+    });
     //
     // controller.storage.activity.get(temp, function(err,res){
     //     if (err) console.log("activity get err: " + err);
