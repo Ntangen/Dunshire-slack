@@ -1,4 +1,4 @@
-// Coneshire bot!
+// Dunshire bot!
 
 // get those modules
 
@@ -149,7 +149,7 @@ controller.on('bot_channel_join', function (bot, message) {
 
 controller.on('mention', function (bot,message) {
     console.log("mention in channel");
-    bot.reply(message, "Greetings, fellow wanderers. If you'd like to enter the village of Coneshire, just direct message me.");
+    bot.reply(message, "Greetings, fellow wanderers. If you'd like to begin the journey of Dunquest, just direct message me.");
 });
 
 controller.on('direct_message', function (bot, message) {
@@ -162,7 +162,7 @@ controller.on('direct_message', function (bot, message) {
 
     // welcome function
     welcome = function(res,convo){
-        convo.ask("Welcome! Do you wish to venture on to Coneshire?", [
+        convo.ask("Welcome! Do you wish to venture on to the village of Dunshire?", [
         {
             pattern: bot.utterances.yes,
             callback: function(res,convo){
@@ -238,7 +238,7 @@ enter = function(res, convo){
     convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
     if (!user.knownPlayer){
         console.log("setting up new player: " + user.username);
-        convo.ask("The Innkeeper grunts. \n>Well met, *" + user.username + "*. Haven't seen you around here before. You mean to introduce yourself, and begin your adventure in Coneshire?", [
+        convo.ask("The Innkeeper grunts. \n>Well met, *" + user.username + "*. Haven't seen you around here before. You mean to introduce yourself, and begin your adventure in Dunshire?", [
         {
             pattern: convo.task.bot.utterances.yes,
             callback: function(res,convo){
@@ -284,7 +284,7 @@ newplayer = function(res,convo){
     user.profileStarted = today;
     user.lastPlayed = today;
     user.logins++;
-    convo.say("The Innkeeper smacks the long bench with his palm and grins. \n>Excellent! I wish you luck and good fortune on your journies to come in the village of Coneshire - and the lands beyond... \n>As a last step before you go, you may choose to add 1 point to any of your four key character attributes. Which do you choose?");
+    convo.say("The Innkeeper smacks the long bench with his palm and grins. \n>Excellent! I wish you luck and good fortune on your journies to come in the village of Dunshire - and the lands beyond... \n\n>As a last step before you go, you may choose to add 1 point to any of your four key character attributes. Which do you choose?");
     convo.ask("`Charisma`: this will help you get along with other characters. \n`Luck`: this will grant you good fortune. \n`Mysticism`: this will build your mental fortitude. \n`Strength`: this will make you more powerful in combat.", function(res,convo){
                 newplayer2(res,convo);
                 convo.next();
@@ -332,14 +332,14 @@ enter2 = function(res,convo){
     // instructions or town
     var temp = res.text.toLowerCase();
     if (temp==="instructions"){
-        convo.ask("The Innkeeper nods his head. \n>Okay then. You probably lots of questions. What topic would you like explained? Let me pour you some ale, and I'll explain concepts like the `village` of Coneshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Coneshire.\"", function(res, convo){
+        convo.ask("The Innkeeper nods his head. \n>Okay then. You probably lots of questions. What topic would you like explained? Let me pour you some ale, and I'll explain concepts like the `village` of Dunshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Dunshire.\"", function(res, convo){
             instructions(res,convo);
             convo.next();
         });
     } else if (temp==="town"){
         // go on to town
         convo.say(">Good luck then, wanderer. You'll need it.\"");
-        convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Coneshire.");
+        convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Dunshire.");
         newUserSave();
         quicksave();
         // game lists: crierfetch gets list of daily activity, graballnames gets all user names
@@ -390,13 +390,13 @@ instructions = function(res,convo){
             convo.next();
         });
     } else if (temp.includes('concepts')) {
-        convo.say("Should you die here, don't panic. You will recover the next day. While you will not lose any of your supplies, you may lose some gold that is on your person, and not stored at the Bank. Gold stored at the Bank is safe... for the most part. \nIn Coneshire, as anywhere, the ultimate metric of progress is time. You begin with 20 turns in battle each day, which can be used in the Dark Woods, fighting other adventurers or in other places. Just spending time in the Village (for example, at the Tavern or in the Abbey) does not incur turns.If you run out of turns, don't worry - they reset each day. \nYou advance in rank by completing missions, which you qualify for by gaining experience (usually in the Dark Woods). As you gain experience, the weaker creatures in the Woods will flee, and the more powerful ones will be attracted to you. Beware. \nEvery adventurer has certain attributes that they can develop over the course of their time in Dunshire. They are Strength, Luck, Charisma and Mysticism. Strength is useful during combat. Luck makes you more likely to encounter good fortune. Charisma can trigger more favorable encounters with other characters. Mysticism increases a person's aptitude and stamina in magick.\n");
+        convo.say("Should you die here, don't panic. You will recover the next day. While you will not lose any of your supplies, you may lose some gold that is on your person, and not stored at the Bank. Gold stored at the Bank is safe... for the most part. \nIn Dunshire, as anywhere, the ultimate metric of progress is time. You begin with 20 turns in battle each day, which can be used in the Dark Woods, fighting other adventurers or in other places. Just spending time in the Village (for example, at the Tavern or in the Abbey) does not incur turns.If you run out of turns, don't worry - they reset each day. \nYou advance in rank by completing missions, which you qualify for by gaining experience (usually in the Dark Woods). As you gain experience, the weaker creatures in the Woods will flee, and the more powerful ones will be attracted to you. Beware. \nEvery adventurer has certain attributes that they can develop over the course of their time in Dunshire. They are Strength, Luck, Charisma and Mysticism. Strength is useful during combat. Luck makes you more likely to encounter good fortune. Charisma can trigger more favorable encounters with other characters. Mysticism increases a person's aptitude and stamina in magick.\n");
         convo.ask("What can I answer next? (Want a `reminder`?)", function(res,convo){
             instructions(res,convo);
             convo.next();
         });
     } else if (temp.includes('instructions')) {
-        convo.say("I can explain concepts like the `village` of Coneshire, `Fighting`, Buying/using `merchandise`, `Interacting` with villagers, Interacting with other `wanderers`, `Magick` or General `Concepts`. Or you can just `continue` on to the Village of Coneshire.\"", function(res,convo){
+        convo.say("I can explain concepts like the `village` of Dunshire, `Fighting`, Buying/using `merchandise`, `Interacting` with villagers, Interacting with other `wanderers`, `Magick` or General `Concepts`. Or you can just `continue` on to the Village of Dunshire.\"", function(res,convo){
             instructions(res,convo);
             convo.next();
         });
@@ -405,11 +405,11 @@ instructions = function(res,convo){
         crierfetch();
         grabAllNames();
         convo.say("\"Good luck, wanderer. You'll need it.\"");
-        convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Coneshire.");
+        convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Dunshire.");
         town.townsquare(res, convo);
     } else if (temp.includes('reminder')) {
         // reminder of topics
-        convo.ask("Sure. Have some more ale. I can explain concepts like the `village` of Coneshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Coneshire.\"", function(res,convo){
+        convo.ask("Sure. Have some more ale. I can explain concepts like the `village` of Dunshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Dunshire.\"", function(res,convo){
             instructions(res,convo);
             convo.next();
         });
@@ -523,26 +523,37 @@ savedrink = function(drinkobject){
 
 crierfetch = function(){
     var temp = utility.todaysdate();
-    controller.storage.activity.get(temp, function(err,res){
-        if (err) console.log("activity get err: " + err);
-        else if (res===null) {            
-            // it's a new day - nothing here yet
-            console.log("(" + user.username + ") No activity log yet today - populating");
-            var placetemp = "place" + Math.round(Math.random()*3)
-            sessionevents.tobesaved += events.eventReturner(placetemp);
-            var temp2 = sessionevents.tobesaved;
-            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
-                if (err) console.log("event save err: " + err);
-                else console.log("event save success");
-                hearings = temp2
-            });
-            sessionevents.tobesaved = "";
-        }
-        else {
-            // grab today's activity
-            hearings += res.activity;
-        }
-    });
+    console.log("(" + user.username + ") No activity log yet today - populating");
+        var placetemp = "place" + Math.round(Math.random()*3)
+        sessionevents.tobesaved += events.eventReturner(placetemp);
+        var temp2 = sessionevents.tobesaved;
+        controller.storage.activity.save({id:temp, activity:temp2}, function(err){
+            if (err) console.log("event save err: " + err);
+            else console.log("event save success");
+            hearings = temp2
+        });
+        sessionevents.tobesaved = "";
+    //
+    // controller.storage.activity.get(temp, function(err,res){
+    //     if (err) console.log("activity get err: " + err);
+    //     else if (res===null) {            
+    //         // it's a new day - nothing here yet
+    //         console.log("(" + user.username + ") No activity log yet today - populating");
+    //         var placetemp = "place" + Math.round(Math.random()*3)
+    //         sessionevents.tobesaved += events.eventReturner(placetemp);
+    //         var temp2 = sessionevents.tobesaved;
+    //         controller.storage.activity.save({id:temp, activity:temp2}, function(err){
+    //             if (err) console.log("event save err: " + err);
+    //             else console.log("event save success");
+    //             hearings = temp2
+    //         });
+    //         sessionevents.tobesaved = "";
+    //     }
+    //     else {
+    //         // grab today's activity
+    //         hearings += res.activity;
+    //     }
+    // });
 }
 
 // known bugs:
