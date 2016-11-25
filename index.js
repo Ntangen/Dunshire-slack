@@ -352,7 +352,7 @@ enter2 = function(res,convo){
         convo.say(">Good luck then, wanderer. You'll need it.\"");
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Dunshire.");
         quicksave();
-        newUserSave();
+        // newUserSave();
         // game lists: crierfetch gets list of daily activity, graballnames gets all user names
         // crierfetch();
         // grabAllNames();
@@ -475,16 +475,22 @@ newUserSave = function(){
     // this sets up the "shadow" section of user profile
     var shadow = newuser.shadow;
     controller.storage.users.save({id: userid, shadow:shadow}, function(err,res){
-        console.log("(" + user.username + ") user shadow stats saved");
         if (err) console.log("save err: " + err);
+        console.log("(" + user.username + ") user shadow stats saved");
     });
 }
 
 quicksave = function(){
     // standard fast-save 
+    var shadow = newuser.shadow;
+    console.log("shadow profile test: (true) " + shadow.drinkflag);
     controller.storage.users.save({id: userid, profile:user}, function(err,res){
-        console.log("(" + user.username + ") user save");
         if (err) console.log("save err: " + err);
+        console.log("(" + user.username + ") user save");
+    });
+    controller.storage.users.save({id: userid, shadow:"x"}, function(err,res){ 
+        if (err) console.log("save err: " + err);
+        console.log("(" + user.username + ") user shadow save");
     });
 }
 
