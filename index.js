@@ -2,7 +2,7 @@
 
 // get those modules
 
-Botkit = require('botkit');
+// Botkit = require('botkit');
 newuser = require('./lib/user');
 town = require('./town');
 tavern = require('./tavern');
@@ -50,23 +50,34 @@ today=0;
 // boring stuff
 // initialization
 
-var config = {};
-if (process.env.MONGOLAB_URI) {
-    var BotkitStorage = require('botkit-storage-mongo');
-    config = {
-        storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
-    };
-} 
+// var config = {};
+// if (process.env.MONGOLAB_URI) {
+//     var BotkitStorage = require('botkit-storage-mongo');
+//     config = {
+//         storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
+//     };
+// } 
 
-var mongo = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI});
+// var mongo = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI});
 
-var controller = Botkit.slackbot({storage: mongo}).configureSlackApp(
-    {    
-        clientId: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        scopes: ['bot'],
-    }
-);
+// var controller = Botkit.slackbot({storage: mongo}).configureSlackApp(
+//     {    
+//         clientId: process.env.CLIENT_ID,
+//         clientSecret: process.env.CLIENT_SECRET,
+//         scopes: ['bot'],
+//     }
+// );
+
+var Botkit = require('botkit'),
+    mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI}),
+    controller = Botkit.slackbot({ storage: mongoStorage }).configureSlackApp(
+        {    
+            clientId: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+            scopes: ['bot'],
+        });
+
+//
 
 controller.setupWebserver(process.env.PORT,function(err,webserver) {
   controller.createWebhookEndpoints(controller.webserver);
