@@ -524,42 +524,26 @@ savedrink = function(drinkobject){
 }
 
 crierfetch = function(){
-    // var beans = {id: 'cool', beans: ['pinto', 'garbanzo']};
-    // controller.storage.teams.save(beans);
-    // beans = controller.storage.teams.get('cool');
-    // console.log ("beans: " + beans);
-    //
-    var temp = utility.todaysdate();
-    var tempx = {id: temp, one:"two"};
-    console.log("(" + user.username + ") attempting to save to activity log");
-    console.log("temp: " + temp);
-    controller.storage.test.save({id:temp, activity:"Nothing yet"}, function(err){
-        if (err) console.log("test save err: " + err);
-        else console.log("test save success");
+    controller.storage.activity.get(temp, function(err,res){
+        if (err) console.log("activity get err: " + err);
+        else if (res===null) {            
+            // it's a new day - nothing here yet
+            console.log("(" + user.username + ") No activity log yet today - populating");
+            var placetemp = "place" + Math.round(Math.random()*3)
+            sessionevents.tobesaved += events.eventReturner(placetemp);
+            var temp2 = sessionevents.tobesaved;
+            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
+                if (err) console.log("event save err: " + err);
+                else console.log("event save success");
+                hearings = temp2
+            });
+            sessionevents.tobesaved = "";
+        }
+        else {
+            // grab today's activity
+            hearings += res.activity;
+        }
     });
-    var beans = controller.storage.test.get(temp);
-    console.log("beans: " + beans.activity);
-    //
-    // controller.storage.activity.get(temp, function(err,res){
-    //     if (err) console.log("activity get err: " + err);
-    //     else if (res===null) {            
-    //         // it's a new day - nothing here yet
-    //         console.log("(" + user.username + ") No activity log yet today - populating");
-    //         var placetemp = "place" + Math.round(Math.random()*3)
-    //         sessionevents.tobesaved += events.eventReturner(placetemp);
-    //         var temp2 = sessionevents.tobesaved;
-    //         controller.storage.activity.save({id:temp, activity:temp2}, function(err){
-    //             if (err) console.log("event save err: " + err);
-    //             else console.log("event save success");
-    //             hearings = temp2
-    //         });
-    //         sessionevents.tobesaved = "";
-    //     }
-    //     else {
-    //         // grab today's activity
-    //         hearings += res.activity;
-    //     }
-    // });
 }
 
 // known bugs:
