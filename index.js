@@ -354,8 +354,8 @@ enter2 = function(res,convo){
         newUserSave();
         quicksave();
         // game lists: crierfetch gets list of daily activity, graballnames gets all user names
-        crierfetch();
-        grabAllNames();
+        // crierfetch();
+        // grabAllNames();
         town.townsquare(res, convo);
     } else {
         convo.repeat();
