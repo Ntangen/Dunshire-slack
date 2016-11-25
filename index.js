@@ -351,8 +351,8 @@ enter2 = function(res,convo){
         // go on to town
         convo.say(">Good luck then, wanderer. You'll need it.\"");
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Dunshire.");
-        newUserSave();
         quicksave();
+        newUserSave();
         // game lists: crierfetch gets list of daily activity, graballnames gets all user names
         // crierfetch();
         // grabAllNames();
@@ -482,7 +482,7 @@ newUserSave = function(){
 
 quicksave = function(){
     // standard fast-save 
-    controller.storage.users.save({id: userid, user:user}, function(err,res){
+    controller.storage.users.save({id: userid, profile:user}, function(err,res){
         console.log("(" + user.username + ") user save");
         if (err) console.log("save err: " + err);
     });
