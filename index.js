@@ -352,7 +352,6 @@ enter2 = function(res,convo){
         convo.say(">Good luck then, wanderer. You'll need it.\"");
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Dunshire.");
         quicksave();
-        // newUserSave();
         // game lists: crierfetch gets list of daily activity, graballnames gets all user names
         // crierfetch();
         // grabAllNames();
@@ -471,26 +470,13 @@ grabAllNames = function(x,y){
     }); 
 }
 
-newUserSave = function(){
-    // this sets up the "shadow" section of user profile
-    var shadow = newuser.shadow;
-    controller.storage.users.save({id: userid, shadow:shadow}, function(err,res){
-        if (err) console.log("save err: " + err);
-        console.log("(" + user.username + ") user shadow stats saved");
-    });
-}
-
 quicksave = function(){
     // standard fast-save 
     var shadow = newuser.shadow;
-    controller.storage.users.save({id: userid, profile:user, shadow:"x"}, function(err,res){
+    controller.storage.users.save({id: userid, profile:user, shadow:shadow}, function(err,res){
         if (err) console.log("save err: " + err);
         console.log("(" + user.username + ") user save");
     });
-    // controller.storage.users.save({id: userid, shadow:"x"}, function(err,res){ 
-    //     if (err) console.log("save err: " + err);
-    //     console.log("(" + user.username + ") user shadow save");
-    // });
 }
 
 eventsave = function(){
@@ -547,7 +533,7 @@ crierfetch = function(){
     var tempx = {id: temp, one:"two"};
     console.log("(" + user.username + ") attempting to save to activity log");
     console.log("temp: " + temp);
-    controller.storage.activity.save(tempx);
+    controller.storage.activity.save(id:temp, activity:"Nothing yet");
     var beans = controller.storage.activity.get(temp);
     console.log("beans: " + beans);
     //
