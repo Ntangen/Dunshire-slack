@@ -222,12 +222,13 @@ controller.on('direct_message', function (bot, message) {
         } else {
             // found a record for user
             console.log("found a record for username: " + user_data.user.username);
-            user = user_data.user;
-            shadow = user_data.shadow;
-            // could add bank info here
-            if (shadow.drinkflag===true){
-                drinkvar=true;
-            }
+            console.log("found a record for profile username: " + user_data.profile.username);
+            // user = user_data.user;
+            // shadow = user_data.shadow;
+            // // could add bank info here
+            // if (shadow.drinkflag===true){
+            //     drinkvar=true;
+            // }
         }
     });
 
