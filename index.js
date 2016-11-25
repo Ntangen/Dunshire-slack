@@ -208,7 +208,7 @@ controller.on('direct_message', function (bot, message) {
     controller.storage.users.get(userid, function(err,user_data){
         if (err) console.log("err: " + err);
         console.log("user.userid: " + user.userid);
-        if (user_data===undefined || user_data===null || user_data.user.username===undefined){
+        if (user_data===undefined || user_data===null || user_data.profile.username===undefined){
             // no record for this user, so we'll set one up
             console.log("this is not a known player");
             user = newuser.newPlayer;
