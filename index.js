@@ -533,7 +533,10 @@ crierfetch = function(){
     var tempx = {id: temp, one:"two"};
     console.log("(" + user.username + ") attempting to save to activity log");
     console.log("temp: " + temp);
-    controller.storage.test.save({id:temp, activity:"Nothing yet"});
+    controller.storage.test.save({id:temp, activity:"Nothing yet"}, function(err){
+        if (err) console.log("test save err: " + err);
+        else console.log("test save success");
+    });
     var beans = controller.storage.test.get(temp);
     console.log("beans: " + beans.activity);
     //
