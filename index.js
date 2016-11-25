@@ -222,7 +222,7 @@ controller.on('direct_message', function (bot, message) {
         } else {
             // found a record for user
             console.log("found a record for profile username: " + user_data.profile.username);
-            // user = user_data.user;
+            user = user_data.profile;
             // shadow = user_data.shadow;
             // // could add bank info here
             // if (shadow.drinkflag===true){
@@ -483,7 +483,7 @@ newUserSave = function(){
 quicksave = function(){
     // standard fast-save 
     var shadow = newuser.shadow;
-    controller.storage.users.save({id: userid, profile:user}, function(err,res){
+    controller.storage.users.save({id: userid, profile:user, shadow:"x"}, function(err,res){
         if (err) console.log("save err: " + err);
         console.log("(" + user.username + ") user save");
     });
