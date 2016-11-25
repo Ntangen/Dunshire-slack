@@ -353,7 +353,7 @@ enter2 = function(res,convo){
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Dunshire.");
         quicksave();
         // game lists: crierfetch gets list of daily activity, graballnames gets all user names
-        // crierfetch();
+        crierfetch();
         // grabAllNames();
         town.townsquare(res, convo);
     } else {
