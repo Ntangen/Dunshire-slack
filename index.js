@@ -483,15 +483,14 @@ newUserSave = function(){
 quicksave = function(){
     // standard fast-save 
     var shadow = newuser.shadow;
-    console.log("shadow profile test: (true) " + shadow.drinkflag);
     controller.storage.users.save({id: userid, profile:user}, function(err,res){
         if (err) console.log("save err: " + err);
         console.log("(" + user.username + ") user save");
     });
-    controller.storage.users.save({id: userid, shadow:"x"}, function(err,res){ 
-        if (err) console.log("save err: " + err);
-        console.log("(" + user.username + ") user shadow save");
-    });
+    // controller.storage.users.save({id: userid, shadow:"x"}, function(err,res){ 
+    //     if (err) console.log("save err: " + err);
+    //     console.log("(" + user.username + ") user shadow save");
+    // });
 }
 
 eventsave = function(){
