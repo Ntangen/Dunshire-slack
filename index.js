@@ -533,17 +533,18 @@ savedrink = function(drinkobject){
 }
 
 crierfetch = function(){
-    var beans = {id: 'cool', beans: ['pinto', 'garbanzo']};
-    controller.storage.teams.save(beans);
-    beans = controller.storage.teams.get('cool');
-    console.log ("beans: " + beans);
-
+    // var beans = {id: 'cool', beans: ['pinto', 'garbanzo']};
+    // controller.storage.teams.save(beans);
+    // beans = controller.storage.teams.get('cool');
+    // console.log ("beans: " + beans);
     //
-    // var temp = utility.todaysdate();
-    // var tempx = {id: temp, one:"two"};
-    // console.log("(" + user.username + ") attempting to save to activity log");
-    // console.log("temp: " + temp);
-    // controller.storage.activity.save(temp);
+    var temp = utility.todaysdate();
+    var tempx = {id: temp, one:"two"};
+    console.log("(" + user.username + ") attempting to save to activity log");
+    console.log("temp: " + temp);
+    controller.storage.activity.save(tempx);
+    var beans = controller.storage.activity.get(temp);
+    console.log("beans: " + beans);
     //
     // controller.storage.activity.get(temp, function(err,res){
     //     if (err) console.log("activity get err: " + err);
