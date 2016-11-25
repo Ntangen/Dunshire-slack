@@ -530,8 +530,10 @@ crierfetch = function(){
     controller.storage.activity.save({id:temp, activity:"Nothing yet"}, function(err){
         if (err) console.log("test save err: " + err);
         else console.log("test save success");
-        var beans = controller.storage.activity.get(temp);
-        console.log("beans: " + beans);
+        controller.storage.activity.get(temp, function (err,res){
+            console.log("res: " + res);
+            console.log("res.activity: " + res.activity);
+        });
     });
     //
     // controller.storage.activity.get(temp, function(err,res){
