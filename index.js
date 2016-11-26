@@ -486,7 +486,7 @@ eventsave = function(){
         if (res===null){
             console.log("(" + user.username + ") No record found, but we caught it... (eventsave)");
             var temp2 = sessionevents.tobesaved;
-            controller.storage.activity.save({date:temp, activity:temp2}, function(err){
+            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("event save success");
             }); 
@@ -494,7 +494,7 @@ eventsave = function(){
             console.log("(" + user.username + ") appending to day's existing activity record");
             var temp2 = res.activity;
             temp2.push(sessionevents.tobesaved);
-            controller.storage.activity.save({date:temp, activity:temp2}, function(err){
+            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("(" + user.username + ") event save success");
             }); 
@@ -527,7 +527,7 @@ crierfetch = function(){
     var temp = utility.todaysdate();
     console.log("temp: " + temp + " (crierfetch)");
     console.log("(" + user.username + ") attempting to save to activity log");
-    controller.storage.activity.get({date:temp}, function(err,res){
+    controller.storage.activity.get({id:temp}, function(err,res){
         console.log("res: " + res + " (crierfetch)");
         if (err) console.log("activity get err: " + err);
         else if (res===null) {
@@ -536,7 +536,7 @@ crierfetch = function(){
             var placetemp = "place" + Math.round(Math.random()*3)
             sessionevents.tobesaved += events.eventReturner(placetemp);
             var temp2 = sessionevents.tobesaved;
-            controller.storage.activity.save({date:temp, activity:[temp2]}, function(err){
+            controller.storage.activity.save({id:temp, activity:[temp2]}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("event save success");
                 hearings = temp2 + "\n"
