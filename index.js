@@ -534,7 +534,7 @@ crierfetch = function(){
             var placetemp = "place" + Math.round(Math.random()*3)
             sessionevents.tobesaved += events.eventReturner(placetemp);
             var temp2 = sessionevents.tobesaved;
-            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
+            controller.storage.activity.save({date:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("event save success");
                 hearings = temp2
@@ -548,17 +548,9 @@ crierfetch = function(){
     });
 }
 
-// known bugs:
-// - tavern minstrel true/false var is not persistent; restarting game resets the var
-// - there's gotta be a better way of collecting all usernames for display, but asynch wasn't my friend
-// - gotta add stalking for lev 2s at bar
-// 
-
 
 // grab some deets real quick
 // bot.api.users.info({'user':userid},function(err,res){
 // user.name = res.user.name;
 // user.email = res.user.profile.email;
 // controller.storage.users.save({id: userid, user});
-
-

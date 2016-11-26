@@ -230,4 +230,3 @@ module.exports = {
 		// lev2, magic, newplayer, death
 }
 
-
