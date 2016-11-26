@@ -525,9 +525,8 @@ savedrink = function(drinkobject){
 
 crierfetch = function(){
     var temp = utility.todaysdate();
-    console.log("temp: " + temp + " (crierfetch)");
     console.log("(" + user.username + ") attempting to save to activity log");
-    controller.storage.activity.get({id:temp}, function(err,res){
+    controller.storage.activity.get(temp, function(err,res){
         console.log("res: " + res + " (crierfetch)");
         if (err) console.log("activity get err: " + err);
         else if (res===null) {
