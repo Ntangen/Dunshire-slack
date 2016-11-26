@@ -486,7 +486,7 @@ eventsave = function(){
         if (res===null){
             console.log("(" + user.username + ") No record found, but we caught it... (eventsave)");
             var temp2 = sessionevents.tobesaved;
-            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
+            controller.storage.activity.save({date:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("event save success");
             }); 
@@ -494,7 +494,7 @@ eventsave = function(){
             console.log("(" + user.username + ") appending to day's existing activity record");
             var temp2 = res.activity;
             temp2 += sessionevents.tobesaved;
-            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
+            controller.storage.activity.save({date:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("(" + user.username + ") event save success");
             }); 
