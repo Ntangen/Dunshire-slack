@@ -525,9 +525,11 @@ savedrink = function(drinkobject){
 
 crierfetch = function(){
     var temp = utility.todaysdate();
+    console.log("temp: " + temp + " (crierfetch)");
     console.log("(" + user.username + ") attempting to save to activity log");
     controller.storage.activity.get({date:temp}, function(err,res){
         if (err) console.log("activity get err: " + err);
+        console.log("res: " + res + " (crierfetch)");
         else if (res===null) {            
             // it's a new day - nothing here yet
             console.log("(" + user.username + ") No activity log yet today - populating");
