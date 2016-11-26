@@ -526,9 +526,9 @@ savedrink = function(drinkobject){
 crierfetch = function(){
     var temp = utility.todaysdate();
     console.log("(" + user.username + ") attempting to save to activity log");
-    controller.storage.activity.get(temp, function(err,res){
+    controller.storage.activity.get(date:temp, function(err,res){
         if (err) console.log("activity get err: " + err);
-        else if (res===null || res===undefined) {            
+        else if (res===null) {            
             // it's a new day - nothing here yet
             console.log("(" + user.username + ") No activity log yet today - populating");
             var placetemp = "place" + Math.round(Math.random()*3)
@@ -547,6 +547,7 @@ crierfetch = function(){
             for (i=0;i<hearings.length;i++){
                 hearings[i] += "\n"
             }
+            console.log("hearings: " + hearings[0] + " (crierfetch)");
         }
     });
 }
