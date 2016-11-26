@@ -204,7 +204,7 @@ module.exports = {
 	        	var temp2 = sessionevents.major[i];
 	        	temp += events.eventReturner(temp2);
 	        }
-			sessionevents.tobesaved += temp;
+			sessionevents.tobesaved.push(temp); 
 		}
 		if (sessionevents.minor.length>0){
 			if (sessionevents.minor.length===1){
@@ -222,7 +222,7 @@ module.exports = {
 		        temp += events.eventReturner(temp3);
 			}
 		}
-		sessionevents.tobesaved += temp;
+		sessionevents.tobesaved.push(temp);
 		console.log("(" + user.username + ") sessionevents.tobesaved: " + sessionevents.tobesaved);
 		eventsave();
 	}

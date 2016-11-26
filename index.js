@@ -493,7 +493,7 @@ eventsave = function(){
         } else {
             console.log("(" + user.username + ") appending to day's existing activity record");
             var temp2 = res.activity;
-            temp2 += sessionevents.tobesaved;
+            temp2.push(sessionevents.tobesaved);
             controller.storage.activity.save({date:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("(" + user.username + ") event save success");
@@ -534,16 +534,19 @@ crierfetch = function(){
             var placetemp = "place" + Math.round(Math.random()*3)
             sessionevents.tobesaved += events.eventReturner(placetemp);
             var temp2 = sessionevents.tobesaved;
-            controller.storage.activity.save({date:temp, activity:temp2}, function(err){
+            controller.storage.activity.save({date:temp, activity:[temp2]}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("event save success");
-                hearings = temp2
+                hearings = temp2 + "\n"
             });
-            sessionevents.tobesaved = "";
+            sessionevents.tobesaved = [];
         }
         else {
             // grab today's activity
             hearings += res.activity;
+            for (i=0;i<hearings.length;i++){
+                hearings[i] += "\n"
+            }
         }
     });
 }
