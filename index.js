@@ -533,7 +533,8 @@ crierfetch = function(){
             // it's a new day - nothing here yet
             console.log("(" + user.username + ") No activity log yet today - populating");
             var placetemp = "place" + Math.round(Math.random()*3)
-            sessionevents.tobesaved.push(events.eventReturner(placetemp));
+            var temp3 = events.eventReturner(placetemp);
+            sessionevents.tobesaved.push(temp3);
             var temp2 = sessionevents.tobesaved;
             controller.storage.activity.save({id:temp, activity:[temp2]}, function(err){
                 if (err) console.log("event save err: " + err);
