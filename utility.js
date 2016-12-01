@@ -223,8 +223,8 @@ module.exports = {
 			}
 		}
 		console.log("temp: " + temp + " (eventbus)");
-		console.log("typeof temp: " + typeof(temp) + " (eventbus)");
-		sessionevents.tobesaved.push(temp);
+		console.log("temp0: " + temp[0] + " (eventbus)");
+		sessionevents.tobesaved.push(temp[0]);
 		console.log("(" + user.username + ") sessionevents.tobesaved: " + sessionevents.tobesaved);
 		eventsave();
 	}
