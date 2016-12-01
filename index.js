@@ -36,7 +36,7 @@ drinkvar=false;
 channel=undefined;
 aturns=0;
 missioncomplete=false;
-hearings="";
+hearings="Strange winds come out of the north, and the countryside is uneasy.";
 sessionevents={
     minor:[],
     majorflag:false,
