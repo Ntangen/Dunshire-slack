@@ -222,6 +222,8 @@ module.exports = {
 		        temp.push(events.eventReturner(minoreventstemp));
 			}
 		}
+		console.log("temp: " + temp + " (eventbus)");
+		console.log("typeof temp: " + typeof(temp) + " (eventbus)");
 		sessionevents.tobesaved.push(temp);
 		console.log("(" + user.username + ") sessionevents.tobesaved: " + sessionevents.tobesaved);
 		eventsave();
