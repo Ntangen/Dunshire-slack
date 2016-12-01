@@ -198,11 +198,11 @@ module.exports = {
 	},
 
 	eventbus: function(x){
-		var temp = [];
+		var temp = "";
 		if (sessionevents.major.length>0){
 	        for (i=0;i<sessionevents.major.length;i++){
 	        	var majoreventstemp = sessionevents.major[i];
-	        	temp.push(events.eventReturner(majoreventstemp));
+	        	temp += events.eventReturner(majoreventstemp);
 	        }
 			sessionevents.tobesaved.push(temp); 
 		}
@@ -212,19 +212,18 @@ module.exports = {
 				// pick up event 
 				var minoreventstemp = sessionevents.minor[0];
 				// pick up event description
-		        temp.push(events.eventReturner(minoreventstemp));
+		        temp += events.eventReturner(minoreventstemp);
 			} else {
 				console.log("(" + user.username + ") eventbus >1 event");
 				// pick a minor event at random
 				var minoreventsvar = Math.round(Math.random() * (sessionevents.minor.length-1) );
 				// pick up event
 				var minoreventstemp = sessionevents.minor[minoreventsvar];
-		        temp.push(events.eventReturner(minoreventstemp));
+		        temp += events.eventReturner(minoreventstemp);
 			}
 		}
 		console.log("temp: " + temp + " (eventbus)");
-		console.log("temp0: " + temp[0] + " (eventbus)");
-		sessionevents.tobesaved.push(temp[0]);
+		sessionevents.tobesaved += temp;
 		console.log("(" + user.username + ") sessionevents.tobesaved: " + sessionevents.tobesaved);
 		eventsave();
 	}

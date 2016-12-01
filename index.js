@@ -36,7 +36,7 @@ drinkvar=false;
 channel=undefined;
 aturns=0;
 missioncomplete=false;
-hearings="BLAH BLAH";
+hearings="";
 sessionevents={
     minor:[],
     majorflag:false,
