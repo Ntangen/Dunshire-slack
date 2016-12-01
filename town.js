@@ -1,5 +1,7 @@
 // townsquare
 
+hearings = "Strange winds come out of the north, and the countryside is uneasy.";
+
 var tavern = require('./tavern');
 
 module.exports = {

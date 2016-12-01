@@ -212,7 +212,7 @@ module.exports = {
 				// pick up event 
 				var minoreventstemp = sessionevents.minor[0];
 				// pick up event description
-		        temp += events.eventReturner(minoreventstemp);
+		        temp.push(events.eventReturner(minoreventstemp));
 			} else {
 				console.log("(" + user.username + ") eventbus >1 event");
 				// pick a minor event at random
