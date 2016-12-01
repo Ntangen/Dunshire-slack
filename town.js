@@ -124,6 +124,8 @@ townusegear = function(res,convo){
 
 crier = function(res,convo){
     convo.say(hearings);
+    console.log("What's going on here? (crier)");
+    console.log("Hearings: " + hearings + " (crier)");
     convo.ask("The town square bustles around you. What next? (Want a `reminder`?)", function(res,convo){
 	    townrouter(res,convo);
 	    convo.next();

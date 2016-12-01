@@ -537,7 +537,7 @@ crierfetch = function(){
             console.log("temp3: " + temp3 + "(crierfetch)");
             sessionevents.tobesaved.push(temp3);
             var temp2 = sessionevents.tobesaved;
-            controller.storage.activity.save({id:temp, activity:[temp2]}, function(err){
+            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
                 else console.log("event save success");
                 hearings = temp2 + "\n"

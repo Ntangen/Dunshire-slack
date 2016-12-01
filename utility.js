@@ -222,7 +222,7 @@ module.exports = {
 		        temp.push(events.eventReturner(minoreventstemp));
 			}
 		}
-		//sessionevents.tobesaved.push(temp);
+		sessionevents.tobesaved.push(temp);
 		console.log("(" + user.username + ") sessionevents.tobesaved: " + sessionevents.tobesaved);
 		eventsave();
 	}
