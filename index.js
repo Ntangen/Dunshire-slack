@@ -36,7 +36,7 @@ drinkvar=false;
 channel=undefined;
 aturns=0;
 missioncomplete=false;
-hearings="";
+hearings="Strange winds come out of the north, and the countryside is uneasy.";
 sessionevents={
     minor:[],
     majorflag:false,
@@ -353,7 +353,7 @@ enter2 = function(res,convo){
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Dunshire.");
         quicksave();
         // game lists: crierfetch gets list of daily activity, graballnames gets all user names
-        crierfetch();
+        // crierfetch();
         // grabAllNames();
         town.townsquare(res, convo);
     } else {
@@ -412,7 +412,7 @@ instructions = function(res,convo){
         });
     } else if (temp.includes('continue')) {
         // go on to town
-        crierfetch();
+        // crierfetch();
         grabAllNames();
         convo.say("\"Good luck, wanderer. You'll need it.\"");
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Dunshire.");
@@ -523,36 +523,36 @@ savedrink = function(drinkobject){
     });
 }
 
-crierfetch = function(){
-    var temp = utility.todaysdate();
-    console.log("(" + user.username + ") attempting to save to activity log");
-    controller.storage.activity.get(temp, function(err,res){
-        console.log("res: " + res + " (crierfetch)");
-        if (err) console.log("activity get err: " + err);
-        else if (res===null) {
-            // it's a new day - nothing here yet
-            console.log("(" + user.username + ") No activity log yet today - populating");
-            var placetemp = "place" + Math.round(Math.random()*3)
-            var temp3 = events.eventReturner(placetemp);
-            sessionevents.tobesaved.push(temp3);
-            var temp2 = sessionevents.tobesaved;
-            controller.storage.activity.save({id:temp, activity:[temp2]}, function(err){
-                if (err) console.log("event save err: " + err);
-                else console.log("event save success");
-                hearings = temp2 + "\n"
-            });
-            sessionevents.tobesaved = [];
-        }
-        else {
-            // grab today's activity
-            hearings += res.activity;
-            for (i=0;i<hearings.length;i++){
-                hearings[i] += "\n"
-            }
-            console.log("hearings: " + hearings[0] + " (crierfetch)");
-        }
-    });
-}
+// crierfetch = function(){
+//     var temp = utility.todaysdate();
+//     console.log("(" + user.username + ") attempting to save to activity log");
+//     controller.storage.activity.get(temp, function(err,res){
+//         console.log("res: " + res + " (crierfetch)");
+//         if (err) console.log("activity get err: " + err);
+//         else if (res===null) {
+//             // it's a new day - nothing here yet
+//             console.log("(" + user.username + ") No activity log yet today - populating");
+//             var placetemp = "place" + Math.round(Math.random()*3)
+//             var temp3 = events.eventReturner(placetemp);
+//             sessionevents.tobesaved.push(temp3);
+//             var temp2 = sessionevents.tobesaved;
+//             controller.storage.activity.save({id:temp, activity:[temp2]}, function(err){
+//                 if (err) console.log("event save err: " + err);
+//                 else console.log("event save success");
+//                 hearings = temp2 + "\n"
+//             });
+//             sessionevents.tobesaved = [];
+//         }
+//         else {
+//             // grab today's activity
+//             hearings += res.activity;
+//             for (i=0;i<hearings.length;i++){
+//                 hearings[i] += "\n"
+//             }
+//             console.log("hearings: " + hearings[0] + " (crierfetch)");
+//         }
+//     });
+// }
 
 
 // grab some deets real quick
