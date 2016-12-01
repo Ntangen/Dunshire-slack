@@ -198,11 +198,11 @@ module.exports = {
 	},
 
 	eventbus: function(x){
-		var temp = "";
+		var temp = [];
 		if (sessionevents.major.length>0){
 	        for (i=0;i<sessionevents.major.length;i++){
-	        	var temp2 = sessionevents.major[i];
-	        	temp += events.eventReturner(temp2);
+	        	var majoreventstemp = sessionevents.major[i];
+	        	temp.push(events.eventReturner(majoreventstemp));
 	        }
 			sessionevents.tobesaved.push(temp); 
 		}
@@ -210,16 +210,16 @@ module.exports = {
 			if (sessionevents.minor.length===1){
 				console.log("(" + user.username + ") eventbus just 1 event");
 				// pick up event 
-				var temp2 = sessionevents.minor[0];
+				var minoreventstemp = sessionevents.minor[0];
 				// pick up event description
-		        temp += events.eventReturner(temp2);
+		        temp += events.eventReturner(minoreventstemp);
 			} else {
 				console.log("(" + user.username + ") eventbus >1 event");
 				// pick a minor event at random
-				var temp2 = Math.round(Math.random() * (sessionevents.minor.length-1) );
+				var minoreventsvar = Math.round(Math.random() * (sessionevents.minor.length-1) );
 				// pick up event
-				var temp3 = sessionevents.minor[temp2]
-		        temp += events.eventReturner(temp3);
+				var minoreventstemp = sessionevents.minor[minoreventsvar];
+		        temp.push(events.eventReturner(minoreventstemp));
 			}
 		}
 		sessionevents.tobesaved.push(temp);
