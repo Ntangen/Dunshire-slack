@@ -1,4 +1,4 @@
-// Dunshire bot!
+// Dunquest bot!
 
 // get those modules
 
@@ -169,7 +169,7 @@ controller.on('direct_message', function (bot, message) {
     userid = message.user;
     user.userid = userid;
     team = message.team;
-    today = utility.todaysdate("day");
+    today = utility.todaysdate();
 
     // welcome function
     welcome = function(res,convo){
@@ -223,8 +223,8 @@ controller.on('direct_message', function (bot, message) {
             // found a record for user
             console.log("found a record for profile username: " + user_data.profile.username);
             user = user_data.profile;
-            // shadow = user_data.shadow;
-            // // could add bank info here
+            shadow = user_data.shadow;
+            // could add bank info here
             // if (shadow.drinkflag===true){
             //     drinkvar=true;
             // }
@@ -235,13 +235,15 @@ controller.on('direct_message', function (bot, message) {
 
 });
 
+// **Unfinished code: try to stop a convo where the input/response has gotten out of sync**
+// 
 // controller.hears('stop',['direct_message'],function(bot,message){
-
 //     bot.startConversation(message, function(err,convo){
 //         convo.say("🚨Yikes!🚨 We're going to try to stop this conversation now.");
 //         convo.stop();
 //     });
 // });
+//
 
 enter = function(res, convo){
     convo.say("Great! Let's go! 🐲");
@@ -463,6 +465,7 @@ death = function(res,convo){
 // handy game-wide functions
 
 grabAllNames = function(x,y){
+    // grab list of all player names for use in Tavern
     controller.storage.users.all(function(err, all_user_data) {
         for (i=0;i<all_user_data.length;i++){
             allNames += "*" + all_user_data[i].user.username + "*, ";
@@ -471,8 +474,7 @@ grabAllNames = function(x,y){
 }
 
 quicksave = function(){
-    // standard fast-save 
-    var shadow = newuser.shadow;
+    // your standard game save 
     controller.storage.users.save({id: userid, profile:user, shadow:shadow}, function(err,res){
         if (err) console.log("save err: " + err);
         console.log("(" + user.username + ") user save");
@@ -503,6 +505,7 @@ eventsave = function(){
 }
 
 savedrink = function(drinkobject){
+    // player sends a drink to another
     controller.storage.users.all(function(err, all_user_data) {
         for (i=0;i<all_user_data.length;i++){
             if (all_user_data[i].user.username===drinkobject.to) {
@@ -524,6 +527,7 @@ savedrink = function(drinkobject){
 }
 
 crierfetch = function(){
+    // fetch today's public activity log for the Crier
     var temp = utility.todaysdate();
     console.log("(" + user.username + ") attempting to save to activity log");
     controller.storage.activity.get(temp, function(err,res){

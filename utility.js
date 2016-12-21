@@ -64,13 +64,13 @@ module.exports = {
 	},
 
 	dailyreboot: function(){
-		if(user.lastPlayed != today){
+		if(shadow.lastPlayed != today){
 			// user did not play today, so get 'em going with full hp & turns again
 			console.log("(" + user.username + ") successful reboot");
 			user.hp = user.level.maxhp;
-			user.turnsToday = 20;
-			user.lastPlayed = today;
-			user.logins++
+			shadow.turnsToday = 20;
+			shadow.lastPlayed = today;
+			shadow.logins++;
 			return 1; 
 		} else if (user.hp <= 0) {
 			console.log("(" + user.username + ") player is dead");
