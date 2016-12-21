@@ -497,7 +497,7 @@ eventsave = function(){
             }); 
         } else {
             console.log("(" + user.username + ") appending to day's existing activity record");
-            var temp2 = res.activity;
+            var temp2 = "blah"
             temp2.push(sessionevents.tobesaved);
             controller.storage.activity.save({id:temp, activity:temp2}, function(err){
                 if (err) console.log("event save err: " + err);
