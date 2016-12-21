@@ -70,7 +70,7 @@ module.exports = {
 			user.hp = user.level.maxhp;
 			shadow.turnsToday = 20;
 			shadow.lastPlayed = today;
-			shadow.logins++;
+			shadow.loginsSlack++;
 			return 1; 
 		} else if (user.hp <= 0) {
 			console.log("(" + user.username + ") player is dead");
@@ -204,7 +204,7 @@ module.exports = {
 	        	var majoreventstemp = sessionevents.major[i];
 	        	temp += events.eventReturner(majoreventstemp);
 	        }
-			sessionevents.tobesaved.push(temp); 
+			// sessionevents.tobesaved.push(temp); 
 		}
 		if (sessionevents.minor.length>0){
 			if (sessionevents.minor.length===1){
@@ -223,7 +223,7 @@ module.exports = {
 			}
 		}
 		console.log("temp: " + temp + " (eventbus)");
-		sessionevents.tobesaved += temp;
+		// sessionevents.tobesaved += temp;
 		console.log("(" + user.username + ") sessionevents.tobesaved: " + sessionevents.tobesaved);
 		eventsave();
 	}

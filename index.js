@@ -212,6 +212,7 @@ controller.on('direct_message', function (bot, message) {
             // no record for this user, so we'll set one up
             console.log("this is not a known player");
             user = newuser.newPlayer;
+            shadow = newuser.shadow;
             user.userid = userid;
             drinkvar=true;
             // grab some user deets real quick, saves to user var
@@ -294,9 +295,8 @@ enter = function(res, convo){
 
 newplayer = function(res,convo){
     user.knownPlayer = true;
-    user.profileStarted = today;
+    shadow.profileStarted = today;
     user.lastPlayed = today;
-    user.logins++;
     convo.say("The Innkeeper smacks the long bench with his palm and grins. \n>Excellent! I wish you luck and good fortune on your journies to come in the village of Dunshire - and the lands beyond... \n\n>As a last step before you go, you may choose to add 1 point to any of your four key character attributes. Which do you choose?");
     convo.ask("`Charisma`: this will help you get along with other characters. \n`Luck`: this will grant you good fortune. \n`Mysticism`: this will build your mental fortitude. \n`Strength`: this will make you more powerful in combat.", function(res,convo){
                 newplayer2(res,convo);
@@ -353,6 +353,7 @@ enter2 = function(res,convo){
         // go on to town
         convo.say(">Good luck then, wanderer. You'll need it.\"");
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Dunshire.");
+        shadow.loginsSlack++;
         quicksave();
         // game lists: crierfetch gets list of daily activity, graballnames gets all user names
         // crierfetch();
@@ -415,9 +416,11 @@ instructions = function(res,convo){
     } else if (temp.includes('continue')) {
         // go on to town
         // crierfetch();
-        grabAllNames();
+        // grabAllNames();
         convo.say("\"Good luck, wanderer. You'll need it.\"");
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Dunshire.");
+        shadow.loginsSlack++;
+        quicksave();
         town.townsquare(res, convo);
     } else if (temp.includes('reminder')) {
         // reminder of topics
