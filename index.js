@@ -45,28 +45,9 @@ sessionevents={
 };
 today=0;
 
-//////////////////////////////////////
-
+////////////////////////////////////////////////////////////
 // boring stuff
 // initialization
-
-// var config = {};
-// if (process.env.MONGOLAB_URI) {
-//     var BotkitStorage = require('botkit-storage-mongo');
-//     config = {
-//         storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
-//     };
-// } 
-
-// var mongo = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI});
-
-// var controller = Botkit.slackbot({storage: mongo}).configureSlackApp(
-//     {    
-//         clientId: process.env.CLIENT_ID,
-//         clientSecret: process.env.CLIENT_SECRET,
-//         scopes: ['bot'],
-//     }
-// );
 
 var Botkit = require('botkit'),
     mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGOLAB_URI}),
@@ -76,8 +57,6 @@ var Botkit = require('botkit'),
             clientSecret: process.env.CLIENT_SECRET,
             scopes: ['bot'],
         });
-
-//
 
 controller.setupWebserver(process.env.PORT,function(err,webserver) {
   controller.createWebhookEndpoints(controller.webserver);
@@ -91,8 +70,7 @@ controller.setupWebserver(process.env.PORT,function(err,webserver) {
   });
 });
 
-// just a simple way to make sure we don't
-// connect to the RTM twice for the same team
+// just a simple way to make sure we don'T connect to the RTM twice for the same team
 var _bots = {};
 function trackBot(bot) {
   _bots[bot.config.token] = bot;
@@ -140,8 +118,6 @@ controller.storage.teams.all(function(err, teams) {
   }
 });
 
-//////////
-
 controller.on('rtm_open', function (bot) {
     console.log('** The RTM api just connected!');
 });
@@ -162,6 +138,12 @@ controller.on('mention', function (bot,message) {
     console.log("mention in channel");
     bot.reply(message, "Greetings, fellow wanderers. If you'd like to begin the journey of Dunquest, just direct message me.");
 });
+
+////////////////////////////////////////////////////////////
+//
+// GETTING STARTED
+//
+////////////////////////////////////////////////////////////
 
 controller.on('direct_message', function (bot, message) {
 
@@ -235,7 +217,8 @@ controller.on('direct_message', function (bot, message) {
     bot.startConversation(message, welcome);
 
 });
-
+////////////////////////////////////////////////////////////
+//
 // **Unfinished code: try to stop a convo where the input/response has gotten out of sync**
 // 
 // controller.hears('stop',['direct_message'],function(bot,message){
@@ -245,6 +228,7 @@ controller.on('direct_message', function (bot, message) {
 //     });
 // });
 //
+////////////////////////////////////////////////////////////
 
 enter = function(res, convo){
     convo.say("Great! Let's go! 🐲");
@@ -465,13 +449,17 @@ death = function(res,convo){
     convo.next();
 }
 
-// handy game-wide functions
+////////////////////////////////////////////////////////////
+//
+// HANDY GAME-WIDE FUNCTIONS
+//
+////////////////////////////////////////////////////////////
 
 grabAllNames = function(x,y){
     // grab list of all player names for use in Tavern
     controller.storage.users.all(function(err, all_user_data) {
         for (i=0;i<all_user_data.length;i++){
-            allNames += "*" + all_user_data[i].user.username + "*, ";
+            allNames += "*" + all_user_data[i].profile.username + "*, ";
         }
     }); 
 }
@@ -511,8 +499,8 @@ savedrink = function(drinkobject){
     // player sends a drink to another
     controller.storage.users.all(function(err, all_user_data) {
         for (i=0;i<all_user_data.length;i++){
-            if (all_user_data[i].user.username===drinkobject.to) {
-                var temp = all_user_data[i].user.userid;
+            if (all_user_data[i].profile.username===drinkobject.to) {
+                var temp = all_user_data[i].profile.userid;
                 controller.storage.users.get(temp, function(err,user_data){
                     var targetData = user_data.shadow;
                     targetData.drinks.recd.push(drinkobject);

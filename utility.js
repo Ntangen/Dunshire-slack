@@ -44,7 +44,9 @@ module.exports = {
 	},
 
 	levelup: function(x){
+		// game-wide function for leveling up a player
 		if (x===2){
+			// Abbey completed - Level 2
 			user.level = levs.levels.apprentice;
 			user.hp = levs.levels.apprentice.maxhp;
 			user.mission = "";
@@ -52,15 +54,38 @@ module.exports = {
 			sessionevents.majorflag=true;
 			sessionevents.major.push("lev2");
 		} else if (x===3){
+			// Grannon completed - Level 3
 			user.level = levs.levels.challenger;
 			user.hp = levs.levels.challenger.maxhp
 		} else if (x===4){
+			// Royale completed - Level 4
 			user.level = levs.levels.journeyman;
 			user.hp = levs.levels.journeyman.maxhp
 		} else if (x===5){
-			user.level = levs.levels.ranger;
-			user.hp = levs.levels.ranger.maxhp
-		}
+			// Morgan's errand completed - Level 5
+			user.level = levs.levels.rogue;
+			user.hp = levs.levels.rogue.maxhp
+		} else if (x===6){
+			// Abbey dark mission completed - Level 6
+			user.level = levs.levels.corsair;
+			user.hp = levs.levels.corsair.maxhp
+		} else if (x===7){
+			// Rolf's drugs completed - Level 7
+			user.level = levs.levels.sensei;
+			user.hp = levs.levels.sensei.maxhp
+		} else if (x===8){
+			// Pestilence completed - Level 8
+			user.level = levs.levels.mchief;
+			user.hp = levs.levels.mchief.maxhp
+		} else if (x===9){
+			// bank break-in completed - Level 9
+			user.level = levs.levels.ronin;
+			user.hp = levs.levels.ronin.maxhp
+		} else if (x===10){
+			// minstrel completed - Level 10
+			user.level = levs.levels.wanderer;
+			user.hp = levs.levels.wanderer.maxhp
+		} 
 	},
 
 	dailyreboot: function(){

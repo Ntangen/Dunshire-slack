@@ -5,18 +5,40 @@ module.exports = {
 	apothecary: function(res,convo){
 		convo.say("*-------------------------------------M O R G A N ' S  A P O T H E C A R Y-------------------------------------*");
 		convo.say("Beakers of queer liquid overflowing with vapor surround you. \nMorgan the Apothecary decants her latest concoction into a beaker.");
+		if (user.level.level===4){
+			if (user.mission==="morgan" && !missioncomplete){
+				// intra-mission menu
+				convo.say(">I do look forward to that Quercus root, " + user.username + "!");
+				convo.ask(">Now, dear... what do you seek today?" + "\nPeruse Morgan's `heal`ing potions, browse her `medicines` list, `ask` what she's working on now, or return to the `street`.", function(res,convo){
+					apotrouter(res,convo);
+					convo.next();
+				});
+			} else if (user.mission==="morgan" && missioncomplete){
+				// finished mission - raise to level 5
+				convo.say("Walking into the cabin, you meet Morgan's inquiring look by tossing the small bag containing the Quercus root down on her work table. Morgan removes the root, examining it in her hands with a specialist's eye.");
+				convo.say(">This is remarkable... I've never seen such a specimen so well preserved! So fresh! You've done well, " + user.username + " - my thanks to you!" + "\n>And... as promised... you shall have your reward. Have a seat for just a moment.");
+				// more
+			} else {
+				// before you've accepted mission
+				convo.say("Sitting listlessly at her work bench, Morgan hardly looks up at you, her brow furrowed as she stares into the shimmering liquid before her. Bags hang under her eyes, and her hair is unkempt.");
+				convo.ask("You may peruse Morgan's `heal`ing potions, browse her `medicines` list, `ask` what she's working on now, or return to the `street`.", function(res,convo){
+					apotrouter(res,convo);
+					convo.next();
+				});
+			}
+		} else {
 		// if (flag==="drugs"){
 		// 	output(3, "<span id=quote>\"Step carefully, fr...</span> she says, before looking up and seeing your tell-tale shaking and pale complexion. A thin, cruel smile spreads across her face. <span id=quote>Been taking a few too many of my remedies, have you?</span> she asks, knowingly.<br>" + 
 		// 		"<span id=quote>The addiction you're experiencing now will only get worse. I promise you. And to beat it, you will require my help. Just let me know when.</span>");
 		// 	output(4, "<span id=quote>Now, dear... what do you seek today?</span><br><br>" +
 		// 		"<span id=menu>Press (<span id=letter>H</span>) to peruse Morgan's healing potions, (<span id=letter>M</span>) to browse her medicine list, (<span id=letter>A</span>) to ask what she's working on now, (<span id=letter>D</span>) to inquire about curing your addiction, or (<span id=letter>L</span>) to leave.</span><br>");
 		// } else {
-		convo.ask(">Step carefully, friend... We don't need an explosion in here. Unless, that is... uh... well, my dear, what is it you seek? \nPeruse Morgan's `heal`ing potions, browse her `medicines` list, `ask` what she's working on now, or return to the `street`.", function(res,convo){
-			apotrouter(res,convo);
-			convo.next();
-		});
+			convo.ask(">Step carefully, friend... We don't need an explosion in here. Unless, that is... uh... well, my dear, what is it you seek? \nPeruse Morgan's `heal`ing potions, browse her `medicines` list, `ask` what she's working on now, or return to the `street`.", function(res,convo){
+				apotrouter(res,convo);
+				convo.next();
+			});
+		}
 	}
-
 }
 
 apotrouter = function(res,convo){
@@ -36,12 +58,23 @@ apotrouter = function(res,convo){
 			convo.next();
 		});
 	} else if (temp.includes("ask")){
-		// TBD here
-		convo.say("Ask another time, " + user.username + ". You never know what I may have for you.");
-		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+		if (user.level.level===4){
+			convo.say("Morgan hesitates for a few beats, and then sighs deeply. She puts down the stirrer for the beaker before her. \n>I am working on a new potion for an idea I have, but... \nShe trails off, lost in thought.");
+			convo.say("Only after you cough loudly does she startle, looking back up at you. \n>Oh! I... I'm sorry... this new project has kept me up nights. I think I may have stumbled on a new concoction that's quite... extraordinary... yet I'm missing a critical ingredient. Nothing I try acts as a proper substitute.");
+			convo.say("Morgan tilts her head up to you and narrows her eyes. \n>Actually... there *is* a way you could help, if you wanted to... I could certainly make it worth your time. The ingredient I lack is a cutting of a *Quercus tree root.* I haven't seen one in a long time - they're exceedingly rare. I've heard word of a mature Quercus deep in a hollow of the Dark Woods, but... I don't dare venture there myself. You, however, might be ready.");
+			convo.say(">So... are you interested?");
+			convo.ask("Shall you `accept` Morgan's errand, or `decline` for now?", function(res,convo){
+				apotrouter(res,convo,2);
+				convo.next();
+			});
+
+		} else {
+			convo.say("Ask another time, " + user.username + ". You never know what I may have for you.");
+			convo.ask("What next? (Want a `reminder`?)", function(res,convo){
 	            apotrouter(res,convo);
 	            convo.next();
 	        });
+		}
 	} else if (temp.includes("street")){
 		convo.say("Your business concluded, you give Morgan a bow and make your way to the door.");
 		town.townsquare(res,convo);
@@ -50,6 +83,26 @@ apotrouter = function(res,convo){
 			apotrouter(res,convo);
 			convo.next();
 		});
+	} else if (temp.includes("accept") && user.level.level===4) {
+		// accept Morgan's request
+		convo.say("Morgan's eyes light up. \n>Egads! Thank you! This potion will be like nothing you've ever seen... just you wait!");
+		convo.say("*You have accepted Morgan's Request!* \nMorgan draws you a crude map of the eastern quarter of the Dark Woods. You'll begin your search there.");
+		user.mission = "morgan";
+		convo.say("Morgan clears her throat and squints at you. \n>Just one more thing, " + user.username + " - have you ever... ahem... actually *seen* a Quercus?");
+		convo.say("Seeing you shake your head, Morgan looks nervously around. \n>Ah. I see. Ah. Well... a word to the wise? Make sure you keep that " + user.items.weapon.name + " ready. I hear Quercus trees hate... strangers. Be safe, now. This one's on the house.");
+		convo.say("Morgan slides a healing potion over to you!");
+		user.items.other.push(items.heals.basic);
+		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+            apotrouter(res,convo);
+            convo.next();
+        });
+	} else if (temp.includes("decline") && user.level.level===4){
+		// decline Morgan's request for now
+		convo.say("Morgan shrugs. \n>Suit yourself... maybe another time.");
+		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+            apotrouter(res,convo);
+            convo.next();
+        });
 	} else {
 		convo.repeat();
 	}

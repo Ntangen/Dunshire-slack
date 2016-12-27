@@ -11,7 +11,7 @@ module.exports = {
 			town.townsquare(res,convo);
 		} else if (user.xp >=102 && user.level.level<2){
 			if (user.mission==="abbey" && missioncomplete){
-				// post-mission/level up
+				// post-mission/level up to level 2
 				utility.levelup(2);
 				user.gold += 200;
 				user.xp += 50;
@@ -32,13 +32,19 @@ module.exports = {
 					convo.next();
 				});
 			}
-		} else if (user.level.level>=2){
-			// beyond level 1
+		} else if (user.level.level>=2 && user.level.level<5){
+			// beyond level 2 but before level 5
 			convo.say("The Abbey's new oak double doors gleam in the afternoon light. The new altar at the front is spit polished and gives a warm, inviting glow. The old Cleric, resplendent in soft robes, greets you with a smile. \n>Welcome again, child. What brings you back to our humble house?");
 			convo.ask("You may inquire about The `Faith`, `rest` and reflect in the nave, ask the Cleric to `heal` you, or turn and `return` to town.", function(res,convo){
 					abbeyrouter(res,convo);
 					convo.next();
 				});
+		} else if (user.level.level===5){
+			// level five - Dark Abbey
+
+		} else if (user.level.level>=6){
+			// beyond level six (Dark Abbey mission)
+
 		}
 	}
 
@@ -188,3 +194,11 @@ abbeyheal = function(res,convo,x){
 	}
 }
 
+////////////////////////////////////////////////////////////
+// LEVEL 5 STUFF
+////////////////////////////////////////////////////////////
+
+
+darkabbey = function(res,convo){
+
+}
