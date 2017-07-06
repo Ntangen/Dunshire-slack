@@ -44,6 +44,7 @@ sessionevents={
     tobesaved:[]
 };
 today=0;
+qturns=0;
 
 ////////////////////////////////////////////////////////////
 // boring stuff

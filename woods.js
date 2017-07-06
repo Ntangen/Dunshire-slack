@@ -14,6 +14,9 @@ module.exports = {
 			convo.say("The wind rustles through the trees. A darkness settles over the dense forest as you make your way through...");
 			woodsmenu(res,convo);	
 		}
+	},
+	gohunt: function(res,convo){
+		hunt(res,convo);
 	}
 }
 	
@@ -24,28 +27,22 @@ woodsmenu = function(res,convo){
 		town.townsquare(res,convo);
 	} else {
 		var temp = "";
-		if (user.level.level<3){
-			if (user.mission==="abbey"){
-				if (missioncomplete){
-					convo.say("*Don't forget to return the Cleric's censer at the Abbey!*")
-				} else {
-					temp +="Search for the `bandits` who stole the Cleric's censer. ";
-				}
-			} else if (user.mission==="grannon"){
-				temp +="Follow Grannon's directions to the `Mage`'s Cave.";
+		if (user.mission==="abbey"){
+			if (missioncomplete){
+				convo.say("*Don't forget to return the Cleric's censer at the Abbey!*")
+			} else {
+				temp +="Search for the `bandits` who stole the Cleric's censer, ";
 			}
+		} else if (user.mission==="grannon"){
+			temp +="Follow Grannon's directions to the `Mage`'s Cave, ";
+		} else if (user.mission==="morgan"){
+			temp +="Search for Morgan's Quercus `tree`, ";
+		}
 		temp += "`Hunt` for beasts, check your `status`, review your `supplies`, or return to `town`.";
 		convo.ask(temp, function(res,convo){
 			woodsrouter(res,convo);
 			convo.next();
-			});
-		} else {
-			// user level is >=3
-			convo.ask("`Hunt` for beasts, check your `status`, review your `supplies`, seek out the `Mage`'s Cave, or return to `town`.", function (res, convo){
-				woodsrouter(res,convo);
-				convo.next();
-			});
-		}
+		});
 	}
 }
 
@@ -66,6 +63,8 @@ woodsrouter = function(res, convo){
     } else if (temp.includes('town')){
     	convo.say("Tiring of these forbidden woods, you head back towards the distant lights of town.");
         town.townsquare(res,convo);
+    } else if (temp.includes('tree') && user.mission==='morgan'){
+    	apot.quercuswoodsturns(res,convo);
     } else if (temp.includes('reminder')){
     	woodsmenu(res,convo);
     } else {
