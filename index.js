@@ -18,6 +18,7 @@ levs = require('./lib/levels');
 events = require('./lib/events');
 utility = require('./utility');
 beasts = require('./lib/beasts');
+spellz = require('./lib/spellz');
 
 // KEY PLAYER VARIABLES
 
