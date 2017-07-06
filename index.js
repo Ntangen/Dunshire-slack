@@ -12,6 +12,7 @@ bank = require('./bank');
 apot = require('./apot');
 smith = require('./smith');
 abbey = require('./abbey');
+mage = require('./mage');
 items = require('./lib/items');
 levs = require('./lib/levels');
 events = require('./lib/events');

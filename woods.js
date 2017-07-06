@@ -34,7 +34,7 @@ woodsmenu = function(res,convo){
 				temp +="Search for the `bandits` who stole the Cleric's censer, ";
 			}
 		} else if (user.mission==="grannon"){
-			temp +="Follow Grannon's directions to the `Mage`'s Cave, ";
+			temp +="Follow Grannon's directions to the Cave of the `Mage`, ";
 		} else if (user.mission==="morgan"){
 			temp +="Search for Morgan's Quercus `tree`, ";
 		}
