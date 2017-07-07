@@ -123,7 +123,17 @@ woodsfightrouter = function(res,convo,x){
 	if (temp.includes("run")){
 		woodsrun(res,convo)
 	} else if (temp.includes("magick")){
-		// TBA
+		if (user.items.magic.length===0){
+			convo.say("You have no knowledge of magicks yet!");
+			convo.repeat();
+		} else {
+			convo.ask("Which magick do you wish to invoke?" +
+				"\n " + utility.showmagic(), function(res,convo){
+					/////////
+					/// START HERE
+					//////////
+				});
+		}
 	} else if (temp.includes("attack")){
 		woodsfight(res,convo,1)
 	} else if (x===3){

@@ -207,7 +207,7 @@ module.exports = {
 	showmagic: function(x){
 	    var returnvar = "You have knowledge of the following magicks:\n";
 	        for (i=0;i<user.items.magic.length;i++){
-	            returnvar += "   " + user.items.magic[i].name + ": " + user.items.magic[i].desc + "\n";
+	            returnvar += "   " + user.items.magic[i].opname + ": " + user.items.magic[i].desc + "\n";
 	        }
 	    returnvar += "\n";
 	    return returnvar
