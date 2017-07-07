@@ -59,7 +59,7 @@ woodsrouter = function(res, convo){
         woodssupplies(res,convo);
     } else if (temp.includes('mage') && user.level.level>=3 || user.mission==="grannon"){
     	// you only have access to the mage's cave in the grannon level 2 mission or at level 3 or above
-        mage(res,convo);
+        mage.mage(res,convo);
     } else if (temp.includes('town')){
     	convo.say("Tiring of these forbidden woods, you head back towards the distant lights of town.");
         town.townsquare(res,convo);

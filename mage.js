@@ -26,100 +26,108 @@ magerouter = function(res,convo){
 			mageconfirm(res,convo,1);
 			convo.next();
 		});
-
-		convo.say();
-		output(4, "<span id=menu>Select a curse, or press <span id=letter>B</span> if none interests you.</span><br>");
-		thread = 7.1;
 	} else if (temp.includes("return")){
 		convo.say("Wanting no more part of this place, you return to the Dark Woods.");
 		woods.woodsstart(res,convo);
+	} else if (temp.includes("reminder")){
+		convo.ask("You can ask the Mage about its `sorcery` or `return` to the Dark Woods.", function(res,convo){
+			magerouter(res,convo);
+			convo.next();
+		});
 	} else {
 		convo.say("Come again?");
 		convo.repeat();
 	}
 }
 
-mageconfirm = function(x){
+mageconfirm = function(res,convo,x){
 	if (checkCunning(x)) {
-		output(4, "\"You lack the Mysticism required for such advanced sorcery. Come back when you are more... mystical.\"<br>");
-		output(5, "<span id=menu>Press <span id=enter>Any</span> key to continue.</span>");
-		thread = 7.7;
-		return;
+		convo.say("The Mage shakes his great, hooded head." +
+			"\n>You lack the Mysticism required for such advanced sorcery. Come back when you are more... mystical.");
+		convo.say("Chastened by his scolding, you exit the cave in search of wisdom in the Dark Woods.");
+		woods.woodsstart(res,convo);
 	} else if (x==="1"){
-		output(4, "Are you sure you want to learn the " + spellz.clap.name + " curse?<br>" +
-			"<span id=menu>Press <span id=letter>Any</span> key to confirm, or <span id=letter>N</span> to change your mind.</span><br>" + "------------------------------------------------<br>");
 		currentmerch = spellz.clap;
-		thread = 7.2;
+		convo.ask("Are you sure you want to learn the " + spellz.clap.name + " curse? \nYou may `confirm` your purchase, or `change` your mind.", function(res,convo){
+				mpurch(res,convo);
+				convo.next();
+			});
 	} else if (x==="2"){
-		output(4, "Are you sure you want to learn the " + spellz.shield.name + " spell?<br>" +
-			"<span id=menu>Press <span id=letter>Any</span> key to confirm, or <span id=letter>N</span> to change your mind.</span><br>" + "------------------------------------------------<br>");
 		currentmerch = spellz.shield;
-		thread = 7.2;
+		convo.ask("Are you sure you want to learn the " + spellz.shield.name + " curse? \nYou may `confirm` your purchase, or `change` your mind.", function(res,convo){
+				mpurch(res,convo);
+				convo.next();
+			});
 	} else if (x==="3"){
-		output(4, "Are you sure you want to learn the " + spellz.heal.name + " incantation?<br>" +
-			"<span id=menu>Press <span id=letter>Any</span> key to confirm, or <span id=letter>N</span> to change your mind.</span><br>" + "------------------------------------------------<br>");
 		currentmerch = spellz.heal;
-		thread = 7.2;
-	} else { output(4, "Come again?"); setTimeout(function(){ magerouter() }, 1000) }
+		convo.ask("Are you sure you want to learn the " + spellz.heal.name + " curse? \nYou may `confirm` your purchase, or `change` your mind.", function(res,convo){
+				mpurch(res,convo);
+				convo.next();
+			});
+	} else {
+		convo.say("Come again?");
+		convo.repeat();
+	}
 }
 
-mpurch = function(x){
-	function findspell(x,y,z){
-		if (x.name===currentmerch.name){
-			return true
-			}
-	}
-	if (x==="n"){
-			// no
-		output(4, "The Mage sighs. <span id=quote>\"Do not dawdle with me, " + userInfo.level.name + "...\"</span><br>");
-		output(5, "<span id=menu>Press <span id=enter>Any</span> key to continue.</span>");
-		thread = 7.7;
-	} else if (userInfo.items.magic.find(findspell)) {
-		output(4, "The Mage sighs. <span id=quote>\"I have already taught you this sorcery, " + userInfo.username + "... have you forgotten so soon?\"</span><br>");
-		output(5, "<span id=menu>Press <span id=enter>Any</span> key to continue.</span>");
-		thread = 7.7;
-	} else {
-		var temp;
-		clear();
-		if (userInfo.gold >= currentmerch.gold) {
-			if (findgems()) {
-				// successful buy
-				Meteor.call("acts",x,"events","mage buy");
-				userInfo.gold -= currentmerch.gold;
-				userInfo.items.other.splice(temp,1);
-				userInfo.items.magic.push(currentmerch);
-				console.log("post assign: " + userInfo.items.magic);
-				output(1, "The Mage nods solumnly, its shouded head dipping as you hear foreign-sounding chants too low for you to hear. Soon, you feel a spark of inspiration, and the " + currentmerch.name + " magick is suddenly familiar to you!<br>");
-				output(2, "<span id=quote>\"Wield this magick wisely, young one...\"</span> says the Mage.<br>");
-				output(3, "Your gold pouch feels mysteriously lighter.<br>");
-				output(4, "<span id=menu>Press <span id=enter>Any</span> key to continue.</span>");
-				thread = 7.7;
-			} else {
-				output(1, "The Mage's head shakes inside his cloak. <span id=quote>\"You lack any precious gems. Try again when you find one.\"</span><br>");
-				output(2, "<span id=menu>Press <span id=enter>Any</span> key to continue.</span>");
-				thread = 7.7;
-			}
+mpurch = function(res,convo){
+	var temp = res.text.toLowerCase();
+	if (temp.includes("change")){
+		convo.say("The Mage sighs." +
+			"\n>Do not dawdle with me, " + user.level.name + "...");
+		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+            magerouter(res,convo);
+            convo.next();
+        });
+	} else if (currentmerch.gold > user.gold || !findgems()) {
+		// not enough simoleons
+		convo.say("The Mage sighs." +
+			"\n>Knowledge is free, but education is not. Come back when you have gold and rubies equal to my enchantments, " + user.level.name +".");
+		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+            magerouter(res,convo);
+            convo.next();
+        });
+	} else if (temp.includes("confirm")) {
+		if (confirmsameitem("mag")){
+			convo.say("The Mage flickers in and out the air in the dim light." +
+				"\n>Do you forget my lessons so easily, foolish one? I have already taught you this magick.");
+			convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+	            magerouter(res,convo);
+	            convo.next();
+        	});
 		} else {
-			// not enough simoleons
-			output(1, "The Mage sighs. <span id=quote>\"Knowledge is free, but education is not. Come back when you have gold equal to my enchantments.\"<span><br>");
-			output(2, "<span id=menu>Press <span id=enter>Any</span> key to continue.</span>");
-			thread = 7.7;
+			sessionevents.minor.push["magebuy"];
+			user.gold -= currentmerch.gold;
+			console.log("magic push test: " + user.items.magic.length + " - mage 101");
+			user.items.magic.push(currentmerch);
+			console.log("magic push test: " + user.items.magic.length + " - mage 103");
+			console.log("magic assign: " + currentmerch.name);
+			convo.say("The Mage nods solumnly, its shouded head dipping as you hear foreign-sounding chants too low for you to hear. Soon, you feel a spark of inspiration, and the " + currentmerch.name + " magick is suddenly familiar to you!");
+			convo.say(">Wield this magick wisely, young one...");
+			convo.say("Your gold pouch feels mysteriously lighter.");
+			currentmerch=undefined;
+			convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+	            magerouter(res,convo);
+	            convo.next();
+	        });
 		}
+	} else {
+		convo.repeat();
 	}
 }
 
 checkCunning = function(x){
 	x = Number(x);
 	if (x===1){
-		if (userInfo.attributes.myst<spellz.clap.cunningreq){
+		if (user.attributes.myst<spellz.clap.cunningreq){
 			return true
 		}
 	} else if (x===2){
-		if (userInfo.attributes.myst<spellz.shield.cunningreq){
+		if (user.attributes.myst<spellz.shield.cunningreq){
 			return true
 		}
 	} else if (x===3){
-		if (userInfo.attributes.myst<spellz.heal.cunningreq){
+		if (user.attributes.myst<spellz.heal.cunningreq){
 			return true
 		}
 	} else return false;

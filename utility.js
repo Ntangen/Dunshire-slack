@@ -251,6 +251,23 @@ module.exports = {
 		// sessionevents.tobesaved += temp;
 		console.log("(" + user.username + ") sessionevents.tobesaved: " + sessionevents.tobesaved);
 		eventsave();
+	},
+
+	confirmsameitem: function(x){
+		if (x==="mag"){
+			if (user.items.magic.length===0) return false;
+			else {
+				for (i=0;i<user.items.magic.length;i++){
+		            if (user.items.magic[i].name===currentmerch.name) {return true}
+		            else return false;
+		        }
+		    }
+		}
+	},
+
+	findgems: function(x){
+		if (user.items.rubies === 0) return false
+		else return true;
 	}
 		// town, tavern, smither, smithbuy, apot, bank, abbey, farm, asking
 		// lev2, magic, newplayer, death
