@@ -127,12 +127,9 @@ woodsfightrouter = function(res,convo,x){
 			convo.say("You have no knowledge of magicks yet!");
 			convo.repeat();
 		} else {
-			convo.ask("Which magick do you wish to invoke?" +
-				"\n " + utility.showmagic(), function(res,convo){
-					/////////
-					/// START HERE
-					//////////
-				});
+			// MORE HERE
+			//
+			//
 		}
 	} else if (temp.includes("attack")){
 		woodsfight(res,convo,1)
@@ -159,6 +156,7 @@ woodsfight = function(res,convo,turn){
 				console.log("(" + user.username + ") kill");
 				convo.say("With a heroic blow, you vanquish the " + monster.name + "!");
 				woodsreward(res,convo);
+				convo.next();
 			}	
 		} else if (result==="zip"){
 		// strike, 0 damage
@@ -389,3 +387,55 @@ gold = function(){
 	return gelt;
 }
 
+//////////////////////////////
+//
+// DOING MAGICK
+//
+////////////////////////////
+
+lancemagic = function(res, convo, x){
+	if (x===1){
+		// user has input what magick they want to use
+		var temp = res.text.toLowerCase();
+		if (temp.includes("thunderous")){
+			if (user.turnsToday<=spellz.clap.turnsreq) {
+				convo.say("You do not have enough turns left today to invoke this magick.")
+				convo.repeat();
+				// confirm that this goes back to "which magick" question
+			} else {
+				attackdamage = spellz.clap.attack - monster.defense
+				console.log("user attack: " + attackdamage);
+				turns += spellz.clap.turnsreq;
+				mhp = mhp - attackdamage;
+				convo.say("Summoning up the old words, you lance the Thunderous Clap upon the " + monster.name + ", bringing down a calamitous din upon its ears!" +
+					"\n You inflict " + attackdamage + " damage!");
+				if (mhp <= 0) {
+					// damage the monster & kill
+					console.log("(" + user.username + ") kill");
+					convo.say("With a heroic blow, you vanquish the " + monster.name + "!");
+					woodsreward(res,convo);
+					convo.next();
+				} else {
+					// damage the monster, don't kill
+					woodsfight(res,convo,2);
+					convo.next();
+				}
+			}
+		} else if (temp2.includes("shield")){
+
+		} else if (temp2.includes("words")){
+
+		} else if (temp2.includes("sword")){
+
+		} else {
+			convo.repeat();
+		}
+	} else {
+		convo.ask("Which magick do you wish to invoke?" +
+			"\n " + utility.showmagic(), function(res,convo){
+				woodsrouter(res,convo);
+				convo.next();
+			});
+	}
+
+}
