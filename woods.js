@@ -127,16 +127,11 @@ woodsfightrouter = function(res,convo,x){
 			convo.say("You have no knowledge of magicks yet!");
 			convo.repeat();
 		} else {
-			// MORE HERE
-			//
-			//
+			woodsfight(res, convo, "m");
 		}
 	} else if (temp.includes("attack")){
 		woodsfight(res,convo,1)
-	} else if (x===3){
-		// lancing magic you have from middle of a fight
-	}
-	else {
+	} else {
 		convo.repeat();
 	}
 }
@@ -208,7 +203,7 @@ woodsfight = function(res,convo,turn){
 			var temp = utility.showmagic();
 			convo.say(temp);
 			convo.ask("Enter the name of the magick you wish to lance, or use no magick at all and `attack` the old fashioned way.", function(res,convo){
-				woodsfightrouter(res,convo,3);
+				lancemagic(res,convo,"show");
 				convo.next();
 			});
 		}
@@ -394,48 +389,92 @@ gold = function(){
 ////////////////////////////
 
 lancemagic = function(res, convo, x){
-	if (x===1){
-		// user has input what magick they want to use
-		var temp = res.text.toLowerCase();
-		if (temp.includes("thunderous")){
-			if (user.turnsToday<=spellz.clap.turnsreq) {
-				convo.say("You do not have enough turns left today to invoke this magick.")
-				convo.repeat();
-				// confirm that this goes back to "which magick" question
-			} else {
-				attackdamage = spellz.clap.attack - monster.defense
-				console.log("user attack: " + attackdamage);
-				turns += spellz.clap.turnsreq;
-				mhp = mhp - attackdamage;
-				convo.say("Summoning up the old words, you lance the Thunderous Clap upon the " + monster.name + ", bringing down a calamitous din upon its ears!" +
-					"\n You inflict " + attackdamage + " damage!");
-				if (mhp <= 0) {
-					// damage the monster & kill
-					console.log("(" + user.username + ") kill");
-					convo.say("With a heroic blow, you vanquish the " + monster.name + "!");
-					woodsreward(res,convo);
-					convo.next();
-				} else {
-					// damage the monster, don't kill
-					woodsfight(res,convo,2);
-					convo.next();
-				}
-			}
-		} else if (temp2.includes("shield")){
-
-		} else if (temp2.includes("words")){
-
-		} else if (temp2.includes("sword")){
-
-		} else {
-			convo.repeat();
-		}
-	} else {
+	var temp = res.text.toLowerCase();
+	if (temp.includes('attack')){
+		woodsfight(res,convo,1);
+	} else if (x==="show"){
 		convo.ask("Which magick do you wish to invoke?" +
-			"\n " + utility.showmagic(), function(res,convo){
-				woodsrouter(res,convo);
+			"\n " + utility.showmagic() + "\nOr you can `change` your mind.", function(res,convo){
+				lancemagic(res,convo);
+				convo.next();
+		});
+	} else if (temp.includes("change")){
+		convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				woodsfightrouter(res,convo);
+				convo.next();
+		});
+	} else if (!utility.hasmagic(temp)){
+		// user does not own the spell they input
+		convo.say("This magick is yet unknown to you!");
+		convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				woodsfightrouter(res,convo);
 				convo.next();
 			});
+	} else if (temp.includes("thunderous")){
+		if (user.turnsToday<=spellz.clap.turnsreq) {
+			convo.say("You do not have enough turns left today to invoke this magick.")
+			convo.repeat();
+			// confirm that this goes back to "which magick" question
+		} else {
+			attackdamage = spellz.clap.attack - monster.defense
+			console.log("user attack: " + attackdamage);
+			turns += spellz.clap.turnsreq;
+			mhp = mhp - attackdamage;
+			convo.say("Summoning up the old words, you lance the Thunderous Clap upon the " + monster.name + ", bringing down a calamitous din upon its ears!" +
+				"\n You inflict " + attackdamage + " damage!");
+			if (mhp <= 0) {
+				// damage the monster & kill
+				console.log("(" + user.username + ") kill");
+				convo.say("With a heroic blow, you vanquish the " + monster.name + "!");
+				woodsreward(res,convo);
+			} else {
+				// damage the monster, don't kill
+				woodsfight(res,convo,2);
+			}
+		}
+	} else if (temp2.includes("shield")){
+		if (user.turnsToday<=spellz.shield.turnsreq) {
+			convo.say("You do not have enough turns left today to invoke this magick.")
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				woodsfightrouter(res,convo);
+				convo.next();
+			});
+		} else if (shieldflag){
+			convo.say("You have already invoked this magick.");
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				woodsfightrouter(res,convo);
+				convo.next();
+			});
+		} else {
+			shieldflag=true;
+			turns += spellz.shield.turnsreq;
+			convo.say("Summoning up the old words, you lance the Egregious Shield incantation, cloaking yourself in a blue protective haze of magick.");
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				woodsfightrouter(res,convo);
+				convo.next();
+			});
+		}
+	} else if (temp2.includes("words")){
+		if (user.turnsToday<=spellz.words.turnsreq) {
+			convo.say("You do not have enough turns left today to invoke this magick.")
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				woodsfightrouter(res,convo);
+				convo.next();
+			});
+		} else {
+			turns += spellz.heal.turnsreq;
+			user.hp = user.level.maxhp;
+			quicksave();
+			convo.say("Summoning up the old words, you lance the Curative Words incantation, healing yourself fully.");
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				woodsfightrouter(res,convo);
+				convo.next();
+			});
+		}
+	} else if (temp2.includes("sword")){
+		// we don't have this level yet
+	} else {
+		convo.repeat();
 	}
-
 }
+

@@ -209,7 +209,7 @@ module.exports = {
 	        for (i=0;i<user.items.magic.length;i++){
 	            returnvar += "   " + user.items.magic[i].opname + ": " + user.items.magic[i].desc + "\n";
 	        }
-	    returnvar += "\n";
+	    returnvar += " \n";
 	    return returnvar
 	},
 
@@ -268,6 +268,14 @@ module.exports = {
 	findgems: function(x){
 		if (user.items.rubies === 0) return false
 		else return true;
+	},
+
+	hasmagic: function(x){
+	    for (i=0;i<user.items.magic.length;i++){
+	         if (user.items.magic[i].name===x) {
+	         	return true
+	         }
+	    }
 	}
 		// town, tavern, smither, smithbuy, apot, bank, abbey, farm, asking
 		// lev2, magic, newplayer, death
