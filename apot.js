@@ -63,6 +63,7 @@ module.exports = {
 				qturns++;
 				woods.gohunt(res,convo);
 				convo.next();
+			}
 		} else if (qturns===4){
 			if (Math.random()>0.4){
 				quercus(res,convo);
