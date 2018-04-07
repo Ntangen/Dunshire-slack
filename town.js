@@ -1,6 +1,8 @@
 // townsquare
 
 var tavern = require('./tavern');
+// var utility = require('./utility');
+
 
 module.exports = {
 

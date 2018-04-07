@@ -41,24 +41,25 @@ magerouter = function(res,convo){
 }
 
 mageconfirm = function(res,convo,x){
+  var temp = res.text.toLowerCase();  
 	if (checkCunning(x)) {
 		convo.say("The Mage shakes his great, hooded head." +
 			"\n>You lack the Mysticism required for such advanced sorcery. Come back when you are more... mystical.");
 		convo.say("Chastened by his scolding, you exit the cave in search of wisdom in the Dark Woods.");
 		woods.woodsstart(res,convo);
-	} else if (x==="1"){
+	} else if (temp.includes("1")) {
 		currentmerch = spellz.clap;
 		convo.ask("Are you sure you want to learn the " + spellz.clap.name + " curse? \nYou may `confirm` your purchase, or `change` your mind.", function(res,convo){
 				mpurch(res,convo);
 				convo.next();
 			});
-	} else if (x==="2"){
+	} else if (temp.includes("2")){
 		currentmerch = spellz.shield;
 		convo.ask("Are you sure you want to learn the " + spellz.shield.name + " curse? \nYou may `confirm` your purchase, or `change` your mind.", function(res,convo){
 				mpurch(res,convo);
 				convo.next();
 			});
-	} else if (x==="3"){
+	} else if (temp.includes("3")){
 		currentmerch = spellz.heal;
 		convo.ask("Are you sure you want to learn the " + spellz.heal.name + " curse? \nYou may `confirm` your purchase, or `change` your mind.", function(res,convo){
 				mpurch(res,convo);
@@ -88,7 +89,8 @@ mpurch = function(res,convo){
             convo.next();
         });
 	} else if (temp.includes("confirm")) {
-		if (confirmsameitem("mag")){
+    // FLAG - doesn't work?
+		if (utility.confirmsameitem("mag")){
 			convo.say("The Mage flickers in and out the air in the dim light." +
 				"\n>Do you forget my lessons so easily, foolish one? I have already taught you this magick.");
 			convo.ask("What next? (Want a `reminder`?)", function(res,convo){

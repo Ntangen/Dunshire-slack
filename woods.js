@@ -15,9 +15,45 @@ module.exports = {
 			woodsmenu(res,convo);	
 		}
 	},
+  
 	gohunt: function(res,convo){
 		hunt(res,convo);
-	}
+	},
+  
+  userfight: function(monster){
+    if (swordflag){
+      // still working on this
+      attackdamage = Math.round((user.items.weapon.attack * (Math.random()+ 1)) + user.attributes.strength - monster.defense);
+      } else {
+        attackdamage = Math.round((user.items.weapon.attack * (Math.random()+ 0.75)) + user.attributes.strength + utility.fortune() - monster.defense);
+    }
+    console.log("(" + user.username + ") user attack: " + attackdamage);
+    turns++;
+    console.log("(" + user.username + ") turns: " + turns);
+    if (attackdamage<=0){
+      return "zip"
+    } else {
+      mhp = mhp - attackdamage;
+      if (mhp <= 0) return "k";
+      else return attackdamage;
+    }
+  },
+
+  monsterfight: function(monster){
+    if (shieldflag){
+      damage = Math.round((monster.attack*((Math.random()+1)) - user.items.armor.armor)*.75);
+    } else {
+      damage = Math.round((monster.attack*((Math.random()+1)) - utility.fortune() - user.items.armor.armor));
+    }
+    console.log("(" + user.username + ") monster attack: " + damage);
+    if (damage<=0){
+      return "zip"
+    } else {
+      user.hp = user.hp - damage;
+      if (user.hp <= 0) return "dead";
+      else return damage;
+    }
+  }
 }
 	
 
@@ -57,7 +93,7 @@ woodsrouter = function(res, convo){
         hunt(res,convo,1);
     } else if (temp.includes('supplies')){
         woodssupplies(res,convo);
-    } else if (temp.includes('mage') && user.level.level>=3 || user.mission==="grannon"){
+    } else if (temp.includes('mage') && (user.level.level>=3 || user.mission==="grannon")){
     	// you only have access to the mage's cave in the grannon level 2 mission or at level 3 or above
         mage.mage(res,convo);
     } else if (temp.includes('town')){
@@ -97,24 +133,25 @@ hunt = function(res,convo,x){
 				woodsfight(res,convo,2)
 			}
 		}
-	} else if (x===2){
-		// (user.mission==="grannon" && Math.random()>0.9){
-		granfight();
-		// return here?
 	} else {
-		// your typical fight
-		monster = beasts.chooseBeastLevel();
-		mhp = monster.hp;
-		console.log("(" + user.username + ") monster choice: " + monster.name);
-		convo.say("You hear a rustling nearby. Something draws near. You make ready as you turn your head and see...\n" +
-			"*A " + monster.name + " approaches!* _What do you do?_\n" +
-			"```Your hitpoints: " + user.hp + "\n" +
-			monster.name +"'s hitpoints: " + mhp + "```"
-			);
-		convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
-			woodsfightrouter(res,convo);
-			convo.next();
-		});
+    // encounter the Geist - Lev 2
+    if (user.mission==="grannon" && Math.random()>0.9){
+      farm.granfight(res,convo);
+    } else {
+      // your typical fight
+      monster = beasts.chooseBeastLevel();
+      mhp = monster.hp;
+      console.log("(" + user.username + ") monster choice: " + monster.name);
+      convo.say("You hear a rustling nearby. Something draws near. You make ready as you turn your head and see...\n" +
+        "*A " + monster.name + " approaches!* _What do you do?_\n" +
+        "```Your hitpoints: " + user.hp + "\n" +
+        monster.name +"'s hitpoints: " + mhp + "```"
+        );
+      convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+        woodsfightrouter(res,convo);
+        convo.next();
+      });
+    }
 	}
 }
 
@@ -140,7 +177,7 @@ woodsfight = function(res,convo,turn){
 	var temp = res.text.toLowerCase();
 	if (turn===1){
 		// player turn 
-		var result = userfight(monster);
+		var result = woods.userfight(monster);
 		// kill the monster
 		if (result === "k") {
 			if (turns === 0) {
@@ -165,7 +202,7 @@ woodsfight = function(res,convo,turn){
 			}
 	} else if (turn===2){
 		// monster turn
-		var result = monsterfight(monster)
+		var result = woods.monsterfight(monster)
 		if (result === "dead"){
 			console.log("(" + user.username + ") dead");
 			convo.say("Oh no! The *" + monster.name + "* " + monster.strike1 + ", and it kills you!");
@@ -265,41 +302,6 @@ woodsusegear = function(res,convo){
 	}
 }
 
-userfight = function(monster){
-	if (swordflag){
-		// still working on this
-		attackdamage = Math.round((user.items.weapon.attack * (Math.random()+ 1)) + user.attributes.strength - monster.defense);
-	} else {
-		attackdamage = Math.round((user.items.weapon.attack * (Math.random()+ 1)) + user.attributes.strength + utility.fortune() - monster.defense);
-	}
-	console.log("(" + user.username + ") user attack: " + attackdamage);
-	turns++;
-	console.log("(" + user.username + ") turns: " + turns);
-	if (attackdamage<=0){
-		return "zip"
-	} else {
-		mhp = mhp - attackdamage;
-		if (mhp <= 0) return "k";
-		else return attackdamage;
-	}
-}
-
-monsterfight = function(monster){
-	if (shieldflag){
-		damage = Math.round((monster.attack*((Math.random()+1)) - user.items.armor.armor)*.75);
-	} else {
-		damage = Math.round((monster.attack*((Math.random()+1)) - utility.fortune() - user.items.armor.armor));
-	}
-	console.log("(" + user.username + ") monster attack: " + damage);
-	if (damage<=0){
-		return "zip"
-	} else {
-		user.hp = user.hp - damage;
-		if (user.hp <= 0) return "dead";
-		else return damage;
-	}
-}
-
 woodsrun = function(res,convo){
 	convo.say("You decide that discretion is the better part of valor, and turn tail in the opposite direction.");
 	var rando = Math.random();
@@ -312,6 +314,7 @@ woodsrun = function(res,convo){
 		convo.say("Whew - that was close!");
 		user.turnsToday -= turns;
 		turns = 0;
+    monster=undefined;
 		woodsmenu(res,convo);
 		}
 }

@@ -417,13 +417,13 @@ sendrouter4 = function(res,convo) {
 
 pickupdrink = function(res,convo){
 	var temp="";
-	if (user.drinks.recd.length>1){
-		for(i=0;i<user.drinks.recd.length;i++){
-			temp += user.drinks.recd[i].type.name + " from *`" + user.drinks.recd[i].from + "`*, ";
+	if (shadow.drinks.recd.length>1){
+		for(i=0;i<shadow.drinks.recd.length;i++){
+			temp += shadow.drinks.recd[i].type.name + " from *`" + shadow.drinks.recd[i].from + "`*, ";
 		}
 		convo.say("You have " + user.drinks.recd.length + " drinks awaiting you: " + temp + " and a pint of sad, warm leftover beer.");
 	} else {
-		temp += user.drinks.recd[0].type.name + " from *`" + user.drinks.recd[0].from + "`*";
+		temp += shadow.drinks.recd[0].type.name + " from *`" + shadow.drinks.recd[0].from + "`*";
 		convo.say("You have one drink awaiting you: a " + temp + ".");
 	}
 	convo.ask("Whose drink shall you quaff first? (Or `none` of them?)", function(res,convo){
@@ -441,13 +441,13 @@ pickup2 = function(res,convo){
 	        convo.next();
 		});
 	} else {
-		for(i=0;i<user.drinks.recd.length;i++){
-			if (user.drinks.recd[i].from.toLowerCase()===temp){
-				var temp2 = user.drinks.recd[i]
+		for(i=0;i<shadow.drinks.recd.length;i++){
+			if (shadow.drinks.recd[i].from.toLowerCase()===temp){
+				var temp2 = shadow.drinks.recd[i]
 				convo.say("You happily take the " + temp2.type.name + " and tip it back as you read *" + temp2.from + "'s* message: \n>" + temp2.msg);
-				var oldmsg = user.drinks.recd.splice(i,1);
-				if (user.drinks.recd.length===0){
-					user.drinkflag=false;
+				var oldmsg = shadow.drinks.recd.splice(i,1);
+				if (shadow.drinks.recd.length===0){
+					shadow.drinkflag=false;
 					drink=false;
 				}
 				quicksave();

@@ -10,7 +10,7 @@ module.exports = {
 			convo.say("The Farm gives you cold chills. You turn and head back to town.");
 			town.townsquare(res,convo);
 		} else if (user.level.level===2){
-			if (gran=="done") {
+			if (missioncomplete==true) {
 				farmlevel(res,convo);
 			} else if (user.mission==="grannon"){
 				farm2(res, convo);
@@ -26,8 +26,26 @@ module.exports = {
 			farm3(res, convo);
 			convo.next();
 		} 
-	}
+	},
+  granfight: function (res,convo){
+    // encounter the geist
+		monster = beasts.lev2b;
+		mhp = monster.hp;
+		console.log("(" + user.username + ") draws the Geist");
+		convo.say("You stride into a clearing and hear a queer, empty howling from a nearby tree. Turning around, you see a gathering black cloud of smoke pouring out of a gap in the tree's trunk. It's the Geist from Old Grannon's farm!\n" +
+			"*The " + monster.name + " streams toward you! Defend yourself!*\n");
+    if (Math.random() < 0.7){
+      // player gets the first shot
+      convo.say("Your perception is sharp, and you ready yourself to land the first blow!");
+      gfight(res,convo,1);
+    } else {
+      // Geist gets the surprise shot
+      convo.say("The Geist is too fast for you, and manages to strike before you're prepared!");
+      gfight(res,convo,2);          
+    }
+  }
 }
+// end module exports
 
 farmrouter = function(res,convo){
 	var temp = res.text.toLowerCase();
@@ -75,7 +93,7 @@ farmrouter2 = function(res,convo){
 		convo.say(">It was me dogs what found 'em, though. What remained of 'em, anyway. Whatever was picking off my flock, one at a time, was tearin' them apart and leaving their heads in the barley field. They was all chewed up, too. \n" +
 			"Old Grannon leans in near you. \n>This here is dark sorcery... and not just that Mage coming out of his cave to cause mischief again. No, there's a bad creature out there. The Geist. I seen him. And I... I just ain't strong enough to kill it. Not no more.");
 		convo.say(">If'n you'd be willing to hunt down that Geist for me... well, I'd be awful grateful, stranger. It's killing my farm. I... I don't have much, but I'd reward you with whatever I have.");
-		convo.ask("You may `accept` the Cleric's request, or opt to `decline` for now.", function(res,convo){
+		convo.ask("You may `accept` the old man's request, or opt to `decline` for now.", function(res,convo){
 				farmrouter3(res,convo);
 				convo.next();
 			});		
@@ -101,6 +119,7 @@ farmrouter3 = function(res,convo){
 	} else if (temp.includes("accept")){
 		convo.say("*You have accepted Grannon's mission!*");
 		user.mission = "grannon";
+    user.missionname = "Grannon and the Geist";
 		convo.say("The old man continues. \n>To aid you in your hunt, you should go visit that damned old Mage in his cave. I'll tell you how to get there. I don't trust in sorcery... but the Geist isn't like men. It's otherworldly. Black as smoke, without form. Maybe the Mage can help you fight back." +
 			"\n>I appreciate your help, stranger.");
 		convo.say("For not slaughtering Old Grannon, you gain *1 point of Mysticism!*")
@@ -125,7 +144,7 @@ farmrouter4 = function(res,convo){
 			"The stench of rotting sheep reminds you that the creature that actually did kill his sheep still roams. You must track it down and kill it... before it moves on.");
 		convo.say("*You have accepted Grannon's mission!*");
 		user.mission = "grannon";
-		shadow.granflag = false;
+		user.granflag = false;
 		quicksave();
 		convo.say("Before anyone arrives to witness your act, you turn and head back to town.");
 		town.townsquare(res,convo);
@@ -144,8 +163,8 @@ farm2 = function(res,convo){
 	if (shadow.granflag === true){
 		// grannons alive
 		convo.say("Old Grannon leans on his spear, inspecting the latest sheep carcas left in his field. \n>You seen the Geist yet out there in the Dark Woods? It's a ghastly thing... black as smoke it is. No mortal form like you or me. Gives me the shivers.");
-		convo.say(">Go visit the Mage in the forest. Tell him I sent you. Maybe he'll agree to help you... if he doesn't decide to kill you instead. Ha! \n " +
-			">I appreciate your help, stranger.");
+		convo.say(">Go visit the Mage in the forest. Tell him I sent you. Maybe he'll agree to help you... if he doesn't decide to kill you instead. Ha!" +
+			"\n>I appreciate your help, stranger.");
 		convo.say("Old Grannon tips his hat as you turn and head back to town.");
 		town.townsquare(res,convo);
 	} else {
@@ -157,8 +176,8 @@ farm2 = function(res,convo){
 }
 
 farmlevel = function(res,convo){
-	// when you beat the geist, set gran=done to get here
-	if (shadow.granflag){
+	// when you beat the geist, set missioncomplete=true to get here
+	if (user.granflag=true){
 		// grannon is alive
 		convo.ask("As you walk on to the farm, you see Old Grannon at work repairing the calving shed. He grins as he sees you approach, shuffling quickly down to meet you." +
 			"\n>You did it, *" + user.username + "*! The Geist is gone, and my flock is recovering!" +
@@ -171,8 +190,6 @@ farmlevel = function(res,convo){
 		convo.say("Upon your return to the farm, you see signs of life returning. The grass is greener, and flowers grow. But Old Grannon's body - or what remains of it - still lays where you slew him." +
 			"\nYou notice some objects in Old Grannon's pouch. The dead have no use of objects, so you decide to take a look, and discover *two vials of healing potion!*");
 		utility.levelup(3)
-		userInfo.mission = "";
-		missioncomplete = undefined;		
 		convo.say("*You have advanced to Level 3: Challenger.* Your maximum hitpoints have increased, and new areas of town are now open to you.");
 		user.items.other.push(items.heals.basic);
 		user.items.other.push(items.heals.basic);
@@ -184,8 +201,6 @@ farmlevel = function(res,convo){
 
 farmlevel2 = function(res, convo){
 	var temp = res.text.toLowerCase();
-	userInfo.mission = "";
-	missioncomplete = undefined;
 	utility.levelup(3)
 	if (temp.includes("luck")){
 		user.attributes.luck += 1;
@@ -236,7 +251,7 @@ farmlevel2 = function(res, convo){
 // Post-level-2 interactions
 farm3 = function(res,convo){
 	// all is good in the hood
-	if (shadow.granflag){
+	if (user.granflag){
 		// grannon is still alive
 		convo.say("The farm is verdant and pungent with the smell of freshly tilled soil and manure. The barley surrounding the farm rustles in the breeze. Old Grannon himself emerges from his shed with a hoe slung over his shoulder." +
 			"\n>Well howdy there, *" + user.username + "*! Good to see you again! You're always welcome around these parts.");
@@ -249,3 +264,217 @@ farm3 = function(res,convo){
 		town.townsquare(res,convo);
 	}
 }	
+
+
+gfight = function(res,convo,x){
+  if (x===1){
+    // player turn
+    var result = woods.userfight(monster);
+		  // kill the monster
+		  if (result === "k") {
+			  if (turns === 0) {
+				console.log("(" + user.username + ") kill single blow");
+				convo.say("You vanquished the " + monster.name + " in a single blow!");
+			} else { 
+				console.log("(" + user.username + ") kill");
+				convo.say("With a heroic blow, you vanquish the " + monster.name + "!");
+				greward(res,convo);
+				convo.next();
+			}	
+		} else if (result==="zip"){
+		// strike, 0 damage
+			convo.say("Your attack is impotent against the " + monster.name + ", and you hilariously inflict no damage!");
+      gfight(res,convo,2);
+			convo.next();
+    }	else { 
+      // strike don't kill
+			convo.say("You strike at *The " + monster.name + "* with your " + user.items.weapon.name + " and inflict " + result + " damage!");
+      convo.say("You steady your balance as The Geist collects itself for a counterattack...");
+			gfight(res,convo,2);
+			convo.next();
+			}
+  } else if (x===2){
+    // geist turn
+    var result = woods.monsterfight(monster)
+    if (result === "dead"){
+			console.log("(" + user.username + ") dead");
+			convo.say("Oh no! *The " + monster.name + "* " + monster.strike1 + ", and its darkness overwhelms you!");
+      convo.say("As you fade out of consciousness, The Geist gargles on your lifeforce.");
+			death(res,convo);
+			convo.next();
+		}
+		else if (result==="zip"){
+			convo.say("*The " + monster.name + "* " + monster.strike1 + ", but your armor protects you! You throw off its attacks and sustain 0 damage! \n" +
+				"```Your hitpoints: " + user.hp + "\n" +
+				monster.name +"'s hitpoints: " + mhp + "```");
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				gfightrouter(res,convo);
+				convo.next();
+			});
+		} else {
+			// monster strikes with damage, no kill
+			if (shieldflag){
+				convo.say("The *" + monster.name + "* " + monster.strike1 + ", inflicting " + result + " damage! Your Egregious Shield absorbs part of the blow.");
+			} else {
+				convo.say("The *" + monster.name + "* " + monster.strike1 + ", inflicting " + result + " damage!");
+			}
+			convo.say("```Your hitpoints: " + user.hp + "\n" +
+				monster.name +"'s hitpoints: " + mhp + "```");
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				woodsfightrouter(res,convo);
+				convo.next();
+			});
+		}
+  } else if (x==="m"){
+    if (user.items.magic.length===0){
+			convo.say("You have no knowledge of magicks yet!");
+			convo.repeat();
+		} else {
+			var temp = utility.showmagic();
+			convo.say(temp);
+			convo.ask("Enter the name of the magick you wish to lance, or use no magick at all and `attack` the old fashioned way.", function(res,convo){
+				lancemagic(res,convo,"show");
+				convo.next();
+			});
+		}
+  }
+}
+
+gfightrouter = function(res,convo){
+  var temp = res.text.toLowerCase();
+	if (temp.includes("run")){
+		grun(res,convo)
+	} else if (temp.includes("magick")){
+		if (user.items.magic.length===0){
+			convo.say("You have no knowledge of magicks yet!");
+			convo.repeat();
+		} else {
+			gfight(res, convo, "m");
+		}
+	} else if (temp.includes("attack")){
+		gfight(res,convo,1)
+	} else {
+		convo.repeat();
+	}
+}
+
+grun = function(res,convo){
+  convo.say("Feeling a loosening in your bowels, you decide that today is not your day to die, and turn tail in the opposite direction.");
+	var rando = Math.random();
+	console.log("(" + user.username + ") run variable: " + rando);
+	if (rando >= 0.75) {
+		convo.say("Oh no! You failed to outrun The " + monster.name + "!\n");
+		gfight(res,convo,2);
+		}
+	else { 
+		convo.say("Whew - that was close!");
+		user.turnsToday -= turns;
+		turns = 0;
+		woods.woodsstart(res,convo);
+		}
+}
+
+gmagic = function(res,convo){
+  var temp = res.text.toLowerCase();
+	if (temp.includes('attack')){
+		gfight(res,convo,1);
+	} else if (x==="show"){
+		convo.ask("Which magick do you wish to invoke?" +
+			"\n " + utility.showmagic() + "\nOr you can `change` your mind.", function(res,convo){
+				gmagic(res,convo);
+				convo.next();
+		});
+	} else if (temp.includes("change")){
+		convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				gfightrouter(res,convo);
+				convo.next();
+		});
+	} else if (!utility.hasmagic(temp)){
+		// user does not own the spell they input
+		convo.say("This magick is yet unknown to you!");
+		convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				gfightrouter(res,convo);
+				convo.next();
+			});
+	} else if (temp.includes("thunderous")){
+		if (user.turnsToday<=spellz.clap.turnsreq) {
+			convo.say("You do not have enough turns left today to invoke this magick.")
+			convo.repeat();
+			// confirm that this goes back to "which magick" question
+		} else {
+			attackdamage = spellz.clap.attack - monster.defense
+			console.log("user attack: " + attackdamage);
+			turns += spellz.clap.turnsreq;
+			mhp = mhp - attackdamage;
+			convo.say("Summoning up the old words, you lance the Thunderous Clap upon The " + monster.name + ", bringing down a calamitous din upon its murky blackness!" +
+				"\n You inflict " + attackdamage + " damage!");
+			if (mhp <= 0) {
+				// damage the monster & kill
+				console.log("(" + user.username + ") kill");
+				convo.say("With a deafening crash, you vanquish The " + monster.name + "!");
+				greward(res,convo);
+        convo.next();
+			} else {
+				// damage the monster, don't kill
+        convo.say("You steady your balance as The Geist collects itself for a counterattack...");
+				gfight(res,convo,2);
+        convo.next();
+			}
+		}
+	} else if (temp2.includes("shield")){
+		if (user.turnsToday<=spellz.shield.turnsreq) {
+			convo.say("You do not have enough turns left today to invoke this magick.")
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				gfightrouter(res,convo);
+				convo.next();
+			});
+		} else if (shieldflag){
+			convo.say("You have already invoked this magick.");
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				gfightrouter(res,convo);
+				convo.next();
+			});
+		} else {
+			shieldflag=true;
+			turns += spellz.shield.turnsreq;
+			convo.say("Summoning up the old words, you lance the Egregious Shield incantation, cloaking yourself in a blue protective haze of magick.");
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				gfightrouter(res,convo);
+				convo.next();
+			});
+		}
+	} else if (temp2.includes("words")){
+		if (user.turnsToday<=spellz.words.turnsreq) {
+			convo.say("You do not have enough turns left today to invoke this magick.")
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				gfightrouter(res,convo);
+				convo.next();
+			});
+		} else {
+			turns += spellz.heal.turnsreq;
+			user.hp = user.level.maxhp;
+			quicksave();
+			convo.say("Summoning up the old words, you lance the Curative Words incantation, and feel strength pouring once again into your body. You are fully healed.");
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				gfightrouter(res,convo);
+				convo.next();
+			});
+		}
+	} else if (temp2.includes("sword")){
+		// we don't have this level yet
+	} else {
+		convo.repeat();
+	}
+}
+
+greward = function(res,convo){
+  convo.say("With your final strike, a rushing buzz fills the wood grove, and The Geist suddenly disappates into a fine mist, eventually vanishing into the air");
+  convo.say("The Geist is defeated! *You chould go tell Old Man Grannon right away!*");
+  missioncomplete = true;
+  monster=undefined;
+  user.turnsToday -= turns;
+  turns = 0;
+  woods.woodsstart(res,convo);
+  convo.next();
+}
+

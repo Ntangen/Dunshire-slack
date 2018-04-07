@@ -73,8 +73,152 @@ module.exports = {
 				qturns++;
 				woods.gohunt(res,convo);
 				convo.next();
-		} else quercus(res,convo);
+		  } 
+      // else quercus(res,convo)
+	  }
+  },
+  ////////////////////////////////////////////
+//
+// LEVEL 4 QUERCUS MISSION STUFF
+//
+////////////////////////////////////////////
+
+quercus: function(res,convo){
+	monster=beasts.lev4b;
+	mhp = monster.hp;
+	convo.say("The ground trembles beneath your feet as you hear a low boom behind you. You spin around and unsheath your " + user.items.weapon.name + ", but see only leaves falling from the trees around you. An empty forest surrounds you. And yet...");
+	convo.say("A giant tree branch swings your way! You manage to duck and roll away, and it misses your head by inches. But looking up, you see a great, hulking, living tree trunk lumber your way, supported by a churning knot of roots, big and small. The great tree has no face, but its branches are streaked in blood.");
+	convo.say("The Quercus tree bears down on you! Defend yourself!\n" +
+				"```Your hitpoints: " + user.hp + "\n" +
+				monster.name +"'s hitpoints: " + mhp + "```");
+	convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+		qfightrouter(res,convo);
+		convo.next();
+	});
+},
+
+querfight: function(res,convo,turn){
+	var temp = res.text.toLowerCase();
+	if (turn===1){
+		// player turn 
+		convo.say("Readying your weapon, you steel yourself for battle.");
+		var result = userfight(monster);
+		if (result === "k") {
+		// kill the monster			
+			if (turns === 0) {
+				console.log("(" + user.username + ") kill single blow");
+				convo.say("With a mighty yell, you cut down the Quercus in a single, reverberating blow!");
+				qvictory(res,convo);
+			} else { 
+				console.log("(" + user.username + ") kill");
+				convo.say("With a mighty yell, you cut down the Quercus in a final, reverberating blow! Chips of wood spray across the forest floor as the giant killer tree reels and crashes to the ground, dead.");
+				qvictory(res,convo);
+			}	
+		} else if (result==="zip"){
+		// strike, 0 damage
+			convo.say("You uselessly strike at " + monster.name + " with your " + user.items.weapon.name + " but hilariously inflict no damage!");
+			querfight(res,convo,2);
+			convo.next();
+		} else { 
+		// strike don't kill
+			convo.say("You strike the Quercus with your " + user.items.weapon.name + ", inflicting " + result + " in damage! The great tree stumbles and roars back in wrath!");
+			querfight(res,convo,2);
+			convo.next();
+			}
+	} else if (turn===2){
+		// monster turn
+		var result = monsterfight(monster)
+		if (result === "dead"){
+			console.log("(" + user.username + ") dead");
+			convo.say("Zounds! The Quercus crushes you between two thick branches! You feel your chest crunching between its limbs. As the world fades, you feel roots beginning to envelop you to become the living tree's next meal...");
+			death(res,convo);
+			convo.next();
+		}
+		else if (result==="zip"){
+			convo.say("The Quercus glances you with a thrusting root, but your armor protects you! You sustain 0 damage!\n " +
+				"```Your hitpoints: " + user.hp + "\n" +
+				monster.name +"'s hitpoints: " + mhp + "```");
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				qfightrouter(res,convo);
+				convo.next();
+			});
+		} else {
+			// monster strikes with damage, no kill
+			if (shieldflag){
+				convo.say("The *" + monster.name + "* " + monster.strike1 + ", inflicting " + result + " damage! Your Egregious Shield absorbs part of the blow.");
+			} else {
+				convo.say("The *" + monster.name + "* " + monster.strike1 + ", inflicting " + result + " damage!");
+			}
+			convo.say("```Your hitpoints: " + user.hp + "\n" +
+				monster.name +"'s hitpoints: " + mhp + "```");
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				qfightrouter(res,convo);
+				convo.next();
+			});
+		}
+	} else if (turn==="m"){
+		// invoke magick
+		if (user.items.magic.length===0){
+			convo.say("You have no knowledge of magicks yet!");
+			convo.repeat();
+		} else {
+			var temp = utility.showmagic();
+			convo.say(temp);
+			convo.ask("Enter the name of the magick you wish to lance, or use no magick at all and `attack` the old fashioned way.", function(res,convo){
+				qfightrouter(res,convo,3);
+				convo.next();
+			});
+		}
 	}
+},
+
+qfightrouter: function(res,convo,x){
+	var temp = res.text.toLowerCase();
+	if (temp.includes("run")){
+		convo.say("You prefer your hide to your pride, and turn to run away!");
+		if (Math.random()>0.75){
+			// failed
+			convo.say("You're not quick enough to avoid the Quercus root that shoots out and grabs your foot, dragging you back to face its wrath!");
+			// 
+		} else {
+			convo.say("You manage to outrun the fearsome Quercus. You resolve to not tell anyone about this...");
+			user.turnsToday -= turns;
+			turns = 0;
+			woodsmenu(res,convo);
+		}
+	} else if (temp.includes("magick")){
+		// TBA
+	} else if (temp.includes("attack")){
+		querfight(res,convo,1)
+	} else if (x===3){
+		// lancing magic you have from middle of a fight
+		// 
+	} else {
+		convo.repeat();
+	}
+},
+
+qvictory: function(res,convo){
+
+},
+
+
+////////////////////////////////////////////
+//
+// END QUERCUS MISSION FUNCTIONS
+//
+////////////////////////////////////////////
+
+istherefire: function(){
+	// checks to see if the player has any MFCs
+	for (i=0;i<user.items.other.length;i++){
+		if (user.items.other[i].name==="Morgan's Fire Chanter"){
+			return true;
+			break
+		  }
+	  }
+	  return false;
+  }
 }
 
 apotrouter = function(res,convo){
@@ -234,145 +378,3 @@ apotmerchconfirm = function(res,convo){
 	}
 }
 
-////////////////////////////////////////////
-//
-// LEVEL 4 QUERCUS MISSION STUFF
-//
-////////////////////////////////////////////
-
-quercus = function(res,convo){
-	monster=beasts.lev4b;
-	mhp = monster.hp;
-	convo.say("The ground trembles beneath your feet as you hear a low boom behind you. You spin around and unsheath your " + user.items.weapon.name + ", but see only leaves falling from the trees around you. An empty forest surrounds you. And yet...");
-	convo.say("A giant tree branch swings your way! You manage to duck and roll away, and it misses your head by inches. But looking up, you see a great, hulking, living tree trunk lumber your way, supported by a churning knot of roots, big and small. The great tree has no face, but its branches are streaked in blood.");
-	convo.say("The Quercus tree bears down on you! Defend yourself!\n" +
-				"```Your hitpoints: " + user.hp + "\n" +
-				monster.name +"'s hitpoints: " + mhp + "```");
-	convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
-		qfightrouter(res,convo);
-		convo.next();
-	});
-}
-
-querfight = function(res,convo,turn){
-	var temp = res.text.toLowerCase();
-	if (turn===1){
-		// player turn 
-		convo.say("Readying your weapon, you steel yourself for battle.");
-		var result = userfight(monster);
-		if (result === "k") {
-		// kill the monster			
-			if (turns === 0) {
-				console.log("(" + user.username + ") kill single blow");
-				convo.say("With a mighty yell, you cut down the Quercus in a single, reverberating blow!");
-				qvictory(res,convo);
-			} else { 
-				console.log("(" + user.username + ") kill");
-				convo.say("With a mighty yell, you cut down the Quercus in a final, reverberating blow! Chips of wood spray across the forest floor as the giant killer tree reels and crashes to the ground, dead.");
-				qvictory(res,convo);
-			}	
-		} else if (result==="zip"){
-		// strike, 0 damage
-			convo.say("You uselessly strike at " + monster.name + " with your " + user.items.weapon.name + " but hilariously inflict no damage!");
-			querfight(res,convo,2);
-			convo.next();
-		} else { 
-		// strike don't kill
-			convo.say("You strike the Quercus with your " + user.items.weapon.name + ", inflicting " + result + " in damage! The great tree stumbles and roars back in wrath!");
-			querfight(res,convo,2);
-			convo.next();
-			}
-	} else if (turn===2){
-		// monster turn
-		var result = monsterfight(monster)
-		if (result === "dead"){
-			console.log("(" + user.username + ") dead");
-			convo.say("Zounds! The Quercus crushes you between two thick branches! You feel your chest crunching between its limbs. As the world fades, you feel roots beginning to envelop you to become the living tree's next meal...");
-			death(res,convo);
-			convo.next();
-		}
-		else if (result==="zip"){
-			convo.say("The Quercus glances you with a thrusting root, but your armor protects you! You sustain 0 damage!\n " +
-				"```Your hitpoints: " + user.hp + "\n" +
-				monster.name +"'s hitpoints: " + mhp + "```");
-			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
-				qfightrouter(res,convo);
-				convo.next();
-			});
-		} else {
-			// monster strikes with damage, no kill
-			if (shieldflag){
-				convo.say("The *" + monster.name + "* " + monster.strike1 + ", inflicting " + result + " damage! Your Egregious Shield absorbs part of the blow.");
-			} else {
-				convo.say("The *" + monster.name + "* " + monster.strike1 + ", inflicting " + result + " damage!");
-			}
-			convo.say("```Your hitpoints: " + user.hp + "\n" +
-				monster.name +"'s hitpoints: " + mhp + "```");
-			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
-				qfightrouter(res,convo);
-				convo.next();
-			});
-		}
-	} else if (turn==="m"){
-		// invoke magick
-		if (user.items.magic.length===0){
-			convo.say("You have no knowledge of magicks yet!");
-			convo.repeat();
-		} else {
-			var temp = utility.showmagic();
-			convo.say(temp);
-			convo.ask("Enter the name of the magick you wish to lance, or use no magick at all and `attack` the old fashioned way.", function(res,convo){
-				qfightrouter(res,convo,3);
-				convo.next();
-			});
-		}
-	}
-}
-
-qfightrouter = function(res,convo,x){
-	var temp = res.text.toLowerCase();
-	if (temp.includes("run")){
-		convo.say("You prefer your hide to your pride, and turn to run away!");
-		if (Math.random()>0.75){
-			// failed
-			convo.say("You're not quick enough to avoid the Quercus root that shoots out and grabs your foot, dragging you back to face its wrath!");
-			// 
-		} else {
-			convo.say("You manage to outrun the fearsome Quercus. You resolve to not tell anyone about this...");
-			user.turnsToday -= turns;
-			turns = 0;
-			woodsmenu(res,convo);
-		}
-	} else if (temp.includes("magick")){
-		// TBA
-	} else if (temp.includes("attack")){
-		querfight(res,convo,1)
-	} else if (x===3){
-		// lancing magic you have from middle of a fight
-		// 
-	} else {
-		convo.repeat();
-	}
-}
-
-qvictory = function(res,convo){
-
-}
-
-
-////////////////////////////////////////////
-//
-// END QUERCUS MISSION FUNCTIONS
-//
-////////////////////////////////////////////
-
-istherefire = function(){
-	// checks to see if the player has any MFCs
-	for (i=0;i<user.items.other.length;i++){
-		if (user.items.other[i].name==="Morgan's Fire Chanter"){
-			return true;
-			break
-		}
-	}
-	return false;
-}

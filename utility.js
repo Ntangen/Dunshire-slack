@@ -50,13 +50,16 @@ module.exports = {
 			user.level = levs.levels.apprentice;
 			user.hp = levs.levels.apprentice.maxhp;
 			user.mission = "";
+      user.missionname = "None";
 			missioncomplete = undefined;
 			sessionevents.majorflag=true;
 			sessionevents.major.push("lev2");
 		} else if (x===3){
 			// Grannon completed - Level 3
 			user.level = levs.levels.challenger;
-			user.hp = levs.levels.challenger.maxhp
+			user.hp = levs.levels.challenger.maxhp;
+      user.mission="None";
+      missioncomplete=false
 		} else if (x===4){
 			// Royale completed - Level 4
 			user.level = levs.levels.journeyman;
@@ -89,13 +92,12 @@ module.exports = {
 	},
 
 	dailyreboot: function(){
-		if(shadow.lastPlayed != today){
+		if(user.lastPlayed != today){
 			// user did not play today, so get 'em going with full hp & turns again
-			console.log("(" + user.username + ") successful reboot");
 			user.hp = user.level.maxhp;
-			shadow.turnsToday = 20;
-			shadow.lastPlayed = today;
-			shadow.loginsSlack++;
+			user.turnsToday = 20;
+			user.lastPlayed = today;
+      console.log("(" + user.username + ") successful reboot");
 			return 1; 
 		} else if (user.hp <= 0) {
 			console.log("(" + user.username + ") player is dead");
@@ -215,11 +217,12 @@ module.exports = {
 
 	status: function(){
     return ("Your current status: \n```Hitpoints: " + user.hp + "   Level: " + user.level.name + "\n" +
-        "Gold: " + user.gold + "        Experience: " + user.xp + "\n" +
+        "Gold: " + user.gold + "       Experience: " + user.xp + "\n" +
         "Weapon: " + user.items.weapon.name + "   Armor: " + user.items.armor.name + "\n" +
         "Magicks: " + utility.ifmagic() + "\n" +
         "Attributes: Charisma (" + user.attributes.charisma + ") Mysticism (" + user.attributes.myst + ") Luck (" + user.attributes.luck + ") Strength (" + user.attributes.strength + ")\n" + 
-        "Battle turns remaining today: " + user.turnsToday + "```");
+        "Battle turns remaining today: " + user.turnsToday + "\n" +
+        "Mission: " + user.missionname + "```");
 	},
 
 	eventbus: function(x){
