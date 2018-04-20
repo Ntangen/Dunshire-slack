@@ -29,12 +29,12 @@ module.exports = {
 	},
   granfight: function (res,convo){
     // encounter the geist
-		monster = beasts.lev2b;
+		monster = beasts.beasts.lev2b;
 		mhp = monster.hp;
 		console.log("(" + user.username + ") draws the Geist");
 		convo.say("You stride into a clearing and hear a queer, empty howling from a nearby tree. Turning around, you see a gathering black cloud of smoke pouring out of a gap in the tree's trunk. It's the Geist from Old Grannon's farm!\n" +
 			"*The " + monster.name + " streams toward you! Defend yourself!*\n");
-    if (Math.random() < 0.7){
+    if (utility.fortune("luck")){
       // player gets the first shot
       convo.say("Your perception is sharp, and you ready yourself to land the first blow!");
       gfight(res,convo,1);
@@ -114,8 +114,10 @@ farmrouter3 = function(res,convo){
 	var temp = res.text.toLowerCase();
 	if (temp.includes("talking")){
 		farmrouter2("assure",convo);
+    convo.next();
 	} else if (temp.includes("strike")){
-		farmrouter4("attack", convo);
+		farmrouter4(res, convo);
+    convo.next();
 	} else if (temp.includes("accept")){
 		convo.say("*You have accepted Grannon's mission!*");
 		user.mission = "grannon";
@@ -139,7 +141,7 @@ farmrouter3 = function(res,convo){
 
 farmrouter4 = function(res,convo){
 	var temp = res.text.toLowerCase();
-	if (temp.includes("attack")){
+	if (temp.includes("strike")){
 		convo.say("You strike with your " + user.items.weapon.name + " and the old man crumbles to the ground with a weak whimper. You have killed a scared old man, and feel brave." + 
 			"The stench of rotting sheep reminds you that the creature that actually did kill his sheep still roams. You must track it down and kill it... before it moves on.");
 		convo.say("*You have accepted Grannon's mission!*");
@@ -160,7 +162,7 @@ farmrouter4 = function(res,convo){
 // Level 2 interactions
 farm2 = function(res,convo){
 	// make sure "shadow." is the right place to look here
-	if (shadow.granflag === true){
+	if (user.granflag === true){
 		// grannons alive
 		convo.say("Old Grannon leans on his spear, inspecting the latest sheep carcas left in his field. \n>You seen the Geist yet out there in the Dark Woods? It's a ghastly thing... black as smoke it is. No mortal form like you or me. Gives me the shivers.");
 		convo.say(">Go visit the Mage in the forest. Tell him I sent you. Maybe he'll agree to help you... if he doesn't decide to kill you instead. Ha!" +
@@ -205,9 +207,9 @@ farmlevel2 = function(res, convo){
 	if (temp.includes("luck")){
 		user.attributes.luck += 1;
 		convo.say("*1 point* has been added to your Luck.");
-		convo.say("*You have advanced to Level 3: Challenger.*" +
-			"Old Grannon tips his hat to you." +
-			"\n>I'll never forget what you did for me here, *" + user.username + "*!");
+		convo.say("*You have advanced to Level 3: Challenger.\n* " +
+			"Old Grannon tips his hat to you.\n" +
+			">I'll never forget what you did for me here, *" + user.username + "*!");
 		convo.say("Your maximum hitpoints have increased, and new areas of town are now open to you. You feel more powerful, and the sun feels fine on your shoulders. It is a good day!");
 		convo.say("Feeling good about yourself, you give Grannon a friendly nod and head back to town.");
 		quicksave();
@@ -215,9 +217,9 @@ farmlevel2 = function(res, convo){
 	} else if (temp.includes("strength")){
 		user.attributes.strength += 1;
 		convo.say("*1 point* has been added to your Strength.");
-		convo.say("*You have advanced to Level 3: Challenger.*" +
-			"Old Grannon tips his hat to you." +
-			"\n>I'll never forget what you did for me here, *" + user.username + "*!");
+		convo.say("*You have advanced to Level 3: Challenger.\n*" +
+			"Old Grannon tips his hat to you.\n" +
+			">I'll never forget what you did for me here, *" + user.username + "*!");
 		convo.say("Your maximum hitpoints have increased, and new areas of town are now open to you. You feel more powerful, and the sun feels fine on your shoulders. It is a good day!");
 		convo.say("Feeling good about yourself, you give Grannon a friendly nod and head back to town.");
 		quicksave();
@@ -225,9 +227,9 @@ farmlevel2 = function(res, convo){
 	} else if (temp.includes("charisma")){
 		user.attributes.charisma += 1;
 		convo.say("*1 point* has been added to your Charisma.");
-		convo.say("*You have advanced to Level 3: Challenger.*" +
-			"Old Grannon tips his hat to you." +
-			"\n>I'll never forget what you did for me here, *" + user.username + "*!");
+		convo.say("*You have advanced to Level 3: Challenger.*\n" +
+			"Old Grannon tips his hat to you.\n" +
+			">I'll never forget what you did for me here, *" + user.username + "*!");
 		convo.say("Your maximum hitpoints have increased, and new areas of town are now open to you. You feel more powerful, and the sun feels fine on your shoulders. It is a good day!");
 		convo.say("Feeling good about yourself, you give Grannon a friendly nod and head back to town.");
 		quicksave();
@@ -235,9 +237,9 @@ farmlevel2 = function(res, convo){
 	} else if (temp.includes("mysticism")){
 		user.attributes.myst += 1;
 		convo.say("*1 point* has been added to your Mysticism.");
-		convo.say("*You have advanced to Level 3: Challenger.*" +
-			"Old Grannon tips his hat to you." +
-			"\n>I'll never forget what you did for me here, *" + user.username + "*!");
+		convo.say("*You have advanced to Level 3: Challenger.*\n" +
+			"Old Grannon tips his hat to you.\n" +
+			">I'll never forget what you did for me here, *" + user.username + "*!");
 		convo.say("Your maximum hitpoints have increased, and new areas of town are now open to you. You feel more powerful, and the sun feels fine on your shoulders. It is a good day!");
 		convo.say("Feeling good about yourself, you give Grannon a friendly nod and head back to town.");
 		quicksave();
@@ -277,7 +279,7 @@ gfight = function(res,convo,x){
 				convo.say("You vanquished the " + monster.name + " in a single blow!");
 			} else { 
 				console.log("(" + user.username + ") kill");
-				convo.say("With a heroic blow, you vanquish the " + monster.name + "!");
+				convo.say("With a deafening crash, you vanquish The " + monster.name + "!");
 				greward(res,convo);
 				convo.next();
 			}	
@@ -321,7 +323,7 @@ gfight = function(res,convo,x){
 			convo.say("```Your hitpoints: " + user.hp + "\n" +
 				monster.name +"'s hitpoints: " + mhp + "```");
 			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
-				woodsfightrouter(res,convo);
+				gfightrouter(res,convo);
 				convo.next();
 			});
 		}
@@ -333,7 +335,7 @@ gfight = function(res,convo,x){
 			var temp = utility.showmagic();
 			convo.say(temp);
 			convo.ask("Enter the name of the magick you wish to lance, or use no magick at all and `attack` the old fashioned way.", function(res,convo){
-				lancemagic(res,convo,"show");
+				gmagic(res,convo);
 				convo.next();
 			});
 		}
@@ -378,19 +380,9 @@ gmagic = function(res,convo){
   var temp = res.text.toLowerCase();
 	if (temp.includes('attack')){
 		gfight(res,convo,1);
-	} else if (x==="show"){
-		convo.ask("Which magick do you wish to invoke?" +
-			"\n " + utility.showmagic() + "\nOr you can `change` your mind.", function(res,convo){
-				gmagic(res,convo);
-				convo.next();
-		});
-	} else if (temp.includes("change")){
-		convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
-				gfightrouter(res,convo);
-				convo.next();
-		});
+    convo.next();
 	} else if (!utility.hasmagic(temp)){
-		// user does not own the spell they input
+		// check that user owns the spell they input
 		convo.say("This magick is yet unknown to you!");
 		convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
 				gfightrouter(res,convo);
@@ -400,7 +392,6 @@ gmagic = function(res,convo){
 		if (user.turnsToday<=spellz.clap.turnsreq) {
 			convo.say("You do not have enough turns left today to invoke this magick.")
 			convo.repeat();
-			// confirm that this goes back to "which magick" question
 		} else {
 			attackdamage = spellz.clap.attack - monster.defense
 			console.log("user attack: " + attackdamage);
@@ -421,7 +412,7 @@ gmagic = function(res,convo){
         convo.next();
 			}
 		}
-	} else if (temp2.includes("shield")){
+	} else if (temp.includes("shield")){
 		if (user.turnsToday<=spellz.shield.turnsreq) {
 			convo.say("You do not have enough turns left today to invoke this magick.")
 			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
@@ -443,7 +434,7 @@ gmagic = function(res,convo){
 				convo.next();
 			});
 		}
-	} else if (temp2.includes("words")){
+	} else if (temp.includes("words")){
 		if (user.turnsToday<=spellz.words.turnsreq) {
 			convo.say("You do not have enough turns left today to invoke this magick.")
 			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
@@ -460,7 +451,7 @@ gmagic = function(res,convo){
 				convo.next();
 			});
 		}
-	} else if (temp2.includes("sword")){
+	} else if (temp.includes("sword")){
 		// we don't have this level yet
 	} else {
 		convo.repeat();

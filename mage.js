@@ -23,7 +23,7 @@ magerouter = function(res,convo){
 			"\n>Here's what you I'm willing to share with you for now...\n" + spellist());
 		convo.say("Your current sorcery: " + showspells());
 		convo.ask("Select your merchandise, or decide `none` of them interest you.", function(res,convo){
-			mageconfirm(res,convo,1);
+			mageconfirm(res,convo);
 			convo.next();
 		});
 	} else if (temp.includes("return")){
@@ -49,22 +49,29 @@ mageconfirm = function(res,convo,x){
 		woods.woodsstart(res,convo);
 	} else if (temp.includes("1")) {
 		currentmerch = spellz.clap;
-		convo.ask("Are you sure you want to learn the " + spellz.clap.name + " curse? \nYou may `confirm` your purchase, or `change` your mind.", function(res,convo){
+		convo.ask("Are you sure you want to learn the " + spellz.clap.opname + " curse? \nYou may `confirm` your purchase, or `change` your mind.", function(res,convo){
 				mpurch(res,convo);
 				convo.next();
 			});
 	} else if (temp.includes("2")){
 		currentmerch = spellz.shield;
-		convo.ask("Are you sure you want to learn the " + spellz.shield.name + " curse? \nYou may `confirm` your purchase, or `change` your mind.", function(res,convo){
+		convo.ask("Are you sure you want to learn the " + spellz.shield.opname + " curse? \nYou may `confirm` your purchase, or `change` your mind.", function(res,convo){
 				mpurch(res,convo);
 				convo.next();
 			});
 	} else if (temp.includes("3")){
 		currentmerch = spellz.heal;
-		convo.ask("Are you sure you want to learn the " + spellz.heal.name + " curse? \nYou may `confirm` your purchase, or `change` your mind.", function(res,convo){
+		convo.ask("Are you sure you want to learn the " + spellz.heal.opname + " incantation? \nYou may `confirm` your purchase, or `change` your mind.", function(res,convo){
 				mpurch(res,convo);
 				convo.next();
 			});
+	} else if (temp.includes("none")){
+		convo.say("The Mage sighs." +
+			"\n>Do not dawdle with me, " + user.level.name + "...");
+		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+      magerouter(res,convo);
+      convo.next();
+    });
 	} else {
 		convo.say("Come again?");
 		convo.repeat();
@@ -100,9 +107,7 @@ mpurch = function(res,convo){
 		} else {
 			sessionevents.minor.push["magebuy"];
 			user.gold -= currentmerch.gold;
-			console.log("magic push test: " + user.items.magic.length + " - mage 101");
 			user.items.magic.push(currentmerch);
-			console.log("magic push test: " + user.items.magic.length + " - mage 103");
 			console.log("magic assign: " + currentmerch.name);
 			convo.say("The Mage nods solumnly, its shouded head dipping as you hear foreign-sounding chants too low for you to hear. Soon, you feel a spark of inspiration, and the " + currentmerch.name + " magick is suddenly familiar to you!");
 			convo.say(">Wield this magick wisely, young one...");
@@ -136,9 +141,9 @@ checkCunning = function(x){
 }
 
 spellist = function(){
-	var temp = "`1` - " + spellz.clap.name + " (" + spellz.clap.gold + " Gold\n`2` - " + spellz.shield.name + " (" + spellz.shield.gold + " Gold\n`3` - " + spellz.heal.name +" (" + spellz.heal.gold + " Gold";
+	var temp = "`1` - " + spellz.clap.name + " (" + spellz.clap.gold + " Gold)\n`2` - " + spellz.shield.name + " (" + spellz.shield.gold + " Gold)\n`3` - " + spellz.heal.name +" (" + spellz.heal.gold + " Gold)";
 	if (user.level.level>=3){
-		temp += "\n`4` - "+ spellz.sword.name +" (" + spellz.sword.gold + " Gold";
+		temp += "\n`4` - "+ spellz.sword.name +" (" + spellz.sword.gold + " Gold)";
 	}
 	if (user.level.level>=4){
 		// temp += "\n`5` - "+ items.weapons.oldsword.name +" (" + items.weapons.oldsword.gold + " Gold";

@@ -69,7 +69,7 @@ woodsmenu = function(res,convo){
 			} else {
 				temp +="Search for the `bandits` who stole the Cleric's censer, ";
 			}
-		} else if (user.mission==="grannon"){
+		} else if (user.mission==="grannon" || user.level.level>=3){
 			temp +="Follow Grannon's directions to the Cave of the `Mage`, ";
 		} else if (user.mission==="morgan"){
 			temp +="Search for Morgan's Quercus `tree`, ";
@@ -135,7 +135,7 @@ hunt = function(res,convo,x){
 		}
 	} else {
     // encounter the Geist - Lev 2
-    if (user.mission==="grannon" && Math.random()>0.9){
+    if (user.mission==="grannon" && Math.random()>0.1){
       farm.granfight(res,convo);
     } else {
       // your typical fight
@@ -240,7 +240,7 @@ woodsfight = function(res,convo,turn){
 			var temp = utility.showmagic();
 			convo.say(temp);
 			convo.ask("Enter the name of the magick you wish to lance, or use no magick at all and `attack` the old fashioned way.", function(res,convo){
-				lancemagic(res,convo,"show");
+				lancemagic(res,convo);
 				convo.next();
 			});
 		}
@@ -406,15 +406,16 @@ lancemagic = function(res, convo, x){
 				woodsfightrouter(res,convo);
 				convo.next();
 		});
-	} else if (!utility.hasmagic(temp)){
-		// user does not own the spell they input
-		convo.say("This magick is yet unknown to you!");
-		convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+	} else if (temp.includes("thunderous")){
+    // this needs work
+    if (!utility.hasmagic("Thunderous Clap")) {
+        // user owns the spell they input
+		  convo.say("This magick is yet unknown to you!");
+		  convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
 				woodsfightrouter(res,convo);
 				convo.next();
 			});
-	} else if (temp.includes("thunderous")){
-		if (user.turnsToday<=spellz.clap.turnsreq) {
+  } else if (user.turnsToday<=spellz.clap.turnsreq) {
 			convo.say("You do not have enough turns left today to invoke this magick.")
 			convo.repeat();
 			// confirm that this goes back to "which magick" question
@@ -435,14 +436,21 @@ lancemagic = function(res, convo, x){
 				woodsfight(res,convo,2);
 			}
 		}
-	} else if (temp2.includes("shield")){
+	} else if (temp.includes("shield")){
 		if (user.turnsToday<=spellz.shield.turnsreq) {
 			convo.say("You do not have enough turns left today to invoke this magick.")
 			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
 				woodsfightrouter(res,convo);
 				convo.next();
 			});
-		} else if (shieldflag){
+		} else if (!utility.hasmagic("shield")) {
+        // user owns the spell they input
+		  convo.say("This magick is yet unknown to you!");
+		  convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				woodsfightrouter(res,convo);
+				convo.next();
+			});
+    } else if (shieldflag){
 			convo.say("You have already invoked this magick.");
 			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
 				woodsfightrouter(res,convo);
@@ -457,14 +465,21 @@ lancemagic = function(res, convo, x){
 				convo.next();
 			});
 		}
-	} else if (temp2.includes("words")){
-		if (user.turnsToday<=spellz.words.turnsreq) {
+	} else if (temp.includes("words")){
+		if (user.turnsToday<=spellz.heal.turnsreq) {
 			convo.say("You do not have enough turns left today to invoke this magick.")
 			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
 				woodsfightrouter(res,convo);
 				convo.next();
 			});
-		} else {
+		} else if (!utility.hasmagic("words")) {
+        // user owns the spell they input
+		  convo.say("This magick is yet unknown to you!");
+		  convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				woodsfightrouter(res,convo);
+				convo.next();
+			});
+    } else {
 			turns += spellz.heal.turnsreq;
 			user.hp = user.level.maxhp;
 			quicksave();
@@ -474,7 +489,7 @@ lancemagic = function(res, convo, x){
 				convo.next();
 			});
 		}
-	} else if (temp2.includes("sword")){
+	} else if (temp.includes("sword")){
 		// we don't have this level yet
 	} else {
 		convo.repeat();

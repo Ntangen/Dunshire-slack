@@ -14,11 +14,19 @@ tavern: function(res,convo){
 	if (drinkvar){
 		convo.say(">*A drink awaits you at the bar! You may `retrieve` it at your pleasure.*");
 	}
-	convo.ask("What to do? You can `talk` with Dean the barkeep, order a `drink`, sit and `listen` to the bar's goings-on, ask the minstrel to play a `song`, look `around` at the wanderers in the Tavern, `inquire` casually about someone's whereabouts, `send` a drink to another player, or return to the `street`.", function(res,convo){
+  if (user.level.level>=3){
+    // adds the Unmarked Door bit
+    convo.ask("What to do? You can `talk` with Dean the barkeep, order a `drink`, sit and `listen` to the bar's goings-on, ask the minstrel to play a `song`, look `around` at the wanderers in the Tavern, `inquire` casually about someone's whereabouts, *`ask`* Dean about the unmarked back door, `send` a drink to another player, or return to the `street`.", function(res,convo){
             tavernrouter(res,convo);
             convo.next();
         });
-	}
+    } else {
+    convo.ask("What to do? You can `talk` with Dean the barkeep, order a `drink`, sit and `listen` to the bar's goings-on, ask the minstrel to play a `song`, look `around` at the wanderers in the Tavern, `inquire` casually about someone's whereabouts, `send` a drink to another player, or return to the `street`.", function(res,convo){
+            tavernrouter(res,convo);
+            convo.next();
+        });
+    }
+  }
 }
 
 ///////////////
@@ -41,11 +49,29 @@ tavernrouter = function(res,convo){
         tavstalk(res,convo);
     } else if (temp.includes('send')){
         send(res,convo);
+    } else if (temp.includes('ask')){
+      // battle royale level
+    	if (user.level.level===3){
+        convo.say("Dean stops what he's doing and narrows his eyes, looking around nervously - as if checking for something. \n" +
+                  ">Who the devil told you abou... Well, I suppose... go on, then. Be safe, " + user.level.name + ".");
+        convo.say("You proceed to the unmarked door in the back of the Tavern and slip through unnoticed.");
+        royale.royale(res,convo);
+        convo.next();
+      } else if (user.level.level>3){
+        convo.say("Dean looks around the bar, checking for unfamiliar faces.\n" +
+                 ">Okay - you're fine. Go ahead. Be safe. Don't need a bloodbath down there, y'know.");
+        royale.royale(res,convo);
+        convo.next();
+      } else {
+        convo.say(">I, uh... certainly don't know what you're talking about, friend.");
+        convo.repeat();
+      }
     } else if (temp.includes('street')){
     	convo.say("Tipping your head to Dean as you rise, you quit the Tavern for the street.");
         town.townsquare(res,convo);
     } else if (temp.includes('brunswick')){
-        stew(res,convo);
+      bstew(res,convo);
+      convo.next();
     } else if (temp.includes('retrieve')){
     	if (drinkvar) { pickupdrink(res,convo) }
     	else { 
@@ -53,10 +79,18 @@ tavernrouter = function(res,convo){
     		convo.repeat();
     	}
     } else if (temp.includes('reminder')){
+      if (user.level.level>=3){
+    // adds the Unmarked Door bit
+    convo.ask("What to do? You can `talk` with Dean the barkeep, order a `drink`, sit and `listen` to the bar's goings-on, ask the minstrel to play a `song`, look `around` at the wanderers in the Tavern, `inquire` casually about someone's whereabouts, *`ask`* Dean about the unmarked back door, `send` a drink to another player, or return to the `street`.", function(res,convo){
+            tavernrouter(res,convo);
+            convo.next();
+        });
+      } else {
         convo.ask("You can `talk` with Dean the barkeep, order a `drink`, sit and `listen` to the bar's goings-on, ask the minstrel to play a `song`, look `around` at the wanderers in the Tavern, `inquire` casually about someone's whereabouts, `send` a drink to another player, or return to the `street`.", function(res,convo){
             tavernrouter(res,convo);
             convo.next();
         });
+      }
     } else {
         convo.repeat();
     }
@@ -78,7 +112,13 @@ talk = function(res,convo){
             convo.next();
         });
 	} else if(user.level.level===3){
-		// tipz
+		convo.say("You sidle up to the bar, catching Dean the Barkeep's eye. He saunters over to your end.")
+		convo.say(">A Challenger now, ain't ya? Well good for you! Sure hope Rolf has been able to kit you out with some suitable weaponry. \n" +
+      ">It might be time to let you in on a secret here around the bar. Something that'll either kill you... or make you stronger. Ask me sometime.");
+		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+            tavernrouter(res,convo);
+            convo.next();
+        });
 	}
 }
 
@@ -304,7 +344,7 @@ tavstalkrouter = function(res,convo){
 	}
 }
 
-stew = function(res,convo){
+bstew = function(res,convo){
 	if (stew){
 		convo.say("Dean shrugs. \n>Sorry, friend. We're all out.");
 		convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){

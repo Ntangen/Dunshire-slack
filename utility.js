@@ -51,19 +51,24 @@ module.exports = {
 			user.hp = levs.levels.apprentice.maxhp;
 			user.mission = "";
       user.missionname = "None";
-			missioncomplete = undefined;
+			missioncomplete = false;
 			sessionevents.majorflag=true;
 			sessionevents.major.push("lev2");
 		} else if (x===3){
 			// Grannon completed - Level 3
 			user.level = levs.levels.challenger;
 			user.hp = levs.levels.challenger.maxhp;
-      user.mission="None";
       missioncomplete=false
+      user.mission = "";
+      user.missionname="None";
 		} else if (x===4){
 			// Royale completed - Level 4
 			user.level = levs.levels.journeyman;
 			user.hp = levs.levels.journeyman.maxhp
+      missioncomplete=false
+      user.mission = "";
+      user.missionname="None";
+      console.log("levelup4 fires");
 		} else if (x===5){
 			// Morgan's errand completed - Level 5
 			user.level = levs.levels.rogue;
@@ -192,6 +197,14 @@ module.exports = {
 			return monthday
 		}
 	},
+  
+  hasmagic: function(x){
+	    for (i=0;i<user.items.magic.length;i++){
+        if (user.items.magic[i].searchname.includes(x)) {
+	         	 return true
+	      }
+	    }
+	},
 
 	ifmagic: function(){
 	    if (user.items.magic.length===0){
@@ -209,7 +222,7 @@ module.exports = {
 	showmagic: function(x){
 	    var returnvar = "You have knowledge of the following magicks:\n";
 	        for (i=0;i<user.items.magic.length;i++){
-	            returnvar += "   " + user.items.magic[i].opname + ": " + user.items.magic[i].desc + "\n";
+	            returnvar += "   " + user.items.magic[i].name + ": " + user.items.magic[i].desc + "\n";
 	        }
 	    returnvar += " \n";
 	    return returnvar
@@ -271,14 +284,6 @@ module.exports = {
 	findgems: function(x){
 		if (user.items.rubies === 0) return false
 		else return true;
-	},
-
-	hasmagic: function(x){
-	    for (i=0;i<user.items.magic.length;i++){
-	         if (user.items.magic[i].name===x) {
-	         	return true
-	         }
-	    }
 	}
 		// town, tavern, smither, smithbuy, apot, bank, abbey, farm, asking
 		// lev2, magic, newplayer, death
