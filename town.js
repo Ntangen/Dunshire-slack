@@ -8,7 +8,20 @@ module.exports = {
 
 townsquare: function(res, convo){
 	convo.say("*-------------------------------------T H E  T O W N  S Q U A R E-------------------------------------*");
-	sessionevents.minor.push["town"];
+	if (user.duelflag){
+    convo.say("*During the night, you were attacked in your sleep!* As you slept in the fields, *" + user.duel.new[0].opp + "* tracked you down and attacked without warning!");
+    if (user.duel.new[0].result==="L"){
+      convo.say("*" + user.duel.new[0].opp + "* was too much for you, and cut you down in combat. They made off with half of your gold, and were heard gloating afterwards at the Tavern...");
+    } else if (user.duel.new[0].result==="D"){ 
+      convo.say("*" + user.duel.new[0].opp + "* underestimated your fortitude, however, and you repelled their cowardly attack! You gained gold and experience, as well as bragging rights at the Tavern...");
+    } else if (user.duel.new[0].result==="R"){
+      convo.say("*" + user.duel.new[0].opp + "* was not prepared for your furious counterattack, and they ran off to escape the fight! Just like a coward.");
+    }
+    convo.say(" ⚔️⚔️⚔️ ");
+    var temp = user.duel.new.splice(0,1);
+    user.duel.old.push(temp);
+    user.duelflag=false;
+  }
 	convo.ask("The town square is calm. Merchants hawk their goods, neighbors greet each other, and a few children go chasing each other through the streets. \n\nYou may `hear` the town crier's news of the day, visit the `Tavern`, the `Smither` Shop, the `Apothecary` Cabin, the `Bank` of Doworth, the village `Abbey`, Old Grannon's `farm`, or venture into the Dark `Woods`. \n\nYou can also check your `status`, review your `supplies`, or `quit` to your campsite.", function(res,convo){
 			townrouter(res,convo);
             convo.next();
@@ -39,6 +52,10 @@ townrouter = function(res,convo){
     } else if (temp.includes('abbey')){
     	sessionevents.minor.push("abbey");
         abbey.abbey(res,convo);
+    // delete
+    } else if (temp.includes('git')){
+    	convo.say("what will this read: " + target);
+      //
     } else if (temp.includes('farm')){
     	sessionevents.minor.push("farm");
         farm.farm(res,convo);

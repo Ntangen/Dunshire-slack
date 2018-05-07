@@ -38,13 +38,14 @@ royalerouter = function(res,convo){
       });
     } else {
       // Player is Lev >=4
-      // add something here
-      convo.say(">Hail, Champion!");
-      tavern.tavern(res,convo);
+      convo.say("Tox looks up respectfully as you approach his desk.");
+      convo.say(">Hail, Champion! Feel free to bet on any of these lesser fighters in the ring today... there's money to be won here!");
+      betting(res,convo);
       convo.next();
     }
   } else if (temp.includes("bet")){
-    // betting here
+    betting(res,convo);
+    convo.next();
   } else if (temp.includes("return")){
     convo.say("You tire of bloodsport, and turn back to return to the safety of the Tavern.");
     tavern.tavern(res,convo);
@@ -401,7 +402,7 @@ rmagick = function(res,convo){
 			convo.repeat();
 			// confirm that this goes back to "which magick" question
 		} else {
-			attackdamage = spellz.clap.attack - monster.defense
+			attackdamage = spellz.clap.attack - monster.defense;
 			console.log("user attack: " + attackdamage);
 			turns += spellz.clap.turnsreq;
 			mhp = mhp - attackdamage;
@@ -564,4 +565,8 @@ rusegear = function(res,convo){
       });
 		}
 	}
+}
+
+betting = function(res,convo){
+
 }

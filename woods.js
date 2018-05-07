@@ -193,6 +193,8 @@ woodsfight = function(res,convo,turn){
 		} else if (result==="zip"){
 		// strike, 0 damage
 			convo.say("You uselessly strike at " + monster.name + " with your " + user.items.weapon.name + " but hilariously inflict no damage!");
+      woodsfight(res,convo,2);
+			convo.next();
 		}
 		// strike don't kill
 		else { 
@@ -408,7 +410,7 @@ lancemagic = function(res, convo, x){
 		});
 	} else if (temp.includes("thunderous")){
     // this needs work
-    if (!utility.hasmagic("Thunderous Clap")) {
+    if (!utility.hasmagic("thunderous")) {
         // user owns the spell they input
 		  convo.say("This magick is yet unknown to you!");
 		  convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){

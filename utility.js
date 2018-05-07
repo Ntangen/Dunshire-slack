@@ -151,8 +151,7 @@ module.exports = {
 			if (temp>=0.5){
 				return true
 			} else return false;
-		} 
-		else if (x==="char"){
+		} else if (x==="char"){
 			var temp = Math.random();
 			if (user.attributes.charisma!=0){
 				temp += user.attributes.charisma * 0.25;
@@ -161,6 +160,11 @@ module.exports = {
 			if (temp>=0.5){
 				return true
 			} else return false;
+		} else if (x==="duel"){
+			var temp = Math.round(((Math.random()+1) + target.attributes.luck) + globalfortune);
+			var temp2 = temp + batpoints;
+			console.log("(" + target.username + ") fortune points: " + temp2);
+			return temp2;
 		} else {
 			// for adding variables in battle
 			// spirits; berzerk; 

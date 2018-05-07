@@ -119,6 +119,14 @@ talk = function(res,convo){
             tavernrouter(res,convo);
             convo.next();
         });
+	} else if(user.level.level===4){
+		convo.say("You sidle up to the bar, catching Dean the Barkeep's eye. He saunters over to your end.")
+		convo.say(">Well, look at you, *" + user.username + "*! In just a little while, you've gone from another anonymous drifter from the countryside into a full-fledged Journeyman. I hope you've been focusing on your self-improvement. Try tipping the Minstrel over there in the corner sometime... \n" +
+      ">Did you know that Morgan over in the Apothecary gathers all of her own ingredients? It's truly remarkable.");
+		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+            tavernrouter(res,convo);
+            convo.next();
+        });
 	}
 }
 
@@ -321,24 +329,80 @@ tavstalkrouter = function(res,convo){
 	        convo.next();
         });
 	} else if (allNames.includes(temp)){
-		convo.say("As casually as you can, you ask Dean about " + temp + "'s recent whereabouts.");
-		sessionevents.minor.push("asking");
+		convo.say("As casually as you can, you ask Dean about *" + temp + "'s* recent whereabouts.");
 		if (user.level.level===1){
-			convo.say("Dean narrows his bushy eyes at you, and then bursts out guffawing. \n>Have ye so much as slain a beast in the dark forest yet, stranger? I'd recommend cutting your teeth on the wee creatures out there before trying your hand at an opponent yer own size... ha!");
+			convo.say("Dean narrows his bushy eyes at you, and then bursts out guffawing. \n" +
+        ">Have ye so much as slain a beast in the dark forest yet, stranger? I'd recommend cutting your teeth on the wee creatures out there before trying your hand at an opponent yer own size... ha!");
 			convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){
-	            tavernrouter(res,convo);
-	            convo.next();
-        	});
-		} else {
-			// TBD - this is if you're level 2 and can stalk people
-		}
-	} else if (temp.includes("none")){
+        tavernrouter(res,convo);
+        convo.next();
+      });
+		} else if (utility.fortune("char")){
+      getrecord(temp);
+      // target is now a full user object - ??
+			convo.say("Dean barely looks up from his washing. \n" +
+        ">Oh, sure, I saw *" + temp + "* here earlier. I think they're sleeping out in the camps outside of town tonight. They're not hard to find.");
+			convo.ask("You can thank Dean and discreetly `sneak` out of the back door, or just decide to forget it and `return` to your swill.", function(res,convo){
+        tavstalk2(res,convo);
+        convo.next();
+      });
+    } else {
+			// you're shady
+			convo.say("Dean stops what he's doing and squints at you suspiciously. \n" +
+        ">Why are you looking for *" + temp + "*? Wait... I don't want to know.")
+      convo.say("Dean looks both ways and then leans down to speak quietly. \n" +
+				">If you _really_ want to know, I might try to remember... \n" +
+        "He taps his finger softly on the bar.");
+		  convo.ask("`Slide` a 25 gold piece across the bar, or decide to `change` the subject.", function(res,convo){
+        tavstalk2(res,convo);
+        convo.next();
+      });
+		} 
+  } else if (temp.includes("none")){
 		convo.say("Very well then.");
 		convo.ask("The bar hums quietly around you. What next? (Want a `reminder`?)", function(res,convo){
-	        tavernrouter(res,convo);
-	        convo.next();
-        });
+      tavernrouter(res,convo);
+      convo.next();
+    });
 	} else {
+		convo.say("Come again?");
+		convo.repeat();
+	}
+}
+
+tavstalk2 = function(res,convo){
+  var temp = res.text.toLowerCase();
+	if (temp.includes("sneak")){
+    convo.say("Dean looks the other way as you sneak out the back door.");
+    stalk.stalk(res,convo);
+    convo.next();
+  } else if (temp.includes("slide")){
+    if (user.gold<25){
+      convo.say("You fumble in your pockets, but cannot locate find 25 gold pieces. Embarassed, you shrug and tell Dean to forget about it, feeling poor.")
+      convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+            tavernrouter(res,convo);
+            convo.next();
+        });
+    } else {
+      convo.say("You slide 25 gold pieces across the bar, and Dean quickly slides them off into his apron.");
+      convo.say("Looking around to be sure he's not overheard, Dean leans in close to you again. \n" +
+        "I heard that *" + temp + "* is camping just outside of town tonight. Not far from the Graveyard. But... you never heard that from me.")
+      user.gold -= 25;
+      convo.ask("You can thank Dean and discreetly `sneak` out of the back door, or just decide to forget it and `return` to your swill.", function(res,convo){
+        //target=getrecord(temp);
+        // target is now a full user object
+        tavstalk2(res,convo);
+        convo.next();
+      });
+    }
+  } else if (temp.includes("change") || temp.includes("return")){
+    convo.say("Dean shrugs and returns to polishing the glasses. \n" +
+      ">Suit yourself, then.");
+    convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+            tavernrouter(res,convo);
+            convo.next();
+      });
+  } else {
 		convo.say("Come again?");
 		convo.repeat();
 	}
@@ -417,7 +481,7 @@ sendrouter2 = function(res,convo){
 }
 
 sendrouter3 = function(res,convo){
-	var temp = res.text.toLowerCase();
+	var temp = res.text;
 	if (temp.length>200){
 		convo.say("Your message is too long. Try again.");
 		convo.repeat();
@@ -457,13 +521,13 @@ sendrouter4 = function(res,convo) {
 
 pickupdrink = function(res,convo){
 	var temp="";
-	if (shadow.drinks.recd.length>1){
-		for(i=0;i<shadow.drinks.recd.length;i++){
-			temp += shadow.drinks.recd[i].type.name + " from *`" + shadow.drinks.recd[i].from + "`*, ";
+	if (user.drinks.recd.length>1){
+		for(i=0;i<user.drinks.recd.length;i++){
+			temp += user.drinks.recd[i].type.name + " from *`" + user.drinks.recd[i].from + "`*, ";
 		}
 		convo.say("You have " + user.drinks.recd.length + " drinks awaiting you: " + temp + " and a pint of sad, warm leftover beer.");
 	} else {
-		temp += shadow.drinks.recd[0].type.name + " from *`" + shadow.drinks.recd[0].from + "`*";
+		temp += user.drinks.recd[0].type.name + " from *`" + user.drinks.recd[0].from + "`*";
 		convo.say("You have one drink awaiting you: a " + temp + ".");
 	}
 	convo.ask("Whose drink shall you quaff first? (Or `none` of them?)", function(res,convo){
@@ -481,14 +545,15 @@ pickup2 = function(res,convo){
 	        convo.next();
 		});
 	} else {
-		for(i=0;i<shadow.drinks.recd.length;i++){
-			if (shadow.drinks.recd[i].from.toLowerCase()===temp){
-				var temp2 = shadow.drinks.recd[i]
+		for(i=0;i<user.drinks.recd.length;i++){
+			if (user.drinks.recd[i].from.toLowerCase()===temp){
+				var temp2 = user.drinks.recd[i]
 				convo.say("You happily take the " + temp2.type.name + " and tip it back as you read *" + temp2.from + "'s* message: \n>" + temp2.msg);
-				var oldmsg = shadow.drinks.recd.splice(i,1);
-				if (shadow.drinks.recd.length===0){
-					shadow.drinkflag=false;
+				var oldmsg = user.drinks.recd.splice(i,1);
+				if (user.drinks.recd.length===0){
+					user.drinkflag=false;
 					drink=false;
+          drinkvar=false;
 				}
 				quicksave();
 				convo.say("You ponder *" + oldmsg[0].from + "'s* message and enjoy your tasty beverage.");

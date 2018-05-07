@@ -149,6 +149,7 @@ smith = require('./smith');
 abbey = require('./abbey');
 mage = require('./mage');
 royale = require('./royale');
+stalk = require('./stalk');
 items = require('./lib/items');
 levs = require('./lib/levels');
 events = require('./lib/events');
@@ -185,6 +186,7 @@ sessionevents={
 };
 today=0;
 qturns=0;
+target=undefined;
   
 ////////////////
 // END INITS
@@ -276,7 +278,6 @@ qturns=0;
             // no record for this user, so we'll set one up
             console.log("this is not a known player");
             user = newuser.newPlayer;
-            shadow = newuser.shadow;
             user.userid = userid;
             drinkvar=true;
             // grab some user deets real quick, saves to user var
@@ -288,9 +289,8 @@ qturns=0;
             // found a record for user
             console.log("found a record for profile username: " + user_data.profile.username);
             user = user_data.profile;
-            shadow = user_data.shadow;
             // could add bank info here
-            if (shadow.drinkflag===true){
+            if (user.drinkflag===true){
                 drinkvar=true;
             }
         }
@@ -352,7 +352,7 @@ enter = function(res, convo){
 
 newplayer = function(res,convo){
     user.knownPlayer = true;
-    shadow.profileStarted = today;
+    user.profileStarted = today;
     user.lastPlayed = today;
       // utlility thing isn't loading levels correctly?
     convo.say("The Innkeeper smacks the long bench with his palm and grins. \n>Excellent! I wish you luck and good fortune on your journies to come in the village of Dunshire - and the lands beyond... \n\n>As a last step before you go, you may choose to add 1 point to any of your four key character attributes. Which do you choose?");
@@ -415,7 +415,7 @@ enter2 = function(res,convo){
         quicksave();
         // game lists: crierfetch gets list of daily activity, graballnames gets all user names
         // crierfetch();
-        // grabAllNames();
+        grabAllNames();
         town.townsquare(res, convo);
     } else {
         convo.repeat();
@@ -477,7 +477,7 @@ instructions = function(res,convo){
         // grabAllNames();
         convo.say("\"Good luck, wanderer. You'll need it.\"");
         convo.say("You exit the inn. Leaving its warm light behind, you continue down the dirt path, the first shoots of sunlight beginning to break through the trees. Soon, you come upon the Village of Dunshire.");
-        shadow.loginsSlack++;
+        user.logins++;
         quicksave();
         town.townsquare(res, convo);
     } else if (temp.includes('reminder')) {
@@ -536,12 +536,13 @@ grabAllNames = function(x,y){
         for (i=0;i<all_user_data.length;i++){
             allNames += "*" + all_user_data[i].profile.username + "*, ";
         }
+        console.log("enter2 - allnames: " + allNames);
     }); 
 }
 
 quicksave = function(){
     // your standard game save 
-    controller.storage.users.save({id: userid, profile:user, shadow:shadow}, function(err,res){
+    controller.storage.users.save({id: userid, profile:user}, function(err,res){
         if (err) console.log("save err: " + err);
         console.log("(" + user.username + ") user save");
     });
@@ -572,24 +573,21 @@ eventsave = function(){
 
 savedrink = function(drinkobject){
     // player sends a drink to another
-    controller.storage.users.all(function(err, all_user_data) {
-        for (i=0;i<all_user_data.length;i++){
-            if (all_user_data[i].profile.username===drinkobject.to) {
-                var temp = all_user_data[i].profile.userid;
-                controller.storage.users.get(temp, function(err,user_data){
-                    var targetData = user_data.shadow;
-                    targetData.drinks.recd.push(drinkobject);
-                    targetData.drinkflag = true;
-                    controller.storage.users.save({id: temp, shadow:targetData},function(err,res){
-                        if (err) console.log("err: " + err);
-                        else console.log("(" + user.username + ") shadow target data saved (savedrink)");
-                        user.drinks.sent.push(drinkobject);
-                        quicksave();
-                    });
-                });
-            }
-        }
-    });
+  var temp;
+  controller.storage.users.find({"profile.username":drinkobject.to}, function(err, res){
+    // this code works
+      if (err) {console.log("getrecord err: " + err)}
+      else {
+        console.log("pulled record for: " + res[0].profile.username);
+        temp = res[0].profile;
+        temp.drinks.recd.push(drinkobject);
+        temp.drinkflag = true;
+        controller.storage.users.save({id: temp.userid, profile:temp}, function(err,res){
+          if (err) console.log("save err: " + err);
+          console.log("drink sent to target");
+        });
+      }
+  });  
 }
 
 crierfetch = function(){
@@ -625,3 +623,20 @@ crierfetch = function(){
     });
 }
 
+getrecord = function(tgt){
+  controller.storage.users.find({"profile.username":tgt}, function(err, res){
+    // this code works
+      if (err) {console.log("getrecord err: " + err)}
+      else {
+        console.log("pulled record for: " + res[0].profile.username);
+        target = res[0].profile;
+      }
+  });
+}
+
+saverecord = function(tgt){
+  controller.storage.users.save({id: tgt.userid, profile:tgt}, function(err,res){
+        if (err) console.log("save err: " + err);
+        console.log("(" + tgt.username + ") saved target record");
+    });
+}
