@@ -14,17 +14,23 @@ tavern: function(res,convo){
 	if (drinkvar){
 		convo.say(">*A drink awaits you at the bar! You may `retrieve` it at your pleasure.*");
 	}
-  if (user.level.level>=3){
+  if (user.level.level===3){
     // adds the Unmarked Door bit
     convo.ask("What to do? You can `talk` with Dean the barkeep, order a `drink`, sit and `listen` to the bar's goings-on, ask the minstrel to play a `song`, look `around` at the wanderers in the Tavern, `inquire` casually about someone's whereabouts, *`ask`* Dean about the unmarked back door, `send` a drink to another player, or return to the `street`.", function(res,convo){
-            tavernrouter(res,convo);
-            convo.next();
-        });
-    } else {
-    convo.ask("What to do? You can `talk` with Dean the barkeep, order a `drink`, sit and `listen` to the bar's goings-on, ask the minstrel to play a `song`, look `around` at the wanderers in the Tavern, `inquire` casually about someone's whereabouts, `send` a drink to another player, or return to the `street`.", function(res,convo){
-            tavernrouter(res,convo);
-            convo.next();
-        });
+        tavernrouter(res,convo);
+        convo.next();
+    });
+  } else if (user.level.level>=4){
+    // adds the Unmarked Door bit
+    convo.ask("What to do? You can `talk` with Dean the barkeep, order a `drink`, sit and `listen` to the bar's goings-on, ask the minstrel to play a `song`, look `around` at the wanderers in the Tavern, `inquire` casually about someone's whereabouts, `ask` Dean about the unmarked back door, `send` a drink to another player, or return to the `street`.", function(res,convo){
+        tavernrouter(res,convo);
+        convo.next();
+    });
+  } else {
+  convo.ask("What to do? You can `talk` with Dean the barkeep, order a `drink`, sit and `listen` to the bar's goings-on, ask the minstrel to play a `song`, look `around` at the wanderers in the Tavern, `inquire` casually about someone's whereabouts, `send` a drink to another player, or return to the `street`.", function(res,convo){
+          tavernrouter(res,convo);
+          convo.next();
+      });
     }
   }
 }

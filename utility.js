@@ -73,6 +73,10 @@ module.exports = {
 			// Morgan's errand completed - Level 5
 			user.level = levs.levels.rogue;
 			user.hp = levs.levels.rogue.maxhp
+      missioncomplete=false
+      user.mission = "";
+      user.missionname="None";
+      console.log("levelup4 fires");
 		} else if (x===6){
 			// Abbey dark mission completed - Level 6
 			user.level = levs.levels.corsair;

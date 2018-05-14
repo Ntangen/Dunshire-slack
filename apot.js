@@ -17,7 +17,8 @@ module.exports = {
 				// finished mission - raise to level 5
 				convo.say("Walking into the cabin, you meet Morgan's inquiring look by tossing the small bag containing the Quercus root down on her work table. Morgan removes the root, examining it in her hands with a specialist's eye.");
 				convo.say(">This is remarkable... I've never seen such a specimen so well preserved! So fresh! You've done well, " + user.username + " - my thanks to you!" + "\n>And... as promised... you shall have your reward. Have a seat for just a moment.");
-				// more
+				apotlevel(res,convo);
+        convo.next();
 			} else {
 				// before you've accepted mission
 				convo.say("Sitting listlessly at her work bench, Morgan hardly looks up at you, her brow furrowed as she stares into the shimmering liquid before her. Bags hang under her eyes, and her hair is unkempt.");
@@ -74,17 +75,20 @@ module.exports = {
 				woods.gohunt(res,convo);
 				convo.next();
 		  } 
-      // else quercus(res,convo)
-	  }
-  },
+	  } else {
+      quercus(res,convo);
+      convo.next();
+    }
+  }
+}
   ////////////////////////////////////////////
 //
 // LEVEL 4 QUERCUS MISSION STUFF
 //
 ////////////////////////////////////////////
 
-quercus: function(res,convo){
-	monster=beasts.lev4b;
+quercus = function(res,convo){
+	monster = beasts.beasts.lev4b;
 	mhp = monster.hp;
 	convo.say("The ground trembles beneath your feet as you hear a low boom behind you. You spin around and unsheath your " + user.items.weapon.name + ", but see only leaves falling from the trees around you. An empty forest surrounds you. And yet...");
 	convo.say("A giant tree branch swings your way! You manage to duck and roll away, and it misses your head by inches. But looking up, you see a great, hulking, living tree trunk lumber your way, supported by a churning knot of roots, big and small. The great tree has no face, but its branches are streaked in blood.");
@@ -95,14 +99,14 @@ quercus: function(res,convo){
 		qfightrouter(res,convo);
 		convo.next();
 	});
-},
+}
 
-querfight: function(res,convo,turn){
+querfight = function(res,convo,turn){
 	var temp = res.text.toLowerCase();
 	if (turn===1){
 		// player turn 
 		convo.say("Readying your weapon, you steel yourself for battle.");
-		var result = userfight(monster);
+		var result = woods.userfight(monster);
 		if (result === "k") {
 		// kill the monster			
 			if (turns === 0) {
@@ -113,6 +117,7 @@ querfight: function(res,convo,turn){
 				console.log("(" + user.username + ") kill");
 				convo.say("With a mighty yell, you cut down the Quercus in a final, reverberating blow! Chips of wood spray across the forest floor as the giant killer tree reels and crashes to the ground, dead.");
 				qvictory(res,convo);
+        convo.next();
 			}	
 		} else if (result==="zip"){
 		// strike, 0 damage
@@ -127,7 +132,7 @@ querfight: function(res,convo,turn){
 			}
 	} else if (turn===2){
 		// monster turn
-		var result = monsterfight(monster)
+		var result = woods.monsterfight(monster)
 		if (result === "dead"){
 			console.log("(" + user.username + ") dead");
 			convo.say("Zounds! The Quercus crushes you between two thick branches! You feel your chest crunching between its limbs. As the world fades, you feel roots beginning to envelop you to become the living tree's next meal...");
@@ -170,9 +175,9 @@ querfight: function(res,convo,turn){
 			});
 		}
 	}
-},
+}
 
-qfightrouter: function(res,convo,x){
+qfightrouter = function(res,convo,x){
 	var temp = res.text.toLowerCase();
 	if (temp.includes("run")){
 		convo.say("You prefer your hide to your pride, and turn to run away!");
@@ -184,23 +189,120 @@ qfightrouter: function(res,convo,x){
 			convo.say("You manage to outrun the fearsome Quercus. You resolve to not tell anyone about this...");
 			user.turnsToday -= turns;
 			turns = 0;
-			woodsmenu(res,convo);
+      quicksave();
+			woods.woodsstart(res,convo);
+      convo.next();
 		}
 	} else if (temp.includes("magick")){
-		// TBA
+		querfight(res,convo,"m");
+    convo.next();
 	} else if (temp.includes("attack")){
 		querfight(res,convo,1)
+    convo.next();
 	} else if (x===3){
 		// lancing magic you have from middle of a fight
-		// 
-	} else {
-		convo.repeat();
-	}
-},
+    if (temp.includes("thunderous")){
+      if (!utility.hasmagic("thunderous")) {
+        // user owns the spell they input
+        convo.say("This magick is yet unknown to you!");
+        convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+          qfightrouter(res,convo);
+          convo.next();
+			  });
+      } else if (user.turnsToday<=spellz.clap.turnsreq) {
+        convo.say("You do not have enough turns left today to invoke this magick.")
+        convo.repeat();
+		  } else {
+        attackdamage = spellz.clap.attack - monster.defense
+        console.log("user attack: " + attackdamage);
+        turns += spellz.clap.turnsreq;
+        mhp = mhp - attackdamage;
+        convo.say("Summoning up the old words, you lance the Thunderous Clap upon the " + monster.name + ", bringing down a calamitous din upon its ears!" +
+          "\n You inflict " + attackdamage + " damage!");
+        if (mhp <= 0) {
+          // damage the monster & kill
+          console.log("(" + user.username + ") kill");
+          convo.say("With a heroic blow, you vanquish the " + monster.name + "!");
+          qvictory(res,convo);
+          convo.next();
+        } else {
+          // damage the monster, don't kill
+          querfight(res,convo,2);
+          convo.next();
+        }
+		  }
+	  } else if (temp.includes("shield")){
+      if (user.turnsToday<=spellz.shield.turnsreq) {
+        convo.say("You do not have enough turns left today to invoke this magick.")
+        convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+          qfightrouter(res,convo);
+          convo.next();
+        });
+      } else if (!utility.hasmagic("shield")) {
+          // user owns the spell they input
+        convo.say("This magick is yet unknown to you!");
+        convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+          qfightrouter(res,convo);
+          convo.next();
+        });
+      } else if (shieldflag){
+        convo.say("You have already invoked this magick.");
+        convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+          woodsfightrouter(res,convo);
+          convo.next();
+        });
+      } else {
+        shieldflag=true;
+        turns += spellz.shield.turnsreq;
+        convo.say("Summoning up the old words, you lance the Egregious Shield incantation, cloaking yourself in a blue protective haze of magick.");
+        convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+          qfightrouter(res,convo);
+          convo.next();
+        });
+      }
+    } else if (temp.includes("words")){
+      if (user.turnsToday<=spellz.heal.turnsreq) {
+        convo.say("You do not have enough turns left today to invoke this magick.")
+        convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+          qfightrouter(res,convo);
+          convo.next();
+        });
+      } else if (!utility.hasmagic("words")) {
+          // user owns the spell they input
+        convo.say("This magick is yet unknown to you!");
+        convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+          qfightrouter(res,convo);
+          convo.next();
+        });
+      } else {
+        turns += spellz.heal.turnsreq;
+        user.hp = user.level.maxhp;
+        quicksave();
+        convo.say("Summoning up the old words, you lance the Curative Words incantation, healing yourself fully.");
+        convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+          qfightrouter(res,convo);
+          convo.next();
+        });
+      }
+    } else if (temp.includes("sword")){
+      // we don't have this level yet
+    } else {
+      convo.repeat();
+    }
+  }
+}
 
-qvictory: function(res,convo){
-
-},
+qvictory = function(res,convo){
+  convo.say("Leaves flutter all around you as the branches of the Quercus settle on the ground. Its writhing roots lay still now, slowly sinking into the soil. Thinking quickly, you rush over and slice off a large section of root. It trembles a bit in your hand and then goes limp.");
+	convo.say("*You should return the root to Morgan the Apothecary right away!*");
+  missioncomplete=true;
+  monster=undefined;
+  turns=0;
+  convo.ask("*Catch your breath, and then `continue`.*", function(res,convo){
+      woods.woodsstart(res,convo);
+      convo.next();
+    });
+}
 
 
 ////////////////////////////////////////////
@@ -209,7 +311,7 @@ qvictory: function(res,convo){
 //
 ////////////////////////////////////////////
 
-istherefire: function(){
+istherefire = function(){
 	// checks to see if the player has any MFCs
 	for (i=0;i<user.items.other.length;i++){
 		if (user.items.other[i].name==="Morgan's Fire Chanter"){
@@ -218,7 +320,6 @@ istherefire: function(){
 		  }
 	  }
 	  return false;
-  }
 }
 
 apotrouter = function(res,convo){
@@ -238,7 +339,14 @@ apotrouter = function(res,convo){
 			convo.next();
 		});
 	} else if (temp.includes("ask")){
-		if (user.level.level===4){
+		if (user.level.level===4 && user.mission==="morgan"){
+      convo.say("Morgan looks up at you, her eyebrows raised skeptically. \n" +
+        ">The Quercus root? In the Dark Woods? Don't tell me you've forgotten already...");
+      convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+        apotrouter(res,convo);
+        convo.next();
+      });
+    } else if (user.level.level===4){
 			convo.say("Morgan hesitates for a few beats, and then sighs deeply. She puts down the stirrer for the beaker before her. \n>I am working on a new potion for an idea I have, but... \nShe trails off, lost in thought.");
 			convo.say("Only after you cough loudly does she startle, looking back up at you. \n>Oh! I... I'm sorry... this new project has kept me up nights. I think I may have stumbled on a new concoction that's quite... extraordinary... yet I'm missing a critical ingredient. Nothing I try acts as a proper substitute.");
 			convo.say("Morgan tilts her head up to you and narrows her eyes. \n>Actually... there *is* a way you could help, if you wanted to... I could certainly make it worth your time. The ingredient I lack is a cutting of a *Quercus tree root.* I haven't seen one in a long time - they're exceedingly rare. I've heard word of a mature Quercus deep in a hollow of the Dark Woods, but... I don't dare venture there myself. You, however, might be ready.");
@@ -247,7 +355,6 @@ apotrouter = function(res,convo){
 				apotrouter(res,convo,2);
 				convo.next();
 			});
-
 		} else {
 			convo.say("Ask another time, " + user.username + ". You never know what I may have for you.");
 			convo.ask("What next? (Want a `reminder`?)", function(res,convo){
@@ -268,10 +375,12 @@ apotrouter = function(res,convo){
 		convo.say("Morgan's eyes light up. \n>Egads! Thank you! This potion will be like nothing you've ever seen... just you wait!");
 		convo.say("*You have accepted Morgan's Request!* \nMorgan draws you a crude map of the eastern quarter of the Dark Woods. You'll begin your search there.");
 		user.mission = "morgan";
+    user.missionname = "Morgan's Request";
 		convo.say("Morgan clears her throat and squints at you. \n>Just one more thing, " + user.username + " - have you ever... ahem... actually *seen* a Quercus?");
 		convo.say("Seeing you shake your head, Morgan looks nervously around. \n>Ah. I see. Ah. Well... a word to the wise? Make sure you keep that " + user.items.weapon.name + " ready. I hear Quercus trees hate... strangers. Be safe, now. This one's on the house.");
 		convo.say("Morgan slides a healing potion over to you!");
 		user.items.other.push(items.heals.basic);
+    quicksave();
 		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
             apotrouter(res,convo);
             convo.next();
@@ -355,16 +464,16 @@ apotmerchconfirm = function(res,convo){
 	if (temp.includes("change")){
 		convo.say("Morgan rolls her eyes. \n>I haven't got all day, you know.");
 		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
-            apotrouter(res,convo);
-            convo.next();
-        });
+      apotrouter(res,convo);
+      convo.next();
+    });
 	} else if (currentmerch.gold > user.gold) {
 		// not enough simoleons
 		convo.say("Morgan's eyebrow arches up. \n>This is not the tavern, and my medicines aren't cheap swill. Come back when you have enough gold.");
 		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
-            apotrouter(res,convo);
-            convo.next();
-        });
+      apotrouter(res,convo);
+      convo.next();
+    });
 	} else if (temp.includes("confirm")) {
 		user.gold -= currentmerch.gold;
 		user.items.other.push(currentmerch);
@@ -378,3 +487,17 @@ apotmerchconfirm = function(res,convo){
 	}
 }
 
+apotlevel = function(res,convo){
+  convo.say("Morgan disappears into the dark laboratory room separated by a thick shroud. You think you see something moving in there... She emerges a few minutes later and hands you a small, hard object inside a leather pouch. \n" +
+    ">This is a vial of my newest creation, " + user.username + ". I call it, my *Fire Chanter.* You may use it in combat - but *beware.* It will engulf whatever you throw it at in a... well, really quite, uh, beautiful... fireball. It should vanquish all but _extremely_ formidable enemies. \n" +
+    ">With this root sample you've given me, I will be able to synthesize more of this potion from now on, too. For... a reasonable price, of course.");
+  convo.say("Morgan grins wanly and goes back to her experiments. \n" + 
+    "You have fulfilled Morgan's Request! *You advance to Level 5: Rogue.* \n" +
+		"Your maximum hitpoints have increased, and you receive an additional 100 experience!");
+  utility.levelup(5);
+  quicksave();
+  convo.ask("*Catch your breath, and then `continue`.*", function(res,convo){
+      apot.apothecary(res,convo);
+      convo.next();
+    });
+}

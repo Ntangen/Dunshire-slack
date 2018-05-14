@@ -52,10 +52,6 @@ townrouter = function(res,convo){
     } else if (temp.includes('abbey')){
     	sessionevents.minor.push("abbey");
         abbey.abbey(res,convo);
-    // delete
-    } else if (temp.includes('git')){
-    	convo.say("what will this read: " + target);
-      //
     } else if (temp.includes('farm')){
     	sessionevents.minor.push("farm");
         farm.farm(res,convo);

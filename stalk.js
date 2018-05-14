@@ -207,13 +207,13 @@ var temp = res.text.toLowerCase();
 			convo.repeat();
 			// confirm that this goes back to "which magick" question
 		} else {
-			attackdamage = spellz.clap.attack - monster.defense
+			attackdamage = spellz.clap.attack - target.items.armor.armor - utility.fortune("duel");
 			console.log("user attack: " + attackdamage);
 			turns += spellz.clap.turnsreq;
-			mhp = mhp - attackdamage;
+			target.hp = target.hp - attackdamage;
 			convo.say("Summoning up the old words, you lance the Thunderous Clap upon *" + target.username + "*, bringing down a calamitous din upon their ears!" +
 				"\n You inflict " + attackdamage + " damage!");
-			if (mhp <= 0) {
+			if (target.hp <= 0) {
 				// damage the monster & kill
 				console.log("(" + user.username + ") kill");
 				convo.say("With a heroic blow, you vanquish *" + target.username + "*!");

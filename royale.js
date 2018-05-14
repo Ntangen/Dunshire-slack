@@ -7,11 +7,14 @@ module.exports = {
   convo.say("*----------------------------T H E   B A T T L E  R O Y A L E----------------------------*");
   convo.say("After closing the unmarked wooden door, you descend a steep stone staircase. The low hum of men shouting and cheering below grows into a din as you draw closer. \n" +
     "The raucous crowd surrounds a sunken pit, shouting and shaking pouches of gold while men in the middle brawl. The air tastes vaguely sour. Like blood.");
-    // need to add a menu option that's different after level 4
+  if (user.level.level>=4){
+    convo.say("Tox looks up respectfully as you approach his desk.");
+    convo.say(">Hail, Champion! Feel free to bet on any of these lesser fighters in the ring today... there's money to be won here!");
+  }
   convo.ask("You can `seek` out the Fightmaster, `bet` on the next bloodsport, or decide you've had enough and `return` to the Tavern.", function(res,convo){
-            royalerouter(res,convo);
-            convo.next();
-        });
+    royalerouter(res,convo);
+    convo.next();
+    });
   }
 }
 
@@ -37,11 +40,9 @@ royalerouter = function(res,convo){
           convo.next();
       });
     } else {
-      // Player is Lev >=4
-      convo.say("Tox looks up respectfully as you approach his desk.");
-      convo.say(">Hail, Champion! Feel free to bet on any of these lesser fighters in the ring today... there's money to be won here!");
-      betting(res,convo);
-      convo.next();
+      convo.say("Tox looks up with admiration as you approach his desk and bows his head respectfully. \n" +
+               ">Hail, Champion! You are welcome in this house!");
+      convo.repeat();
     }
   } else if (temp.includes("bet")){
     betting(res,convo);
@@ -508,7 +509,7 @@ rwins = function(res,convo){
     utility.levelup(4);
     convo.say("*You have advanced to Level 4: Journeyman.* Your maximum hitpoints have increased, and new areas of town are now open to you.");
     convo.say("After toweling off your face, you climb the steps out of the pit to see Tox, who nods sheepishly as he sees you approach. \n" +
-              ">All right, all right... I admit, you are truly a worthy warrior, " + user.username + ". Here is your share of tonight's fight purse....");
+      ">All right, all right... I admit, you are truly a worthy warrior, " + user.username + ". Here is your share of tonight's fight purse....");
     convo.say("Tox hands you a pouch with *" + monster.gold + " gold,* and you gain *" + monster.xp + " experience!*");
     convo.say(">You are welcome back to fight anytime, Champion. Cutting down your fellow town wanderers can be a great way of gaining experience... and you can even steal some of their gold! Not that I, er, know anything of that...");
     monster=undefined;
@@ -568,5 +569,107 @@ rusegear = function(res,convo){
 }
 
 betting = function(res,convo){
+  if (user.level.level===3){
+    convo.say("You approach the betting window, only to be laughed and jeered at.");
+    convo.say(">Look! The new " + user.level.name + " wants to wager on the fighting, but not enter the ring themselves!");
+    convo.say("Rough hands shove you out the door, back up towards the Tavern.");
+    tavern.tavern(res,convo);
+    convo.next();
+  } else {
+    convo.say("At the betting window, a grizzled old man points at the upcoming match. \n" +
+      ">Place yer bets! All bets are *20 Gold!* Pieces on the table, everyone!");
+    convo.say("• In the *first* match, a ragged-looking swordfighter faces off against a man with a blowgun... \n" +
+      "• In the *second* match, a woman wielding shining scythes prepares to battle a man in a snakelike mask... \n" +
+      "• In the *third* match, a dark sorcerer's apprentice faces a scarred old duelfighter.");
+    convo.ask("You can place a wager on the `first`, `second` or `third` match, check your `status` or `change` your mind.", function(res,convo){
+      bettingrouter(res,convo)
+      convo.next();
+    });
+  }
+}
 
+bettingrouter = function(res,convo){
+  var temp = res.text.toLowerCase();
+  if (user.gold<20){
+    convo.say("The old man looks at you and sneers. \n" +
+      ">This ain't a nursery, kid! We bet with Gold here! Come back when you have enough.");
+    royale.royale(res,convo);
+    convo.next();
+  } else {
+    var temp2 = Math.random();
+    if (temp.includes("first")){
+      convo.say("You throw your pieces of gold in the pot and wait for the match to commence.");
+      if (temp2>0.5){
+        convo.say("The swordfighter rushes his opponent, and the other man's blowgun is no match! The swordfighter cuts him down!");
+        convo.say("The grizzled old betskeeper tosses you 40 Gold. \n" +
+          ">Doubled yer money, eh? Not bad, kid!");
+        convo.say("*You gain 20 Gold!*");
+        user.gold += 20;
+        betting(res,convo);
+        convo.next();
+      } else {
+        convo.say("The man with the blowgun raises his weapon and covers the swordfighter in darts just as the bell rings. The swordfighter never knew what hit him, and he falls, writhing in dusty defeat.");
+        convo.say("The grizzled old betskeeper tisks his tongue at you. \n" +
+          ">Better luck next time, kid.");
+        convo.say("*You lose 20 Gold!*");
+        user.gold -= 20;
+        betting(res,convo);
+        convo.next();
+      }
+    } else if (temp.includes("second")){
+      convo.say("You throw your pieces of gold in the pot and wait for the match to commence.");
+      if (temp2>0.65){
+        convo.say("The woman with scythes assumes a fighting stance, and at the bell, explodes in a flurry of shining slashes towards the man in the snake mask! She cuts him down with ease.");
+        convo.say("The grizzled old betskeeper tosses you 60 Gold. \n" +
+          ">Tripled yer money, eh? Not bad, kid!");
+        convo.say("*You gain 60 Gold!*");
+        user.gold += 60;
+        betting(res,convo);
+        convo.next();
+      } else {
+        convo.say("The man in the snake mask flashes his hands and chants some words, and the woman with the scythe immediately falls to her knees, clutching at her throat. A snake slithers out of her mouth...");
+        convo.say("The grizzled old betskeeper tisks his tongue at you. \n" +
+          ">Better luck next time, kid.");
+        convo.say("*You lose 20 Gold!*");
+        user.gold -= 20;
+        betting(res,convo);
+        convo.next();
+      }
+    } else if (temp.includes("third")){
+      convo.say("You throw your pieces of gold in the pot and wait for the match to commence.");
+      if (temp2>0.8){
+        convo.say("The old duelfighter tries to distract the sorcerer's apprentice, but the younger man is ready. Locking his eyes, he casts down a dark magick that envelops the duelfighter in a haze of hornets. A regrettable way to go.");
+        convo.say("The grizzled old betskeeper tosses you 100 Gold. \n" +
+          ">Well, well - nice payday for you, eh kid?");
+        convo.say("*You gain 100 Gold!*");
+        user.gold += 100;
+        betting(res,convo);
+        convo.next();
+      } else {
+        convo.say("The old duelfighter readies himself in a fighting stance. As the bell rings, he distracts the sorcerer's apprentice with a handful of dust before feinting to the side and clubbing him over the head before the other man can whisper any incantations.");
+        convo.say("The grizzled old betskeeper tisks his tongue at you. \n" +
+          ">Better luck next time, kid.");
+        convo.say("*You lose 20 Gold!*");
+        user.gold -= 20;
+        betting(res,convo);
+        convo.next();
+      }
+    } else if (temp.includes("status")){
+      royalestatus(res,convo);
+      convo.next();
+    } else if (temp.includes("change")){
+      royale.royale(res,convo);
+      convo.next();
+    } else {
+      convo.repeat();
+    }
+  }
+}
+
+royalestatus = function(res,convo){
+	convo.say(utility.status());
+	convo.ask("The air tastes vaguely sour. Like blood. What next? (Want a `reminder`?)", function(res,convo){
+	    betting(res,convo);
+	    convo.next();
+	});
 }

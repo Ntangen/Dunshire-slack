@@ -63,16 +63,18 @@ woodsmenu = function(res,convo){
 		town.townsquare(res,convo);
 	} else {
 		var temp = "";
-		if (user.mission==="abbey"){
+    if (user.level.level>=4){
+      temp += "Visit the Cave of the `Mage`, ";
+    } if (user.mission==="abbey"){
 			if (missioncomplete){
 				convo.say("*Don't forget to return the Cleric's censer at the Abbey!*")
 			} else {
 				temp +="Search for the `bandits` who stole the Cleric's censer, ";
 			}
-		} else if (user.mission==="grannon" || user.level.level>=3){
+		} else if (user.mission==="grannon"){
 			temp +="Follow Grannon's directions to the Cave of the `Mage`, ";
 		} else if (user.mission==="morgan"){
-			temp +="Search for Morgan's Quercus `tree`, ";
+			temp +="search for Morgan's Quercus `tree`, ";
 		}
 		temp += "`Hunt` for beasts, check your `status`, review your `supplies`, or return to `town`.";
 		convo.ask(temp, function(res,convo){
