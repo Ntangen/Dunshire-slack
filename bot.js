@@ -142,13 +142,15 @@ controller.on('direct_mention', function(bot, message) {
         bot.reply(message, "Greetings, fellow wanderer. If you'd like to begin the journey of Dunquest, just direct message me.");
     });
     
-    controller.on('mention', function(bot, message) {
+controller.on('mention', function(bot, message) {
         console.log("channel mention");
         bot.reply(message, "Greetings, fellow wanderers. If you'd like to begin the journey of Dunquest, just direct message me.");
-      });
+    });
     
-    controller.on('direct_message', function (bot, message) {
-
+controller.on('direct_message', function (bot, message) {
+  if (message.text.includes('help')) {
+    bot.reply(message, "No problem! This bot allows you to play _Legend of the Plaid Dragon_, a Slack-based text adventure game based on the legendary BBS door game Legend of the Red Dragon. You can read more about it here: http://legendoftheplaiddragon.github.io/. To begin, just venture on to the village of Dunshire. Happy slashing!");
+  } else {
       utility.reboot();
       userid = message.user;
       user.userid = userid;
@@ -159,10 +161,10 @@ controller.on('direct_mention', function(bot, message) {
       console.log("today: " + utility.todaysdate());
       var temp = new Date();
       console.log("time: " + temp.getHours() + " " + temp.getMinutes());
-
+              
     // welcome function
     var welcome = function(res,convo){
-        convo.ask("Welcome! Do you wish to venture on to the village of Dunshire?", [
+        convo.ask("Welcome! Do you wish to venture on to the village of Dunshire? (Or would you like some `help` figuring out what this is all about?)", [
         {
             pattern: bot.utterances.yes,
             callback: function(res,convo){
@@ -174,6 +176,13 @@ controller.on('direct_mention', function(bot, message) {
             pattern: bot.utterances.no,
             callback: function(res,convo){
                 convo.say("Okay then!");
+                convo.next();
+           }
+        },
+        { 
+            pattern: 'help',
+            callback: function(res,convo){
+                convo.say("Hi there! This bot allows you to play _Legend of the Plaid Dragon_, a Slack-based text adventure game based on the legendary BBS door game Legend of the Red Dragon. You can read more about it here: http://legendoftheplaiddragon.github.io/. To begin, just enter anything below to venture on to the village of Dunshire. Happy slashing!");
                 convo.next();
            }
         },
@@ -208,10 +217,8 @@ controller.on('direct_mention', function(bot, message) {
             // grab some user deets real quick, saves to user var
             bot.api.users.info({'user':user.userid},function(err,res){
               if (err) console.log("err: " + err);
-              user.username = res.user.real_name;
-              console.log("real_name: " + res.user.real_name);
-              console.log("name: " + res.user.name);
-              console.log("new user username: " + user.username + " (startup)");
+              user.realname = res.user.real_name;
+              console.log("real name: " + res.user.real_name);
             });
         } else {
             // found a record for user
@@ -226,17 +233,21 @@ controller.on('direct_mention', function(bot, message) {
 
     bot.startConversation(message, welcome);
 
+    };
   });
-    
 }
 
 enter = function(res, convo){
+  var temp = res.text.toLowerCase();
+  if (temp==="help"){
+    convo.say("Hi there! This bot allows you to play _Legend of the Plaid Dragon_, a Slack-based text adventure game based on the legendary BBS door game Legend of the Red Dragon. You can read more about it here: http://legendoftheplaiddragon.github.io/. To begin, just venture on to the village of Dunshire. Happy slashing!");
+  } else {
     convo.say("Great! Let's go! 🐲");
     convo.say("You're walking down a dirt path. It's nighttime, and cool out. The crickets are chirping around you. There's a soft light up ahead. As you get a little closer, the yellow light of a small country inn beckons. \n\nYou open the small metal gate and walk into the inn's yard. There are torches about lighting the way, and the sound of voices talking and laughing inside.");
     convo.say("As you enter, The Innkeeper looks up from where he's clearing a table.");
     if (!user.knownPlayer){
-        console.log("setting up new player: " + user.username);
-        convo.ask("The Innkeeper grunts. \n>Well met, *" + user.username + "*. Haven't seen you around here before. You mean to introduce yourself, and begin your adventure in Dunshire?", [
+        console.log("setting up new player: " + user.realname);
+        convo.ask("The Innkeeper grunts. \n>Well met, wanderer. Haven't seen you around here before. You mean to introduce yourself, and begin your adventure in Dunshire?", [
         {
             pattern: convo.task.bot.utterances.yes,
             callback: function(res,convo){
@@ -275,23 +286,56 @@ enter = function(res, convo){
             });
         }
     }
+  }
 }
 
 newplayer = function(res,convo){
     user.knownPlayer = true;
     user.profileStarted = today;
     user.lastPlayed = today;
-      // utlility thing isn't loading levels correctly?
-    convo.say("The Innkeeper smacks the long bench with his palm and grins. \n>Excellent! I wish you luck and good fortune on your journies to come in the village of Dunshire - and the lands beyond... \n\n>As a last step before you go, you may choose to add 1 point to any of your four key character attributes. Which do you choose?");
-    convo.ask("`Charisma`: this will help you get along with other characters. \n`Luck`: this will grant you good fortune. \n`Mysticism`: this will build your mental fortitude. \n`Strength`: this will make you more powerful in combat.", function(res,convo){
-                newplayer2(res,convo);
-                convo.next();
+    convo.ask("The Innkeeper smacks the long bench with his palm and grins. \n>Excellent! I wish you luck and good fortune on your journies to come in the village of Dunshire - and the lands beyond... \n" +
+      ">First off - what can I call you? What's your name, wanderer? This is what you'll be called around here.", function(res,convo){
+      newplayer2(res, convo);
+      convo.next();
     });
 }
 
 newplayer2 = function(res,convo){
+  var temp = res.text.toLowerCase();
+  user.username =  temp.replace(/\s/g, "");
+  convo.say("The Innkeeper nods his head. \n" +
+    ">*" + user.username + "*, is it?");
+  convo.ask("`Confirm` that you want *" + user.username + "* as your player name, or you can `change` your mind.", function(res,convo) {
+    newplayer3(res,convo);
+    convo.next();
+  });
+}
+
+newplayer3 = function(res,convo){
+  var temp = res.text.toLowerCase();
+  if (temp.includes("confirm")){
+    convo.say("The Innkeeper jots down a note in his book on the counter. \n" +
+      ">*" + user.username + "* it is, then. Now... as a last step before you go, you may choose to add 1 point to any of your four key character attributes. Which do you choose?");
+    convo.ask("`Charisma`: this will help you get along with other characters. \n`Luck`: this will grant you good fortune. \n`Mysticism`: this will build your mental fortitude. \n`Strength`: this will make you more powerful in combat.", function(res,convo){
+      newplayer4(res,convo);
+      convo.next();
+    });
+  } else if (temp.includes("change")){
+    convo.ask("Ah, sorry about that. Must've misheard you. What'd you say your name was, again?", function(res,convo){
+      newplayer2(res,convo);
+      convo.next();
+    });
+  } else {
+    convo.say("Come again?");
+    convo.ask("`Confirm` that you want *" + temp + "* as your player name, or you can `change` your mind.", function(res,convo) {
+    newplayer3(res,convo);
+    convo.next();
+  });
+  }
+}
+
+newplayer4 = function(res,convo){
     var temp = res.text.toLowerCase();
-    sessionevents.major.push("newplayer");
     if (temp.includes("charisma")){
         user.attributes.charisma += 1;
         convo.say(">Outstanding! You are now wittier, funnier and more fun to be around!");
@@ -330,7 +374,7 @@ enter2 = function(res,convo){
     // instructions or town
     var temp = res.text.toLowerCase();
     if (temp==="instructions"){
-        convo.ask("The Innkeeper nods his head. \n>Okay then. You probably lots of questions. What topic would you like explained? Let me pour you some ale, and I'll explain concepts like the `village` of Dunshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Dunshire.\"", function(res, convo){
+        convo.ask("The Innkeeper nods his head. \n>Okay then. You probably have lots of questions. What topic would you like explained? Let me pour you some ale, and I'll explain concepts like the `village` of Dunshire, `fighting`, Buying/using `merchandise`, interacting with `townsfolk` or other `wanderers`, `magick` or general `concepts`. Or you can just `continue` on to the Village of Dunshire.\"", function(res, convo){
             instructions(res,convo);
             convo.next();
         });
@@ -352,14 +396,14 @@ enter2 = function(res,convo){
 instructions = function(res,convo){
     var temp = res.text.toLowerCase();
     if (temp.includes('village')){
-        convo.say(">The Village of Dunshire is a peaceful place - mostly. There are several small merchants in town for you to meet, as well as places to explore. As you become more experienced, you will discover some that you hadn't noticed at first. The Village is surrounded by the Dark Woods. The Woods are inhabited by a fearsome variety of beasts - from the [insert beast name] to the [other beast name] and many more. You will need to acquire better weapons, armor and more to defeat them all as time goes on. \nThere are other towns beyond the Dark Woods, of course. But you needn't worry about them for now.\n");
-        convo.ask("What can I answer next? (Want a `reminder`?)", function(res,convo){
+        convo.say(">The Village of Dunshire is a peaceful place - mostly. There are several small merchants in town for you to meet, as well as places to explore. As you become more experienced, you will discover some that you hadn't noticed at first. The Village is surrounded by the Dark Woods. The Woods are inhabited by a fearsome variety of beasts - from the Highwayman to the Juggernaut and many more. You will need to acquire better weapons, armor and more to defeat them all as time goes on. \nThere are other towns beyond the Dark Woods, of course. But you needn't worry about them for now.\n");
+        convo.ask("What can I answer next? (Need help or want a `reminder`?)", function(res,convo){
             instructions(res,convo);
             convo.next();
         });
     } else if (temp.includes('fighting')) {
         convo.say(">As you make your way through the Village, the Dark Woods and elsewhere, you may be called upon to defend yourself. Fighting - whether it be with beasts in the Dark Woods or anywhere else - is straightforward. If you are lucky and/or skilled, you may have an opportunity to make the first strike - or not. You may be able to run away in the middle of a battle if your health runs low (but there's no guarantee you'll succeed). You cannot use your extra gear in the middle of a battle - doing so would require dropping your guard! Defeating opponents will earn you gold and experience. The more formidable the opponent, the more gold and experience. You may run around the Dark Woods slaying as many squirrels as you like, but it will not make you rich.\n");
-        convo.ask("What can I answer next? (Want a `reminder`?)", function(res,convo){
+        convo.ask("What can I answer next? (Need help or want a `reminder`?)", function(res,convo){
             instructions(res,convo);
             convo.next();
         });
@@ -446,7 +490,7 @@ death = function(res,convo){
     }
     quicksave();
     // utility.eventbus();
-    convo.say("When you come to, you are back at the country inn outside of town. Everything is a bit hazy. \nYou go inside. The Innkeeper is still there, and as he sees you stagger in, he beckons you over and helps you down on to a bench. Your muscles ache. Your head throbs. \n>Looks like you had a bad encounter with that forest beast! No shame in that, *" + user.username + "*. It's happened to all of us. You'll be back in the action tomorrow. For now, sit a spell. Have a drink. \nHe plops a tankard of frothy ale down in front of you, and the pounding in your head begins to subside. You decide to get comfortable.");
+    convo.say("When you come to, you are back at the country inn outside of town. Everything is a bit hazy. \nYou go inside. The Innkeeper is still there, and as he sees you stagger in, he beckons you over and helps you down on to a bench. Your muscles ache. Your head throbs. \n>Looks like you had a bad encounter out there! No shame in that, *" + user.username + "*. It's happened to all of us. You'll be back in the action tomorrow. For now, sit a spell. Have a drink. \nHe plops a tankard of frothy ale down in front of you, and the pounding in your head begins to subside. You decide to get comfortable.");
     convo.say("Better luck tomorrow. *See you soon, fellow wanderer.*");
     convo.next();
 }
@@ -517,38 +561,38 @@ savedrink = function(drinkobject){
   });  
 }
 
-crierfetch = function(){
-    // fetch today's public activity log for the Crier
-    var temp = utility.todaysdate();
-    console.log("(" + user.username + ") attempting to save to activity log");
-    controller.storage.activity.get(temp, function(err,res){
-        console.log("res: " + res + " (crierfetch)");
-        if (err) console.log("activity get err: " + err);
-        else if (res===null) {
-            // it's a new day - nothing here yet
-            console.log("(" + user.username + ") No activity log yet today - populating");
-            var placetemp = "place" + Math.round(Math.random()*3)
-            var temp3 = events.eventReturner(placetemp);
-            console.log("temp3: " + temp3 + "(crierfetch)");
-            sessionevents.tobesaved.push(temp3);
-            var temp2 = sessionevents.tobesaved;
-            controller.storage.activity.save({id:temp, activity:temp2}, function(err){
-                if (err) console.log("event save err: " + err);
-                else console.log("event save success");
-                hearings = temp2 + "\n"
-            });
-            sessionevents.tobesaved = [];
-        }
-        else {
-            // grab today's activity
-            hearings += res.activity;
-            for (i=0;i<hearings.length;i++){
-                hearings[i] += "\n"
-            }
-            console.log("hearings: " + hearings[0] + " (crierfetch)");
-        }
-    });
-}
+// crierfetch = function(){
+//     // fetch today's public activity log for the Crier
+//     var temp = utility.todaysdate();
+//     console.log("(" + user.username + ") attempting to save to activity log");
+//     controller.storage.activity.get(temp, function(err,res){
+//         console.log("res: " + res + " (crierfetch)");
+//         if (err) console.log("activity get err: " + err);
+//         else if (res===null) {
+//             // it's a new day - nothing here yet
+//             console.log("(" + user.username + ") No activity log yet today - populating");
+//             var placetemp = "place" + Math.round(Math.random()*3)
+//             var temp3 = events.eventReturner(placetemp);
+//             console.log("temp3: " + temp3 + "(crierfetch)");
+//             sessionevents.tobesaved.push(temp3);
+//             var temp2 = sessionevents.tobesaved;
+//             controller.storage.activity.save({id:temp, activity:temp2}, function(err){
+//                 if (err) console.log("event save err: " + err);
+//                 else console.log("event save success");
+//                 hearings = temp2 + "\n"
+//             });
+//             sessionevents.tobesaved = [];
+//         }
+//         else {
+//             // grab today's activity
+//             hearings += res.activity;
+//             for (i=0;i<hearings.length;i++){
+//                 hearings[i] += "\n"
+//             }
+//             console.log("hearings: " + hearings[0] + " (crierfetch)");
+//         }
+//     });
+// }
 
 getrecord = function(tgt){
   controller.storage.users.find({"profile.username":tgt}, function(err, res){

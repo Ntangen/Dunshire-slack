@@ -506,6 +506,8 @@ rwins = function(res,convo){
     convo.say("The crowd erupts in cheers as the Magus, stumbling on its feet, begins to flicker, and soon evaporates into thin air, leaving you alone, victorious, in the arena. You stand, catching your breath as your opponent's sorcery fades, to face the adoring crowd. They are throwing flowers and coins down upon you, heralding your victory!");
     user.turnsToday -= turns;
     turns = 0;
+    user.gold += 275;
+    user.xp += monster.xp;
     utility.levelup(4);
     convo.say("*You have advanced to Level 4: Journeyman.* Your maximum hitpoints have increased, and new areas of town are now open to you.");
     convo.say("After toweling off your face, you climb the steps out of the pit to see Tox, who nods sheepishly as he sees you approach. \n" +

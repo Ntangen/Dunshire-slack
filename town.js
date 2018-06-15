@@ -12,7 +12,7 @@ townsquare: function(res, convo){
     convo.say("*During the night, you were attacked in your sleep!* As you slept in the fields, *" + user.duel.new[0].opp + "* tracked you down and attacked without warning!");
     if (user.duel.new[0].result==="L"){
       convo.say("*" + user.duel.new[0].opp + "* was too much for you, and cut you down in combat. They made off with half of your gold, and were heard gloating afterwards at the Tavern...");
-    } else if (user.duel.new[0].result==="D"){ 
+    } else if (user.duel.new[0].result==="W"){ 
       convo.say("*" + user.duel.new[0].opp + "* underestimated your fortitude, however, and you repelled their cowardly attack! You gained gold and experience, as well as bragging rights at the Tavern...");
     } else if (user.duel.new[0].result==="R"){
       convo.say("*" + user.duel.new[0].opp + "* was not prepared for your furious counterattack, and they ran off to escape the fight! Just like a coward.");
@@ -22,7 +22,7 @@ townsquare: function(res, convo){
     user.duel.old.push(temp);
     user.duelflag=false;
   }
-	convo.ask("The town square is calm. Merchants hawk their goods, neighbors greet each other, and a few children go chasing each other through the streets. \n\nYou may `hear` the town crier's news of the day, visit the `Tavern`, the `Smither` Shop, the `Apothecary` Cabin, the `Bank` of Doworth, the village `Abbey`, Old Grannon's `farm`, or venture into the Dark `Woods`. \n\nYou can also check your `status`, review your `supplies`, or `quit` to your campsite.", function(res,convo){
+	convo.ask("The town square is calm. Merchants hawk their goods, neighbors greet each other, and a few children go chasing each other through the streets. \n\nYou may visit the `Tavern`, the `Smither` Shop, the `Apothecary` Cabin, the `Bank` of Doworth, the village `Abbey`, Old Grannon's `farm`, or venture into the Dark `Woods`. \n\nYou can also check your `status`, review your `supplies`, or `quit` to your campsite.", function(res,convo){
 			townrouter(res,convo);
             convo.next();
         });
@@ -35,9 +35,7 @@ townsquare: function(res, convo){
 townrouter = function(res,convo){
 	quicksave();
 	var temp = res.text.toLowerCase();
-    if (temp.includes('hear')){
-    	crier(res,convo);
-    } else if (temp.includes('tavern')){
+    if (temp.includes('tavern')){
     	sessionevents.minor.push("tavern");
         tavern.tavern(res,convo);
     } else if (temp.includes('smither')){
@@ -70,7 +68,10 @@ townrouter = function(res,convo){
     } else if (temp.includes('quit')){
         quit(res,convo);
     } else {
-        convo.repeat();
+        convo.ask("The town square bustles around you. What next? (Need help or want a `reminder`?)", function(res,convo){
+          townrouter(res,convo);
+          convo.next();
+      });
     }
 }
 
@@ -85,7 +86,7 @@ woods = function(x){
 
 townstatus = function(res,convo){
 	convo.say(utility.status());
-	convo.ask("The town square bustles around you. What next? (Want a `reminder`?)", function(res,convo){
+	convo.ask("The town square bustles around you. What next? (Need help or want a `reminder`?)", function(res,convo){
 	    townrouter(res,convo);
 	    convo.next();
 	});
@@ -95,7 +96,7 @@ towngear = function(res,convo){
 	var temp = utility.showgear();
 	if (temp === 0){
 		convo.say("You have no items!");
-		convo.ask("The town square bustles around you. What next? (Want a `reminder`?)", function(res,convo){
+		convo.ask("The town square bustles around you. What next? (Need help or want a `reminder`?)", function(res,convo){
 		    townrouter(res,convo);
 		    convo.next();
 		});
@@ -111,7 +112,7 @@ towngear = function(res,convo){
 townusegear = function(res,convo){
 	var temp = res.text.toLowerCase();
 	if (temp.includes('none')){
-		convo.ask("The town square bustles around you. What next? (Want a `reminder`?)", function(res,convo){
+		convo.ask("The town square bustles around you. What next? (Need help or want a `reminder`?)", function(res,convo){
 		    townrouter(res,convo);
 		    convo.next();
 		});
@@ -125,11 +126,14 @@ townusegear = function(res,convo){
 		}
 		if (temp2===0){
 			convo.say("Come again?");
-			convo.repeat();
+			convo.ask("The town square bustles around you. What next? (Need help or want a `reminder`?)", function(res,convo){
+          townrouter(res,convo);
+          convo.next();
+      });
 		} else {
 			var temp3 = utility.items(temp2[0].name);
 			convo.say(temp3);
-			convo.ask("The town square bustles around you. What next? (Want a `reminder`?)", function(res,convo){
+			convo.ask("The town square bustles around you. What next? (Need help or want a `reminder`?)", function(res,convo){
 			    townrouter(res,convo);
 			    convo.next();
 			});
@@ -137,13 +141,13 @@ townusegear = function(res,convo){
 	}
 }
 
-crier = function(res,convo){
-    convo.say(hearings);
-    convo.ask("The town square bustles around you. What next? (Want a `reminder`?)", function(res,convo){
-	    townrouter(res,convo);
-	    convo.next();
-	});
-}
+// crier = function(res,convo){
+//     convo.say(hearings);
+//     convo.ask("The town square bustles around you. What next? (Need help or want a `reminder`?)", function(res,convo){
+// 	    townrouter(res,convo);
+// 	    convo.next();
+// 	});
+// }
 
 ///////////////
 

@@ -106,7 +106,11 @@ woodsrouter = function(res, convo){
     } else if (temp.includes('reminder')){
     	woodsmenu(res,convo);
     } else {
-        convo.repeat();
+      convo.say("Come again?");
+      convo.ask("The Dark Woods are silent with menace. What next? (Need a `reminder`?", function(res,convo){
+        woodsrouter(res,convo);
+        convo.next();
+      });
     }
 }
 
@@ -161,17 +165,24 @@ woodsfightrouter = function(res,convo,x){
 	var temp = res.text.toLowerCase();
 	if (temp.includes("run")){
 		woodsrun(res,convo)
+    convo.next();
 	} else if (temp.includes("magick")){
 		if (user.items.magic.length===0){
 			convo.say("You have no knowledge of magicks yet!");
-			convo.repeat();
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+        woodsfightrouter(res,convo);
+        convo.next();
+      });
 		} else {
 			woodsfight(res, convo, "m");
 		}
 	} else if (temp.includes("attack")){
 		woodsfight(res,convo,1)
 	} else {
-		convo.repeat();
+		convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+        woodsfightrouter(res,convo);
+        convo.next();
+      });
 	}
 }
 
@@ -239,7 +250,10 @@ woodsfight = function(res,convo,turn){
 		// invoke magick
 		if (user.items.magic.length===0){
 			convo.say("You have no knowledge of magicks yet!");
-			convo.repeat();
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+        woodsfightrouter(res,convo);
+        convo.next();
+      });
 		} else {
 			var temp = utility.showmagic();
 			convo.say(temp);
@@ -293,7 +307,10 @@ woodsusegear = function(res,convo){
 		}
 		if (temp2===0){
 			convo.say("Come again?");
-			convo.repeat();
+			convo.ask("The Dark Woods are quiet, but menacing. What next? (Want a `reminder`?)", function(res,convo){
+          woodsrouter(res,convo);
+          convo.next();
+      });
 		} else {
 			var temp3 = utility.items(temp2[0].name);
 			quicksave();
@@ -421,7 +438,10 @@ lancemagic = function(res, convo, x){
 			});
   } else if (user.turnsToday<=spellz.clap.turnsreq) {
 			convo.say("You do not have enough turns left today to invoke this magick.")
-			convo.repeat();
+			convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+        woodsfightrouter(res,convo);
+        convo.next();
+      });
 			// confirm that this goes back to "which magick" question
 		} else {
 			attackdamage = spellz.clap.attack - monster.defense
@@ -495,8 +515,37 @@ lancemagic = function(res, convo, x){
 		}
 	} else if (temp.includes("sword")){
 		// we don't have this level yet
-	} else {
-		convo.repeat();
+	} else if (temp.includes("morgan's fire chanter" || "fire chanter")){
+    if (!utility.hasmagic("chanter")) {
+        // user doesn't have any MFC
+		  convo.say("You have none of Morgan's Fire Chanters!");
+		  convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				woodsfightrouter(res,convo);
+				convo.next();
+			});
+    } else {
+      // user has MFC
+			attackdamage = items.stuff.mfc.attack - monster.defense
+			console.log("user attack: " + attackdamage);
+			mhp = mhp - attackdamage;
+      utility.removemagic("fire chanter");
+			convo.say("Uncorking the goblet of red liquid, you hurl it squarely at " + monster.name + ", and they are engulfed in a roaring ball of blue flame!");
+			if (mhp <= 0) {
+				// damage the monster & kill
+				console.log("(" + user.username + ") kill");
+				convo.say("As the fireball recedes, you see only the charred remains of the " + monster.name + ".");
+				woodsreward(res,convo);
+			} else {
+				// damage the monster, don't kill
+				woodsfight(res,convo,2);
+			}
+		}
+  } else {
+    convo.say("Come again?");
+		convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+				woodsfightrouter(res,convo);
+				convo.next();
+			});
 	}
 }
 

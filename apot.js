@@ -27,13 +27,8 @@ module.exports = {
 					convo.next();
 				});
 			}
-		} else {
-		// if (flag==="drugs"){
-		// 	output(3, "<span id=quote>\"Step carefully, fr...</span> she says, before looking up and seeing your tell-tale shaking and pale complexion. A thin, cruel smile spreads across her face. <span id=quote>Been taking a few too many of my remedies, have you?</span> she asks, knowingly.<br>" + 
-		// 		"<span id=quote>The addiction you're experiencing now will only get worse. I promise you. And to beat it, you will require my help. Just let me know when.</span>");
-		// 	output(4, "<span id=quote>Now, dear... what do you seek today?</span><br><br>" +
-		// 		"<span id=menu>Press (<span id=letter>H</span>) to peruse Morgan's healing potions, (<span id=letter>M</span>) to browse her medicine list, (<span id=letter>A</span>) to ask what she's working on now, (<span id=letter>D</span>) to inquire about curing your addiction, or (<span id=letter>L</span>) to leave.</span><br>");
-		// } else {
+    } else {
+		// if user is under or over level 4
 			convo.ask(">Step carefully, friend... We don't need an explosion in here. Unless, that is... uh... well, my dear, what is it you seek? \nPeruse Morgan's `heal`ing potions, browse her `medicines` list, `ask` what she's working on now, or return to the `street`.", function(res,convo){
 				apotrouter(res,convo);
 				convo.next();
@@ -165,7 +160,10 @@ querfight = function(res,convo,turn){
 		// invoke magick
 		if (user.items.magic.length===0){
 			convo.say("You have no knowledge of magicks yet!");
-			convo.repeat();
+			convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+        apotrouter(res,convo);
+        convo.next();
+      });
 		} else {
 			var temp = utility.showmagic();
 			convo.say(temp);
@@ -211,7 +209,10 @@ qfightrouter = function(res,convo,x){
 			  });
       } else if (user.turnsToday<=spellz.clap.turnsreq) {
         convo.say("You do not have enough turns left today to invoke this magick.")
-        convo.repeat();
+        convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+            qfightrouter(res,convo);
+            convo.next();
+          });
 		  } else {
         attackdamage = spellz.clap.attack - monster.defense
         console.log("user attack: " + attackdamage);
@@ -287,7 +288,11 @@ qfightrouter = function(res,convo,x){
     } else if (temp.includes("sword")){
       // we don't have this level yet
     } else {
-      convo.repeat();
+      convo.say("Come again?");
+      convo.ask("Do you `attack`, attempt to `run` away, or invoke `magick`?", function(res,convo){
+          qfightrouter(res,convo);
+          convo.next();
+			  });
     }
   }
 }
@@ -326,14 +331,12 @@ apotrouter = function(res,convo){
 	var temp = res.text.toLowerCase();
 	if (temp.includes("heal")){
 		convo.say("Morgan looks you over quickly, and tisks her tongue. \n>Feel a wee bit peckish, eh dear? Don't worry... if you have the gold, I'll have you feeling better soon. \nHere's what I have today: \n`1` - " + items.heals.basic.name + " (" + items.heals.basic.gold + " Gold)\n`2` - " + items.heals.potent.name + " (" + items.heals.potent.gold + " Gold)");
-			// future antibotic item:
-			// \n`3` - " + items.heals.antibiotic.name + " (" + items.heals.antibiotic.gold + " Gold)");
 		convo.ask("Select your merchandise, or decide `none` of them interest you.", function(res,convo){
 			apotmerchrouter(res,convo,1);
 			convo.next();
 		});
 	} else if (temp.includes("medicines")){
-		convo.say("Morgan nods her head. \n>If you have the gold, I have the medicines you need, my dear. Here's what I have today: \n`1` - " + items.meds.sober.name + " (" + items.meds.sober.gold + " Gold)\n`2` - " + items.meds.kola.name + " (" + items.meds.kola.gold + " Gold)\n`3` - " + items.meds.berserk.name + " (" + items.meds.berserk.gold + " Gold)");
+		convo.say("Morgan nods her head. \n>If you have the gold, I have the medicines you need, my dear. Here's what I have today: \n`1` - " + items.meds.sober.name + " (" + items.meds.sober.gold + " Gold)\n`2` - " + items.meds.kola.name + " (" + items.meds.kola.gold + " Gold)");
 		convo.ask("Select your merchandise, or decide `none` of them interest you.", function(res,convo){
 			apotmerchrouter(res,convo,2);
 			convo.next();
@@ -355,7 +358,14 @@ apotrouter = function(res,convo){
 				apotrouter(res,convo,2);
 				convo.next();
 			});
-		} else {
+		} else if (user.level.level>=5){ 
+      convo.say("A thin smile creeps across Morgan's face. \n" +
+        "Are you looking for another Fire Chanter, perhaps? I can fill this order... for 250 Gold.");
+        convo.ask("Shall you `confirm` this order, or `change` your mind?", function (res,convo){
+          mfcrouter(res,convo);
+          convo.next();
+        });
+    } else {
 			convo.say("Ask another time, " + user.username + ". You never know what I may have for you.");
 			convo.ask("What next? (Want a `reminder`?)", function(res,convo){
 	            apotrouter(res,convo);
@@ -393,7 +403,11 @@ apotrouter = function(res,convo){
             convo.next();
         });
 	} else {
-		convo.repeat();
+		convo.say("Come again?");
+    convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+        apotrouter(res,convo);
+        convo.next();
+    });
 	}
 }
 
@@ -427,7 +441,10 @@ apotmerchrouter = function(res,convo,x){
 		// 	});
 		} else {
 			convo.say("Come again?");
-			convo.repeat();
+			convo.ask("Select your merchandise, or decide `none` of them interest you.", function(res,convo){
+        apotmerchrouter(res,convo,1);
+        convo.next();
+		  });
 		}
 	} else if (x===2){
 		// meds
@@ -443,19 +460,26 @@ apotmerchrouter = function(res,convo,x){
 				apotmerchconfirm(res,convo);
 				convo.next();
 			});
-		} else if (temp.includes("3")){
-			currentmerch = items.meds.berserk;
-			convo.ask("Are you sure you want the " + items.meds.berserk.name + "? \nBe wary with this one. The berserker infusion is powerful. It will temporarily make you extra-powerful, super strong and a terrifying battle opponent - but some of its... effects... will also linger after the battle ends. \n You may `confirm` your purchase, or `change` your mind.", function(res,convo){
-				apotmerchconfirm(res,convo);
-				convo.next();
-			});
-		} else {
+		// } else if (temp.includes("3")){
+		// 	currentmerch = items.meds.berserk;
+		// 	convo.ask("Are you sure you want the " + items.meds.berserk.name + "? \nBe wary with this one. The berserker infusion is powerful. It will temporarily make you extra-powerful, super strong and a terrifying battle opponent - but some of its... effects... will also linger after the battle ends. \n You may `confirm` your purchase, or `change` your mind.", function(res,convo){
+		// 		apotmerchconfirm(res,convo);
+		// 		convo.next();
+		// 	});
+		// } 
+    } else {
 			convo.say("Come again?");
-			convo.repeat();
+			convo.ask("Select your merchandise, or decide `none` of them interest you.", function(res,convo){
+        apotmerchrouter(res,convo,2);
+        convo.next();
+      });
 		}
 	} else {
 		convo.say("Come again?");
-		convo.repeat();
+		convo.ask("Select your merchandise, or decide `none` of them interest you.", function(res,convo){
+			apotmerchrouter(res,convo,2);
+			convo.next();
+		});
 	}
 }
 
@@ -483,21 +507,61 @@ apotmerchconfirm = function(res,convo){
             convo.next();
         });
 	} else {
-		convo.repeat();
+		convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+      apotrouter(res,convo);
+      convo.next();
+    });
 	}
 }
 
 apotlevel = function(res,convo){
   convo.say("Morgan disappears into the dark laboratory room separated by a thick shroud. You think you see something moving in there... She emerges a few minutes later and hands you a small, hard object inside a leather pouch. \n" +
-    ">This is a vial of my newest creation, " + user.username + ". I call it, my *Fire Chanter.* You may use it in combat - but *beware.* It will engulf whatever you throw it at in a... well, really quite, uh, beautiful... fireball. It should vanquish all but _extremely_ formidable enemies. \n" +
+    ">This is a vial of my newest creation, " + user.username + ". I call it, my *Fire Chanter.* You may use it in combat - look in your list of *Magicks* - but _beware._ It will engulf whatever you throw it at in a... well, really quite, uh, beautiful... fireball. It should vanquish all but _extremely_ formidable enemies. \n" +
     ">With this root sample you've given me, I will be able to synthesize more of this potion from now on, too. For... a reasonable price, of course.");
   convo.say("Morgan grins wanly and goes back to her experiments. \n" + 
     "You have fulfilled Morgan's Request! *You advance to Level 5: Rogue.* \n" +
 		"Your maximum hitpoints have increased, and you receive an additional 100 experience!");
   utility.levelup(5);
+  user.items.magic.push(items.stuff.mfc);
+  console.log("magic assign: MFC");
   quicksave();
   convo.ask("*Catch your breath, and then `continue`.*", function(res,convo){
       apot.apothecary(res,convo);
       convo.next();
     });
 }
+
+mfcrouter = function(res,convo){
+  var temp = res.text.toLowerCase();
+  if (temp.includes("confirm")){
+    if (user.gold<250){
+      convo.say("Morgan rolls her eyes. \n" +
+        ">I don't work on credit, " + user.level.name + ". Come back when you have cash.");
+      convo.ask("What now? You may peruse Morgan's `heal`ing potions, browse her `medicines` list, `ask` what she's working on now, or return to the `street`.", function(res,convo){
+        apotrouter(res,convo);
+        convo.next();
+      });
+    } else {
+      user.gold -= 250;
+      user.items.magic.push(items.stuff.mfc);
+      convo.say("After sweeping your gold off the table, Morgan disappears into the back room of her shop and soon emerges again corking a small tube of red liquid, whose vapor trails behind it.");
+      convo.say(">Wield my Fire Chanter wisely, " + user.level.name + ".");
+      convo.ask("What now? You may peruse Morgan's `heal`ing potions, browse her `medicines` list, `ask` what she's working on now, or return to the `street`.", function(res,convo){
+        apotrouter(res,convo);
+        convo.next();
+      });
+    }
+  }	else if (temp.includes("change")){
+    convo.say();
+    convo.ask("What next? (Want a `reminder`?)", function(res,convo){
+        apotrouter(res,convo);
+        convo.next();
+      });
+  } else {
+    convo.say("Come again?");
+    convo.ask("Shall you `confirm` this order, or `change` your mind?", function (res,convo){
+      mfcrouter(res,convo);
+      convo.next();
+    });
+  }
+}  
