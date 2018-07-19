@@ -2,6 +2,7 @@
 
 currentuser = ""; 
 userid = "";
+teamid = "";
 msg = "";
 username=""; 
 user={};
@@ -153,11 +154,10 @@ controller.on('direct_message', function (bot, message) {
   } else {
       utility.reboot();
       userid = message.user;
-      user.userid = userid;
-      team = message.team;
+      teamid = message.team;
       today = utility.todaysdate();
       console.log("userid: " + userid);
-      console.log("team:" + team);
+      console.log("team:" + teamid);
       console.log("today: " + utility.todaysdate());
       var temp = new Date();
       console.log("time: " + temp.getHours() + " " + temp.getMinutes());
@@ -207,27 +207,28 @@ controller.on('direct_message', function (bot, message) {
     // get user collection; check knownPlayer flag; if none, set basic info
     controller.storage.users.get(userid, function(err,user_data){
         if (err) console.log("err: " + err);
-        console.log("user.userid: " + user.userid);
         if (user_data===undefined || user_data===null || user_data.profile.username===undefined){
-            // no record for this user, so we'll set one up
-            console.log("this is not a known player");
-            user = newuser.newPlayer;
-            user.userid = userid;
-            drinkvar=true;
-            // grab some user deets real quick, saves to user var
-            bot.api.users.info({'user':user.userid},function(err,res){
-              if (err) console.log("err: " + err);
-              user.realname = res.user.real_name;
-              console.log("real name: " + res.user.real_name);
-            });
+          // no record for this user, so we'll set one up
+          console.log("this is not a known player");
+          user = newuser.newPlayer;
+          user.userid = userid;
+          user.teamid = teamid;
+          drinkvar=true;
+          userid = "";
+          teamid = "";
+          // grab some user deets real quick, saves to user var
+          bot.api.users.info({'user':user.userid},function(err,res){
+            if (err) console.log("err: " + err);
+            user.realname = res.user.real_name;
+          });
         } else {
-            // found a record for user
-            console.log("found a record for profile username: " + user_data.profile.username);
-            user = user_data.profile;
-            // could add bank info here
-            if (user.drinkflag===true){
-                drinkvar=true;
-            }
+          // found a record for user
+          console.log("found a record for profile username: " + user_data.profile.username);
+          user = user_data.profile;
+          // could add bank info here
+          if (user.drinkflag===true){
+              drinkvar=true;
+          }
         }
     });
 
@@ -513,7 +514,7 @@ grabAllNames = function(x,y){
 
 quicksave = function(){
     // your standard game save 
-    controller.storage.users.save({id: userid, profile:user}, function(err,res){
+    controller.storage.users.save({id: user.userid, profile:user}, function(err,res){
         if (err) console.log("save err: " + err);
         console.log("(" + user.username + ") user save");
     });
